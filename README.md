@@ -1,3 +1,3 @@
 # shop-app
 Test shop application
-Lipatov
+Change with installed Sourcetree
