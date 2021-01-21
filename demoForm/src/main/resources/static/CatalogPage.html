@@ -5,36 +5,78 @@
 </head>
 <body>
 
-<div class="container" id="app">
-    <h1>Catalog</h1>
-    <button>New product v-on:change="addProduct"</button>
-    <button>Edit product v-on:change="editProduct"</button>
-    <button>Delete product v-on:change="deleteProduct"</button>
-    <p>Product name : v-model="productName" </p>
-    <p>Product description : v-model="productDescription" </p>
-    <p>Product price : v-model="productPrice" </p>
-</div>
+    <div id="app">
+        <p>Your result : {{ result }}</p>
+        <p>Your result id : {{ result.id }}</p>
+        <p>Your result name : {{ result.productName }}</p>
+        <button v-on:click="showAllCatalog">Press for all Catalog</button>
+        <button v-on:click="showOneItem">Press for one item</button>
+        <ul>
+            <my-item
+                    v-for="item in products"
+                    v-bind:id="item.id"
+                    v-bind:key="item.id"
+                    v-bind:name="item.productName"
+                    v-bind:price="item.productPrice"
+                    v-bind:description="item.productDescription"
+                    v-bind:photo="item.productPhoto"
+                    v-bind:kol="item.productKol"
+                ></my-item>
+        </ul>
+    </div>
 
 <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <script>
+    Vue.component('my-item', {
+        props: ['id', 'name', 'price', 'description', 'photo', 'kol'],
+        template: '<li>ProductId: {{ id }} | Product name: {{ name }} | Product price: {{ price }} | Product description: {{ description }} | Product photo: {{ photo }} | Product kol: {{ kol }} </li>'
+    })
+
     const app = new Vue({
         el: '#app',
         data: {
-            productName: 1,
-            productDescription: 2,
-            productPrice: 3
+            result: {},
+            products: [
+              { id: 0,
+              productName: 'socks',
+              productPrice: 99.99,
+              productDescription: 'This is yellow socks',
+              productPhoto: 'a_link_to_photo',
+              productKol: 99,
+              },
+              { id: 1,
+              productName: 'pants',
+              productPrice: 199.99,
+              productDescription: 'This is yellow pants',
+              productPhoto: 'a_link_to_photo',
+              productKol: 199
+              }
+            ]
         },
         methods: {
-            addProduct() { axios
+            showAllCatalog() {
+                var url="/catalog";
+                axios
+                    .get(url)
+                    .then(response => {
+                            this.result = response.data;
+                            var len = this.products.length;
+                            var removed = this.products.splice(0, len);
+                            this.result.forEach(el => this.products.push(el));
+                            var a =0;
+                        });
+            },
+            showOneItem() {
+                var url="/catalog/615ba363-cec1-4618-a987-7df5bbfc10bc/";
+                axios
                     .get(url)
                     .then(response => {
                         this.result = response.data;
-                    }); }
-
-            editProduct()
-            deleteProduct()
+                        var removed = this.products.splice(0, 5, this.result );
+                        var a =0;
+                    });
             }
         }
     });
