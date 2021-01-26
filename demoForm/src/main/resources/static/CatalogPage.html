@@ -36,14 +36,14 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">Добавление товара в каталог</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
                         <h2>Добавить один товар в каталог</h2>
-                        <p>Enter productName: <input type="text" v-model="datamain.productName"/></p>
+                        <p>Введите : <input type="text" v-model="datamain.productName"/></p>
                         <p>Enter productPrice: <input type="text" v-model="datamain.productPrice"/></p>
                         <p>Enter productDescription: <input type="text" v-model="datamain.productDescription"/></p>
                         <p>Enter productPhoto: <input type="text" v-model="datamain.productPhoto"/></p>
@@ -59,27 +59,27 @@
 
 
         <!-- Modal -->
-        <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editModalLabel">Modal title</h5>
+                        <h5 class="modal-title" id="editModalLabel">Мзменение товара</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
                         <h2>Изменить один товар в каталоге</h2>
-                        <p>Идентификатор изменяемого товара <input type="text" v-model="productid"/></p>
-                        <p>Enter productName: <input type="text" v-model="datamain.productName"/></p>
-                        <p>Enter productPrice: <input type="text" v-model="datamain.productPrice"/></p>
-                        <p>Enter productDescription: <input type="text" v-model="datamain.productDescription"/></p>
-                        <p>Enter productPhoto: <input type="text" v-model="datamain.productPhoto"/></p>
-                        <p>Enter productKol: <input type="text" v-model="datamain.productKol"/></p>
+                        <p>Идентификатор изменяемого товара {{ editProduct.id }}</p>
+                        <p>Введите новое название: <input type="text" v-model="editProduct.productName"/></p>
+                        <p>Введите новую цену: <input type="text" v-model="editProduct.productPrice"/></p>
+                        <p>Введите новое описание: <input type="text" v-model="editProduct.productDescription"/></p>
+                        <p>Введите новую ссылку на фото: <input type="text" v-model="editProduct.productPhoto"/></p>
+                        <p>Введите новое кол-во на складе: <input type="text" v-model="editProduct.productKol"/></p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" v-on:click="editOneItem">Изменить товар</button>
+                        <button type="button" class="btn btn-primary" v-on:click="serverEditEntityById">Изменить товар</button>
                     </div>
                 </div>
             </div>
@@ -92,25 +92,6 @@
             <button class="btn btn-primary" v-on:click="showOneItem">Получить товар</button>
         </div>
 
-<!--Данный блок удалял компонент по ид. Ид передавался в поле импут. Теперь Товар удаляется прямо из списка. Данный блок болше не используется         -->
-<!--        <hr>-->
-<!--        <div id="deleteoneitemblock">-->
-<!--            <h2>Удалить один продукт по идентификатору</h2>-->
-<!--            <p>Enter productId: <input type="text" v-model="productid"/></p>-->
-<!--            <button class="btn btn-primary" v-on:click="deleteOneItem">Удалить товар</button>-->
-<!--        </div>-->
-
-        <hr>
-        <div id="editOneneitemblock">
-            <h2>Изменить один товар в каталоге</h2>
-            <p>Идентификатор изменяемого товара <input type="text" v-model="productid"/></p>
-            <p>Enter productName: <input type="text" v-model="datamain.productName"/></p>
-            <p>Enter productPrice: <input type="text" v-model="datamain.productDescription"/></p>
-            <p>Enter productDescription: <input type="text" v-model="datamain.productPrice"/></p>
-            <p>Enter productPhoto: <input type="text" v-model="datamain.productPhoto"/></p>
-            <p>Enter productKol: <input type="text" v-model="datamain.productKol"/></p>
-            <button type="button" class="btn btn-primary" v-on:click="editOneItem">Изменить товар</button>
-        </div>
 
     </div>
 
@@ -124,18 +105,14 @@
 
     Vue.component('my-item', {
         props: ['id', 'name', 'price', 'description', 'photo', 'kol'],
-        template: '<li class="list-group-item"> <button type="button" class="btn btn-warning" v-on:click="onClickOpenModal">изменить товар</button>{{ id }} | Название товара {{ name }}, цена {{ price }} руб., количество на складе {{ kol }} шт. <button type="button" class="btn btn-danger" v-on:click="onClickDelete">Удалить</button> </li>',
+        template: '<li class="list-group-item"> <button type="button" class="btn btn-warning" v-on:click="onClickEdit">изменить товар</button>{{ id }} | Название товара {{ name }}, цена {{ price }} руб., количество на складе {{ kol }} шт. <button type="button" class="btn btn-danger" v-on:click="onClickDelete">Удалить</button> </li>',
         methods: {
             onClickDelete: function (event) {
                 eventBus.$emit("deleteCatalogEntityByID", this.id);
             },
             onClickEdit: function (event) {
                 eventBus.$emit("editCatalogEntityByID", this.id);
-                $('#editModal').modal(options);
-            },
-            onClickOpenModal: function (event) {
-                $('#editModal').modal('show');
-            },
+            }
         }
     })
 
@@ -144,6 +121,7 @@
         data: {
             result: {},
             products: [],
+            editProduct: {},
             productid: 0,
             datamain: {
                 productName : '',
@@ -154,58 +132,31 @@
             }
         },
         mounted: function() {
-            this.showAllCatalog();
-            this.deleteOneItem();
+            this.serverShowEntity();
+            this.initDeleteOneItem();
+            this.initEditOneItem();
         },
         methods: {
-            deleteOneItem: function () {
-                eventBus.$on("deleteCatalogEntityByID", function(id)  {
-                        var url="/catalog/" + id + "/";
-                        axios
-                            .delete(url)
-                            .then(response => {
-                                this.result = response.data;
-                                console.log("Товар с идентификатором " + id + " удален");
-                                this.showAllCatalog();
-                            });
+            initDeleteOneItem: function () {
+                eventBus.$on("deleteCatalogEntityByID", function(id) {
+                        this.serverDeleteEntityById(id);
                     }.bind(this)
                 );
             },
             /* изменить один товар в каталоге */
-            editOneItem: function() {
-                eventBus.$on("editCatalogEntityByID", function(id)  {
+            initEditOneItem: function() {
+                eventBus.$on("editCatalogEntityByID", function(id) {
+                    // в продуктс находим ентити с указанным id
+                    let result = this.products.find(item => item.id == id);
+                    // копируем его в editProduct
+                    this.editProduct = result;
+                    // показывем модальное окно редактирования
                     $('#editModal').modal('show');
-                    data2: {
-                id : 42,
-                productName : '',
-                productPrice : 0.1,
-                productDescription : '',
-                productPhoto : '',
-                productKol : 0
-            }
-                    var url="/catalog/" + id + "/";
-                    axios
-                        .put(url, this.datamain)
-                        .then(response => {
-                            this.result = response.data.result;
-                            console.log("Товар с идентификаторм" + id + " изменен");
-                            this.showAllCatalog();
-                        });
+                    // кнопка в модальном окне вызывает функцию сервера на обновление товара по ид
                    }.bind(this)
                 );
             },
-            /* показать весь каталог */
-            showAllCatalog: function () {
-                var url="/catalog";
-                axios
-                    .get(url)
-                    .then(response => {
-                            this.result = response.data;
-                            var len = this.products.length;
-                            var removed = this.products.splice(0, len);
-                            this.result.forEach(el => this.products.push(el));
-                        });
-            },
+
             /* показать один товар по идентификатору из каталога */
             showOneItem: function () {
                 var url="/catalog/" + this.productid + "/";
@@ -224,20 +175,46 @@
                     .then(response => {
                         this.result = response.data.result;
                         console.log("Товар " + this.datamain + " добавлен");
-                        this.showAllCatalog();
+                        this.serverShowEntity();
                     });
             },
+
+                                           <!--          Работа с сервером -->
+            /* показать весь каталог */
+            serverShowEntity: function () {
+                var url="/catalog";
+                    axios
+                        .get(url)
+                        .then(response => {
+                            this.result = response.data;
+                            var len = this.products.length;
+                            var removed = this.products.splice(0, len);
+                            this.result.forEach(el => this.products.push(el));
+                        });
+            },
             /* изменить один товар в каталоге */
-            editOneItem: function() {
-                var url="/catalog/" + this.productid + "/";
-                axios
-                    .put(url, this.datamain)
-                    .then(response => {
-                        this.result = response.data.result;
-                        console.log("Товар с идентификаторм" + this.productid + " изменен");
-                        this.showAllCatalog();
-                    });
+            serverEditEntityById: function() {
+                var url="/catalog/" + this.editProduct.id + "/";
+                    axios
+                        .put(url, this.editProduct)
+                        .then(response => {
+                            this.result = response.data.result;
+                            console.log("Товар с идентификаторм" + this.editProduct.id + " изменен");
+                            this.serverShowEntity();
+                         });
+            },
+            /* удалить один товар из каталога */
+            serverDeleteEntityById: function(id) {
+                var url="/catalog/" + id + "/";
+                    axios
+                        .delete(url)
+                        .then(response => {
+                            this.result = response.data;
+                            console.log("Товар с идентификатором " + id + " удален");
+                            this.serverShowEntity();
+                        });
             }
+
         }
     });
 </script>
