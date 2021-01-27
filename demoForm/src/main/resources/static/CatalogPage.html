@@ -13,8 +13,28 @@
 
         <h1>Каталог товаров</h1>
         <hr>
-        <ul class="list-group">
+        <p><input type="text" v-model="searchText"/>Поиск товаров</p>
+        <button type="button" class="btn btn-primary" v-on:click="onClickSearch">Поиск</button>
+        <p>Сортирвка: <button type="button" name="sortbtn" class="btn btn-primary" v-on:click="onClickSort('productName')">по названию</button> | <button type="button" class="btn btn-primary" v-on:click="onClickSort('productPrice')">по цене</button></p>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-3">
+                </div>
+                <div class="col-sm-3">
+                    Наименование
+                </div>
+                <div class="col-sm-3">
+                    Цена
+                </div>
+                <div class="col-sm-1">
+                    Количество
+                </div>
+                <div class="col-sm-2">
+                </div>
+            </div>
             <my-item
+
                     v-for="item in products"
                     v-bind:id="item.id"
                     v-bind:key="item.id"
@@ -24,19 +44,19 @@
                     v-bind:photo="item.productPhoto"
                     v-bind:kol="item.productKol"
             ></my-item>
-        </ul>
+        </div>
 
         <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addEntityModal">
             Добавить товар
         </button>
 
         <!-- Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="addEntityModal" tabindex="-1" role="dialog" aria-labelledby="addEntityModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Добавление товара в каталог</h5>
+                        <h5 class="modal-title" id="addEntityModalLabel">Добавление товара в каталог</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -50,27 +70,25 @@
                         <p>Enter productKol: <input type="text" v-model="datamain.productKol"/></p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" v-on:click="addOneItem">Save changes</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                        <button type="button" class="btn btn-primary" v-on:click="addOneItem">Добавить товар</button>
                     </div>
                 </div>
             </div>
         </div>
-
 
         <!-- Modal -->
         <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editModalLabel">Мзменение товара</h5>
+                        <h5 class="modal-title" id="editModalLabel">Изменение товара</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
                         <h2>Изменить один товар в каталоге</h2>
-                        <p>Идентификатор изменяемого товара {{ editProduct.id }}</p>
                         <p>Введите новое название: <input type="text" v-model="editProduct.productName"/></p>
                         <p>Введите новую цену: <input type="text" v-model="editProduct.productPrice"/></p>
                         <p>Введите новое описание: <input type="text" v-model="editProduct.productDescription"/></p>
@@ -78,20 +96,12 @@
                         <p>Введите новое кол-во на складе: <input type="text" v-model="editProduct.productKol"/></p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                         <button type="button" class="btn btn-primary" v-on:click="serverEditEntityById">Изменить товар</button>
                     </div>
                 </div>
             </div>
         </div>
-
-        <hr>
-        <div id="oneitemblock">
-            <h2>Получить один продукт по идентификатору</h2>
-            <p>Enter productId: <input type="text" v-model="productid"/></p>
-            <button class="btn btn-primary" v-on:click="showOneItem">Получить товар</button>
-        </div>
-
 
     </div>
 
@@ -105,7 +115,25 @@
 
     Vue.component('my-item', {
         props: ['id', 'name', 'price', 'description', 'photo', 'kol'],
-        template: '<li class="list-group-item"> <button type="button" class="btn btn-warning" v-on:click="onClickEdit">изменить товар</button>{{ id }} | Название товара {{ name }}, цена {{ price }} руб., количество на складе {{ kol }} шт. <button type="button" class="btn btn-danger" v-on:click="onClickDelete">Удалить</button> </li>',
+        //template: '<li class="list-group-item">  ,  руб., количество на складе шт.  </li>',
+
+                template: '<div class="row"> ' +
+                                '<div class="col-sm-3">' +
+                                '    <button type="button" class="btn btn-warning" v-on:click="onClickEdit">изменить товар</button>' +
+                                '</div>' +
+                                '<div class="col-sm-3">' +
+                                '{{ name }}' +
+                                '</div>' +
+                                '<div class="col-sm-3">' +
+                                '{{ price }}' +
+                                '</div>' +
+                                '<div class="col-sm-1">' +
+                                '{{ kol }} ' +
+                                '</div>' +
+                                '<div class="col-sm-2">' +
+                                '<button type="button" class="btn btn-danger" v-on:click="onClickDelete">Удалить</button>' +
+                                '</div>' +
+                            '</div>  ',
         methods: {
             onClickDelete: function (event) {
                 eventBus.$emit("deleteCatalogEntityByID", this.id);
@@ -119,6 +147,9 @@
     const app = new Vue({
         el: '#app',
         data: {
+            url: '',
+            sortParamName: '',
+            searchText: 'lets find smth',
             result: {},
             products: [],
             editProduct: {},
@@ -137,13 +168,28 @@
             this.initEditOneItem();
         },
         methods: {
+            onClickSearch: function () {
+            console.log(this.searchText);
+            // передаем серчтекс серверу в метод вызова всего каталога
+            //this.serverSearchEntity();
+            },
+
+            onClickSort: function (sortParameter) {
+            if (this.sortParamName === '') {
+                this.sortParamName = sortParameter;
+
+            } else {
+                this.sortParamName = '';
+            };
+            this.serverShowEntity();
+            },
+
             initDeleteOneItem: function () {
                 eventBus.$on("deleteCatalogEntityByID", function(id) {
                         this.serverDeleteEntityById(id);
                     }.bind(this)
                 );
             },
-            /* изменить один товар в каталоге */
             initEditOneItem: function() {
                 eventBus.$on("editCatalogEntityByID", function(id) {
                     // в продуктс находим ентити с указанным id
@@ -176,17 +222,22 @@
                         this.result = response.data.result;
                         console.log("Товар " + this.datamain + " добавлен");
                         this.serverShowEntity();
+                        $('#addEntityModal').modal('hide');
                     });
             },
 
                                            <!--          Работа с сервером -->
             /* показать весь каталог */
             serverShowEntity: function () {
-                var url="/catalog";
+                if (this.sortParamName === '') {
+                this.url="/catalog";
+                } else {
+                this.url = "/catalog?sort=" + this.sortParamName + ",asc";
+                };
                     axios
-                        .get(url)
+                        .get(this.url)
                         .then(response => {
-                            this.result = response.data;
+                            this.result = response.data.content;
                             var len = this.products.length;
                             var removed = this.products.splice(0, len);
                             this.result.forEach(el => this.products.push(el));
@@ -201,6 +252,7 @@
                             this.result = response.data.result;
                             console.log("Товар с идентификаторм" + this.editProduct.id + " изменен");
                             this.serverShowEntity();
+                            $('#editModal').modal('hide');
                          });
             },
             /* удалить один товар из каталога */

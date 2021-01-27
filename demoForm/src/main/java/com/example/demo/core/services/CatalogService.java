@@ -3,6 +3,9 @@ package com.example.demo.core.services;
 import com.example.demo.core.repos.CatalogRepository;
 import com.example.demo.core.models.CatalogEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -24,8 +27,8 @@ public class CatalogService {
     }
 
 
-    public List<CatalogEntity> listAll() {
-        return catalogRepository.findAll();
+    public Page<CatalogEntity> listAll(Pageable pageable) {
+        return catalogRepository.findAll(pageable);
     }
 
     public Optional<CatalogEntity> getById(UUID id) {
