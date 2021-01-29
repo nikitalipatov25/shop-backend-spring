@@ -3,6 +3,7 @@ package com.example.demo.api.rest;
 import com.example.demo.core.models.CatalogEntity;
 import com.example.demo.core.services.CatalogService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -23,8 +24,8 @@ public class CatalogController {
     }
 
     @GetMapping() // получаем весь каталог
-    public ResponseEntity<Page<CatalogEntity>> getFullCatalog(Pageable pageable) {
-        Page<CatalogEntity> catalogEntityList = catalogService.listAll(pageable);
+    public ResponseEntity<Page<CatalogEntity>> getFullCatalog(@RequestParam(name = "search", required = false)String search, Pageable pageable) {
+        Page<CatalogEntity> catalogEntityList = catalogService.listAll(search, pageable);
         return ResponseEntity.ok(catalogEntityList);
     }
 

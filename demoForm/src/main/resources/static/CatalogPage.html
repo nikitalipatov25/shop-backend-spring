@@ -147,9 +147,10 @@
     const app = new Vue({
         el: '#app',
         data: {
+            previousSortParameter: '',
             url: '',
             sortParamName: '',
-            searchText: 'lets find smth',
+            searchText: '',
             result: {},
             products: [],
             editProduct: {},
@@ -169,19 +170,20 @@
         },
         methods: {
             onClickSearch: function () {
-            console.log(this.searchText);
-            // передаем серчтекс серверу в метод вызова всего каталога
-            //this.serverSearchEntity();
+                console.log(this.searchText);
+                this.serverShowEntity();
             },
 
             onClickSort: function (sortParameter) {
-            if (this.sortParamName === '') {
-                this.sortParamName = sortParameter;
-
-            } else {
-                this.sortParamName = '';
-            };
-            this.serverShowEntity();
+                if (this.sortParamName === '') {
+                    this.sortParamName = sortParameter;
+                } else if (this.previousSortParameter !== sortParameter) {
+                    this.sortParamName = sortParameter;
+                } else {
+                    this.sortParamName = '';
+                };
+                this.serverShowEntity();
+                this.previousSortParameter = sortParameter;
             },
 
             initDeleteOneItem: function () {
@@ -230,10 +232,13 @@
             /* показать весь каталог */
             serverShowEntity: function () {
                 if (this.sortParamName === '') {
-                this.url="/catalog";
+                    this.url="/catalog";
                 } else {
-                this.url = "/catalog?sort=" + this.sortParamName + ",asc";
+                    this.url = "/catalog?sort=" + this.sortParamName + ",asc";
                 };
+                if (this.searchText !== '') {
+                    this.url = "/catalog?search=" + this.searchText;
+                    };
                     axios
                         .get(this.url)
                         .then(response => {

@@ -3,6 +3,7 @@ package com.example.demo.core.services;
 import com.example.demo.core.repos.CatalogRepository;
 import com.example.demo.core.models.CatalogEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -26,15 +28,25 @@ public class CatalogService {
         this.catalogRepository = catalogRepository;
     }
 
+    public Page<CatalogEntity> listAll(String search, Pageable pageable) {
+        // SELECT product_name
+        // FROM catalog_entity
+        // WHERE product_name = 'search'
+        // если был передан search - необходимо сделать запрос и найти все сущности в бд, которые содержат в названии параметр
+        if (search != null && !search.isBlank()) {
+            var result = catalogRepository.findByProductNameLike("%" +search + "%", pageable);
+            return result;
+        } else {
+            return catalogRepository.findAll(pageable);
+        }
 
-    public Page<CatalogEntity> listAll(Pageable pageable) {
-        return catalogRepository.findAll(pageable);
+        // иначе отобразить весь каталог
     }
+
 
     public Optional<CatalogEntity> getById(UUID id) {
         return catalogRepository.findById(id);
     }
-
 
     public boolean validateEntity(CatalogEntity catalogEntity) {
         boolean result = true; // реализация метода
@@ -44,7 +56,7 @@ public class CatalogService {
     public CatalogEntity save(CatalogEntity catalogEntity) {
         // проверка на существование объекта?
         // находим его в бд
-        // если существует - ничего здесь не делаем, через контроллер говорим badrequest
+        // если существует - ничего здесь не делаем, через контроллер говорим bad request
         // если не существует - код ниже
         CatalogEntity newEntity = new CatalogEntity();
         newEntity.setId(UUID.randomUUID());
