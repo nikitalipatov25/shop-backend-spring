@@ -3,18 +3,16 @@ package com.example.demo.core.services;
 import com.example.demo.core.repos.CatalogRepository;
 import com.example.demo.core.models.CatalogEntity;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Objects;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
+
 import java.util.Optional;
 import java.util.UUID;
+import java.util.regex.*;
 
 
 @Service
@@ -29,20 +27,48 @@ public class CatalogService {
     }
 
     public Page<CatalogEntity> listAll(String search, Pageable pageable) {
-        // SELECT product_name
-        // FROM catalog_entity
-        // WHERE product_name = 'search'
-        // если был передан search - необходимо сделать запрос и найти все сущности в бд, которые содержат в названии параметр
         if (search != null && !search.isBlank()) {
-            var result = catalogRepository.findByProductNameLike("%" +search + "%", pageable);
-            return result;
-        } else {
+            String resultOfSearch[] = searchAnalysis(search);
+            String productName = resultOfSearch[0];
+            double priceFrom = Double.parseDouble(resultOfSearch[1]);
+            double priceTo = Double.parseDouble(resultOfSearch[2]);
+            if (productName == null) {
+                var result = catalogRepository.findByProductPriceBetween(priceFrom, priceTo, pageable);
+                return result;
+            } else {
+                var result = catalogRepository.findByProductNameLikeAndProductPriceBetween("%" +productName + "%", priceFrom, priceTo, pageable);
+                return result;
+            }
+        } else
             return catalogRepository.findAll(pageable);
         }
 
-        // иначе отобразить весь каталог
-    }
 
+    public String[] searchAnalysis(String search) {
+        String productName;
+        String priceFrom;
+        String priceTo;
+        Pattern pattern = Pattern.compile("([а-яА-Я]+)?(\\s+)?(\\d+)?(\\s+)?-?(\\s+)?(\\d+)?(\\s+)?([а-яА-Я]+)?");
+        Matcher matcher = pattern.matcher(search);
+        matcher.find();
+        productName = matcher.group(1);
+        if (productName == null) {
+            productName = matcher.group(8);
+        }
+        priceFrom = matcher.group(3);
+        if (priceFrom == null) {
+            priceFrom = "0";
+        }
+        priceTo = matcher.group(6);
+        if (priceTo == null) {
+            priceTo = "999999";
+        }
+        String[] result = new String[3];
+        result[0] = productName;
+        result[1] = priceFrom;
+        result[2] = priceTo;
+        return result;
+    }
 
     public Optional<CatalogEntity> getById(UUID id) {
         return catalogRepository.findById(id);
@@ -54,10 +80,6 @@ public class CatalogService {
     }
 
     public CatalogEntity save(CatalogEntity catalogEntity) {
-        // проверка на существование объекта?
-        // находим его в бд
-        // если существует - ничего здесь не делаем, через контроллер говорим bad request
-        // если не существует - код ниже
         CatalogEntity newEntity = new CatalogEntity();
         newEntity.setId(UUID.randomUUID());
         newEntity.setProductDescription(catalogEntity.getProductDescription());
@@ -66,7 +88,6 @@ public class CatalogService {
         newEntity.setProductPhoto(catalogEntity.getProductPhoto());
         newEntity.setProductPrice(catalogEntity.getProductPrice());
         return catalogRepository.save(newEntity);
-        // и возвращаем контроллеру созданный объект
     }
 
     public Optional<CatalogEntity> editCatalog(UUID uuid, CatalogEntity catalogEntity) {

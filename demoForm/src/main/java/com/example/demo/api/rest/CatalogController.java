@@ -23,13 +23,13 @@ public class CatalogController {
         this.catalogService = catalogService;
     }
 
-    @GetMapping() // получаем весь каталог
+    @GetMapping()
     public ResponseEntity<Page<CatalogEntity>> getFullCatalog(@RequestParam(name = "search", required = false)String search, Pageable pageable) {
         Page<CatalogEntity> catalogEntityList = catalogService.listAll(search, pageable);
         return ResponseEntity.ok(catalogEntityList);
     }
 
-    @GetMapping("/{id}/") // получаем конкретный товар по идентификатору
+    @GetMapping("/{id}/")
     public ResponseEntity<CatalogEntity> getCatalogItem(@PathVariable(name = "id") UUID id) {
         Optional<CatalogEntity> result = catalogService.getById(id);
         return result
@@ -37,7 +37,7 @@ public class CatalogController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping() // создаем каталог
+    @PostMapping()
     public ResponseEntity<CatalogEntity> createCatalog(@RequestBody CatalogEntity catalogEntity) {
        // проверить валидность catalogEntity
         boolean result = catalogService.validateEntity(catalogEntity);
@@ -51,7 +51,7 @@ public class CatalogController {
         }
     }
 
-    @PutMapping(value = "/{id}/") // изменяем конкретный товар по идентификатору
+    @PutMapping(value = "/{id}/")
     public ResponseEntity<CatalogEntity> editCatalogItem(@PathVariable(name = "id")UUID id, @RequestBody CatalogEntity catalogEntity) {
         boolean result = catalogService.validateEntity(catalogEntity);
         if (result) {
@@ -64,7 +64,7 @@ public class CatalogController {
         }
     }
 
-    @DeleteMapping("/{id}/") // удаляем конкретный товар по идентификатору
+    @DeleteMapping("/{id}/")
     public ResponseEntity<?> deleteCatalogItem(@PathVariable(name = "id") UUID id) {
         Optional<Boolean> result = catalogService.deleteById(id);
         return result

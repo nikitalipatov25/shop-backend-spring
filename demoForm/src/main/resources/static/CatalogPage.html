@@ -15,7 +15,7 @@
         <hr>
         <p><input type="text" v-model="searchText"/>Поиск товаров</p>
         <button type="button" class="btn btn-primary" v-on:click="onClickSearch">Поиск</button>
-        <p>Сортирвка: <button type="button" name="sortbtn" class="btn btn-primary" v-on:click="onClickSort('productName')">по названию</button> | <button type="button" class="btn btn-primary" v-on:click="onClickSort('productPrice')">по цене</button></p>
+        <p>Сортирвка: <button type="button" class="btn btn-primary" v-on:click="onClickSort('productName')">по названию</button> | <button type="button" class="btn btn-primary" v-on:click="onClickSort('productPrice')">по цене</button></p>
 
         <div class="container">
             <div class="row">
@@ -34,7 +34,6 @@
                 </div>
             </div>
             <my-item
-
                     v-for="item in products"
                     v-bind:id="item.id"
                     v-bind:key="item.id"
@@ -46,12 +45,10 @@
             ></my-item>
         </div>
 
-        <!-- Button trigger modal -->
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addEntityModal">
             Добавить товар
         </button>
 
-        <!-- Modal -->
         <div class="modal fade" id="addEntityModal" tabindex="-1" role="dialog" aria-labelledby="addEntityModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -77,7 +74,6 @@
             </div>
         </div>
 
-        <!-- Modal -->
         <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -115,25 +111,23 @@
 
     Vue.component('my-item', {
         props: ['id', 'name', 'price', 'description', 'photo', 'kol'],
-        //template: '<li class="list-group-item">  ,  руб., количество на складе шт.  </li>',
-
-                template: '<div class="row"> ' +
-                                '<div class="col-sm-3">' +
-                                '    <button type="button" class="btn btn-warning" v-on:click="onClickEdit">изменить товар</button>' +
-                                '</div>' +
-                                '<div class="col-sm-3">' +
-                                '{{ name }}' +
-                                '</div>' +
-                                '<div class="col-sm-3">' +
-                                '{{ price }}' +
-                                '</div>' +
-                                '<div class="col-sm-1">' +
-                                '{{ kol }} ' +
-                                '</div>' +
-                                '<div class="col-sm-2">' +
-                                '<button type="button" class="btn btn-danger" v-on:click="onClickDelete">Удалить</button>' +
-                                '</div>' +
-                            '</div>  ',
+        template: '<div class="row"> ' +
+                  '<div class="col-sm-3">' +
+                  '    <button type="button" class="btn btn-warning" v-on:click="onClickEdit">Редактировать</button>' +
+                  '</div>' +
+                  '<div class="col-sm-3">' +
+                  '{{ name }}' +
+                  '</div>' +
+                  '<div class="col-sm-3">' +
+                  '{{ price }}' +
+                  '</div>' +
+                  '<div class="col-sm-1">' +
+                  '{{ kol }} ' +
+                  '</div>' +
+                  '<div class="col-sm-2">' +
+                  '<button type="button" class="btn btn-danger" v-on:click="onClickDelete">Удалить</button>' +
+                  '</div>' +
+                  '</div>  ',
         methods: {
             onClickDelete: function (event) {
                 eventBus.$emit("deleteCatalogEntityByID", this.id);
@@ -169,8 +163,25 @@
             this.initEditOneItem();
         },
         methods: {
+
+            initDeleteOneItem: function () {
+                eventBus.$on("deleteCatalogEntityByID", function(id) {
+                        this.serverDeleteEntityById(id);
+                    }.bind(this)
+                );
+            },
+
+            initEditOneItem: function() {
+                eventBus.$on("editCatalogEntityByID", function(id) {
+                    let result = this.products.find(item => item.id == id);
+                    this.editProduct = result;
+                    $('#editModal').modal('show');
+                   }.bind(this)
+                );
+            },
+
             onClickSearch: function () {
-                console.log(this.searchText);
+            console.log(this.searchText);
                 this.serverShowEntity();
             },
 
@@ -186,59 +197,22 @@
                 this.previousSortParameter = sortParameter;
             },
 
-            initDeleteOneItem: function () {
-                eventBus.$on("deleteCatalogEntityByID", function(id) {
-                        this.serverDeleteEntityById(id);
-                    }.bind(this)
-                );
-            },
-            initEditOneItem: function() {
-                eventBus.$on("editCatalogEntityByID", function(id) {
-                    // в продуктс находим ентити с указанным id
-                    let result = this.products.find(item => item.id == id);
-                    // копируем его в editProduct
-                    this.editProduct = result;
-                    // показывем модальное окно редактирования
-                    $('#editModal').modal('show');
-                    // кнопка в модальном окне вызывает функцию сервера на обновление товара по ид
-                   }.bind(this)
-                );
-            },
 
-            /* показать один товар по идентификатору из каталога */
-            showOneItem: function () {
-                var url="/catalog/" + this.productid + "/";
-                axios
-                    .get(url)
-                    .then(response => {
-                        this.result = response.data;
-                        var removed = this.products.splice(0, 5, this.result );
-                    });
-            },
-            /* добавить один товар в каталог */
-            addOneItem: function() {
-                var url="/catalog";
-                axios
-                    .post(url, this.datamain)
-                    .then(response => {
-                        this.result = response.data.result;
-                        console.log("Товар " + this.datamain + " добавлен");
-                        this.serverShowEntity();
-                        $('#addEntityModal').modal('hide');
-                    });
-            },
 
-                                           <!--          Работа с сервером -->
-            /* показать весь каталог */
+
+                                <!--          Работа с сервером -->
+
+
             serverShowEntity: function () {
-                if (this.sortParamName === '') {
+                if (this.sortParamName === '' && this.searchText === '') {
                     this.url="/catalog";
-                } else {
+                } else if (this.sortParamName !== '' && this.searchText !== '') {
+                    this.url = "/catalog?search=" + this.searchText + "&sort=" + this.sortParamName + ",asc";
+                } else if (this.sortParamName !== '') {
                     this.url = "/catalog?sort=" + this.sortParamName + ",asc";
-                };
-                if (this.searchText !== '') {
+                } else if (this.searchText !== '') {
                     this.url = "/catalog?search=" + this.searchText;
-                    };
+                };
                     axios
                         .get(this.url)
                         .then(response => {
@@ -248,7 +222,7 @@
                             this.result.forEach(el => this.products.push(el));
                         });
             },
-            /* изменить один товар в каталоге */
+
             serverEditEntityById: function() {
                 var url="/catalog/" + this.editProduct.id + "/";
                     axios
@@ -260,7 +234,7 @@
                             $('#editModal').modal('hide');
                          });
             },
-            /* удалить один товар из каталога */
+
             serverDeleteEntityById: function(id) {
                 var url="/catalog/" + id + "/";
                     axios
@@ -270,6 +244,18 @@
                             console.log("Товар с идентификатором " + id + " удален");
                             this.serverShowEntity();
                         });
+            },
+
+            addOneItem: function() {
+                var url="/catalog";
+                    axios
+                        .post(url, this.datamain)
+                        .then(response => {
+                            this.result = response.data.result;
+                            console.log("Товар " + this.datamain + " добавлен");
+                            this.serverShowEntity();
+                            $('#addEntityModal').modal('hide');
+                    });
             }
 
         }
