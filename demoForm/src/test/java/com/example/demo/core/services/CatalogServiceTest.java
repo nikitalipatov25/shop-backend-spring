@@ -29,7 +29,6 @@ import static org.junit.jupiter.api.Assertions.*;
             assertEquals(actual, expected);
         }
 
-        @Test
         String searchAnalysis(String search) {
             String productName;
             String priceFrom;
