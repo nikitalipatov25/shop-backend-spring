@@ -8,13 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.junit.jupiter.api.Test;
-
 import java.util.Optional;
 import java.util.UUID;
-import java.util.regex.*;
-
 
 @Service
 public class CatalogService {

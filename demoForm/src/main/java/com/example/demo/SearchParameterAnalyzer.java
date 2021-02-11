@@ -55,7 +55,7 @@ public class SearchParameterAnalyzer {
         try {
             setTopLineOfPriceInSearchedProduct(Double.parseDouble(matcher.group(6)));
         } catch (Exception exception) {
-            setTopLineOfPriceInSearchedProduct(Double.MAX_VALUE);
+            setTopLineOfPriceInSearchedProduct(9999.0); // change to maxvalue
         }
     }
 }
