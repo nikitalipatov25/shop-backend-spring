@@ -14,8 +14,7 @@ import ProductCard from './ProductCard'
 export default {
   props: {
     products: {
-      type: Array,
-      default: () => []
+      type: Array
     }
   },
   components: { ProductCard }
