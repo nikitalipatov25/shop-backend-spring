@@ -1,37 +1,32 @@
 <template>
     <div class="product-page">
-
-      <h1>{{ text }}</h1>
-
-
-
-
-        <div class="body">
-
-          <div class="container" v-if="product">
-    <h1>{{ product.title }}</h1>
-    <img
-      :src="product.img"
-      :alt="product.title"
-    >
-    <div class="section">
-      <p class="section__title">Цена:</p>
-      <p class="section__description">{{ product.price }}</p>
+        <h2>{{ text }}</h2>
+            <div class="body">
+                <div class="container">
+                    <h1>{{ product.title }}</h1>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <img
+                                :src="product.img"
+                                :alt="product.title"
+                                height="300px"
+                                >
+                            </div>
+                            <div class="col-9">
+                                <hr>
+                                Описание: {{ product.description }}
+                                <hr>
+                                <button
+                                class="btn btn-primary"
+                                @click="$router.push({ name: 'cart', params: { id: product.id } })"
+                                >
+                                Добавить в корзину: {{product.price}}
+                                </button>
+                            </div>
+                        </div>
+                </div>
+            </div>
     </div>
-    <div class="section">
-      <p class="section__title">Описание:</p>
-      <p class="section__description">{{ product.description }}</p>
-    </div>
-  </div>
-
-        </div>
-
-        
-
-
-
-</div>
-  
 </template>
 
 <script>
@@ -49,3 +44,9 @@ export default {
   }
 }
 </script>
+
+<style>
+.col-9 {
+text-align: justify;
+}
+</style>

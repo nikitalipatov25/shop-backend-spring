@@ -1,17 +1,9 @@
 <template>
     <div class="index">
-
         <h1>{{ text }}</h1>
-
-
-
-        <div class="body">
-
-             <products-list :products="products" />
-        </div>
-
-
-
+            <div class="body">
+                <products-list :products="products" />
+            </div>
     </div>
 </template>
 

@@ -8,6 +8,9 @@ import 'jquery/dist/jquery.min.js'
 import VueRouter from 'vue-router'
 import router from './router/routerconfig'
 
+import ApiPlugin from './plugins/api'
+Vue.use(ApiPlugin)
+
 Vue.use(VueRouter)
 
 new Vue({

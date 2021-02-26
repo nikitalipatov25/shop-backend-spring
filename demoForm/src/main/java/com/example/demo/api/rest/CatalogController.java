@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
+@CrossOrigin(allowedHeaders = "Access-Control-Allow-Origin")
 @RestController
 @RequestMapping(value = "/catalog")
 public class CatalogController {
