@@ -5,7 +5,9 @@
     <router-link to="/productpage">Перейти к ProductPage | </router-link>
     <router-link to="/personalarea">Перейти к PersonalArea | </router-link>
     <router-link to="/cart">Перейти к Cart</router-link>
+    <hr />
     <router-view></router-view>
+
   </div>
 </template>
 

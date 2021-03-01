@@ -30,7 +30,7 @@ public class CatalogController {
         return ResponseEntity.ok(catalogEntityList);
     }
 
-    @GetMapping("/{id}/")
+    @GetMapping("/{id}")
     public ResponseEntity<CatalogEntity> getCatalogItem(@PathVariable(name = "id") UUID id) {
         Optional<CatalogEntity> result = catalogService.getById(id);
         return result

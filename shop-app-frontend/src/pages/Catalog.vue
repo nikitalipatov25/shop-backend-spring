@@ -9,16 +9,20 @@
 
 <script>
 import ProductsList from '../components/ProductsList'
-import products from '../mocks/products'
 
 export default {
     name: 'Catalog',
     components: { ProductsList },
     data() {
         return {
-            products,
+            products: [],
+            productsFromServer: {},
             text: 'This is catalog page'
         }
+    },
+    created: async function () {
+        this.productsFromServer = await this.$api.catalog.getCatalog();
+        this.products = this.productsFromServer.data.content;
     }
 }
 </script>

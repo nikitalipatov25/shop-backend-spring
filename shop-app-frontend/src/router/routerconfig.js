@@ -20,15 +20,10 @@ export default new VueRouter({
           component: Catalog
       },
       {
-          path: '/productpage',
+          path: '/productpage/:id',
           name: 'product-page',
           component: ProductPage
       },
-      {
-        path: '/productpage/:id',
-        name: 'product-page-product',
-        component: ProductPage
-    },
     {
         path: '/personalarea',
         name: 'personal-area',

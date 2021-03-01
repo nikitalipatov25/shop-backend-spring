@@ -1,52 +1,63 @@
 <template>
     <div class="product-page">
-        <h2>{{ text }}</h2>
-            <div class="body">
-                <div class="container">
-                    <h1>{{ product.title }}</h1>
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <img
-                                :src="product.img"
-                                :alt="product.title"
-                                height="300px"
-                                >
-                            </div>
-                            <div class="col-9">
-                                <hr>
-                                Описание: {{ product.description }}
-                                <hr>
-                                <button
-                                class="btn btn-primary"
-                                @click="$router.push({ name: 'cart', params: { id: product.id } })"
-                                >
-                                Добавить в корзину: {{product.price}}
-                                </button>
-                            </div>
+        <div class="body">
+            <div class="container">
+                <h1>{{ productName }}</h1>
+                    <div class="row">
+                        <div class="col-5">
+                            <img
+                            :src="productPhoto"
+                            :alt="productName"
+                            height="300px"
+                            >
                         </div>
-                </div>
+                        <div class="col-7">
+                            <hr>
+                            Описание: {{ productDescription }}
+                            <hr>
+                            <button
+                            class="btn btn-primary"
+                            @click="$router.push({ name: 'cart', params: { id: productUUID } })"
+                            >
+                            Добавить в корзину: {{productPrice}}
+                            </button>
+                        </div>
+                    </div>
             </div>
+        </div>
     </div>
 </template>
 
 <script>
-import products from '../mocks/products'
 
 export default {
   data() {
     return {
+    productUUID: '',
+        productsFromServer: {},
+        productName: '',
+        productPrice: '',
+        productPhoto: '',
+        productDescription: '',
       text: 'This is product page',
-      product: null
     }
   },
-  created() {
-    this.product = products.find(product => product.id == this.$route.params.id)
+  created: async function() {
+      this.productUUID = this.$route.params.id;
+      this.productsFromServer = await this.$api.catalog.getCatalogItemByUUID(this.productUUID);
+      this.productName = this.productsFromServer.data.productName;
+      this.productPrice = this.productsFromServer.data.productPrice;
+      this.productPhoto = this.productsFromServer.data.productPhoto;
+      this.productDescription = this.productsFromServer.data.productDescription;
   }
 }
 </script>
 
 <style>
-.col-9 {
-text-align: justify;
-}
+    .container h1 {
+        text-align: left;
+    }
+    .col-7 {
+        text-align: left;
+    }
 </style>
