@@ -4,25 +4,27 @@
             <div class="row">
                 <div class="col-3">
                     <img
-                    :src="product.data.productPhoto"
-                    height="200px"
-                    >
+                    :src="product.catalogProductPhoto"
+                    width="100px"
+                    height="100px"
+                    alt="error">
                 </div>
                 <div class="col-2">
-                    {{ product.data.productName }}
+                    {{ product.catalogProductName }}
                 </div>
                 <div class="col-3">
-                    <button v-on:click="addCol">Add</button>
-                    {{ product.data.productKol }}
-                    <button v-on:click="subCol">Sub</button>
+                    <button type="button" class="btn btn-primary" v-on:click="addCol">+</button>
+                    {{ product.selectedProductKol }} шт.
+                    <button type="button" class="btn btn-primary" v-on:click="subCol">-</button>
                 </div>
                     <div class="col-2">
-                {{ product.data.productPrice }}
+                {{ product.catalogProductPrice }} руб.
                 </div>
                 <div class="col-2">
-                    <button class="btn-warning">DeleteFromCart</button>
+                    <button type="button" class="btn btn-danger" @click="deleteItemFromCart">Удалить</button>
                 </div>
             </div>
+            <hr>
         </div>
     </div>
 </template>
@@ -46,6 +48,10 @@ props: {
         },
         subCol: function() {
             this.count--;
+        },
+        async deleteItemFromCart() {
+            console.log(this.product.id);
+            this.$api.cart.deleteItemFromCart(this.product.id);
         }
     }
 }

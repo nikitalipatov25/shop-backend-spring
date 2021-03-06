@@ -1,6 +1,9 @@
 import instance from './instance'
-import module from './catalog'
+
+import catalogModule from './catalog'
+import cartModule from './cart';
 
 export default {
-    catalog: module(instance)
+    catalog: catalogModule(instance),
+    cart: cartModule(instance)
 }

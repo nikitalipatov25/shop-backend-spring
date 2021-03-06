@@ -1,6 +1,5 @@
 <template>
     <div class="index">
-        <h1>{{ text }}</h1>
         <div class="body">
             <h2>Акции</h2>
 
@@ -28,23 +27,14 @@
             </div>
 
             <h2>Новинки</h2>
-            <products-list :products="products" />
+
         </div>
     </div>
 </template>
 
 <script>
-import ProductsList from '../components/ProductsList'
-import products from '../mocks/products'
 
 export default {
     name: 'Index',
-    components: { ProductsList },
-    data() {
-        return {
-            products,
-            text: 'This is main page'
-        }
-    }
 }
 </script>

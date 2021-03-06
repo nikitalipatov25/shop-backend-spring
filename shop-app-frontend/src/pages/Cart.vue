@@ -2,9 +2,27 @@
     <div class="cart">
         <h1>{{ text }}</h1>
             <div class="body">
-                <cart-item :product="product"/>
-            </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-9">
+                            <cart-item
+                            v-for="product in products"
+                            :key="product.id"
+                            :product="product"
 
+                            />
+                        </div>
+                        <div class="col-3">
+                            <p>Итоговая стоимость:</p>
+                            <p>Общее кол-во товара:</p>
+                            <p>Общая стоимость:</p>
+                            <p>Скидка:</p>
+                            <p>Итого:</p>
+                            <button type="button" class="btn btn-warning">Оформить</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
     </div>
 </template>
 
@@ -13,20 +31,31 @@ import CartItem from '../components/CartItem'
 
 export default {
     name: 'Cart',
-    components: { CartItem },
+    components: {
+    CartItem
+    },
     data() {
         return {
-            text: 'This is cart page',
+            text: 'Корзина',
             count: 1,
             productUUID: '',
-            product: {}
+            products: [],
+            productsFromServer: {},
+            product: {},
+            productsUUID: {},
             }
         },
-        created: async function() {
-        this.productUUID = this.$route.params.id;
-              this.product = await this.$api.catalog.getCatalogItemByUUID(this.productUUID);
-              console.log(this.product.data);
-
+        mounted:
+            async function() {
+            this.productsFromServer = await this.$api.cart.getCart();
+            this.products = this.productsFromServer.data.content;
         }
 }
 </script>
+
+<style>
+.cart h1 {
+    text-align: left;
+    margin-left: 10px;
+}
+</style>

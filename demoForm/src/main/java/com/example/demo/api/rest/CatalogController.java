@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
-@CrossOrigin(allowedHeaders = "Access-Control-Allow-Origin")
+@CrossOrigin(allowedHeaders = {"Access-Control-Allow-Origin","Access-Control-Allow-Headers", "Access-Control-Allow-Methods" })
 @RestController
 @RequestMapping(value = "/catalog")
 public class CatalogController {
@@ -52,7 +52,7 @@ public class CatalogController {
         }
     }
 
-    @PutMapping(value = "/{id}/")
+    @PutMapping(value = "/{id}")
     public ResponseEntity<CatalogEntity> editCatalogItem(@PathVariable(name = "id")UUID id, @RequestBody CatalogEntity catalogEntity) {
         boolean result = catalogService.validateEntity(catalogEntity);
         if (result) {
@@ -65,7 +65,7 @@ public class CatalogController {
         }
     }
 
-    @DeleteMapping("/{id}/")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCatalogItem(@PathVariable(name = "id") UUID id) {
         Optional<Boolean> result = catalogService.deleteById(id);
         return result

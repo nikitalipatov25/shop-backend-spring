@@ -2,22 +2,30 @@
     <div class="index">
         <h1>{{ text }}</h1>
             <div class="body">
-                <products-list :products="products" />
+                <div class="product-list">
+                    <product-card
+                    v-for="product in products"
+                    :key="product.id"
+                    :product="product"
+                    />
+                </div>
             </div>
     </div>
 </template>
 
 <script>
-import ProductsList from '../components/ProductsList'
+import ProductCard from '../components/ProductCard'
 
 export default {
     name: 'Catalog',
-    components: { ProductsList },
+    components: {
+    ProductCard
+    },
     data() {
         return {
             products: [],
             productsFromServer: {},
-            text: 'This is catalog page'
+            text: 'Все товары'
         }
     },
     created: async function () {
@@ -26,3 +34,14 @@ export default {
     }
 }
 </script>
+
+<style>
+.product-list {
+    display: flex;
+    flex-direction: row;
+}
+.index h1 {
+    margin-left: 10px;
+    text-align: left;
+}
+</style>
