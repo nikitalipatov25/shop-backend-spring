@@ -44,10 +44,10 @@ props: {
     },
     methods: {
         addCol: function() {
-            this.count++;
+            this.product.selectedProductKol++;
         },
         subCol: function() {
-            this.count--;
+            this.product.selectedProductKol--;
         },
         async deleteItemFromCart() {
             console.log(this.product.id);

@@ -29,6 +29,7 @@
 <script>
 import CartItem from '../components/CartItem'
 
+
 export default {
     name: 'Cart',
     components: {
@@ -45,11 +46,11 @@ export default {
             productsUUID: {},
             }
         },
-        mounted:
-            async function() {
-            this.productsFromServer = await this.$api.cart.getCart();
-            this.products = this.productsFromServer.data.content;
-        }
+  async mounted() {
+      this.productsFromServer = await this.$api.cart.getCart();
+      this.products = this.productsFromServer.data.content;
+    }
+
 }
 </script>
 

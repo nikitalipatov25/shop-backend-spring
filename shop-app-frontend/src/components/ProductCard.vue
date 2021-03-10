@@ -34,10 +34,15 @@ export default {
     }
     console.log(productToCart);
     this.$api.cart.addItemToCart(productToCart);
-    this.$router.push({ name: 'cart', params: { id: this.product.id } })
     }
     }
 }
 </script>
+
+<style>
+.container {
+width: auto;
+}
+</style>
 
 
