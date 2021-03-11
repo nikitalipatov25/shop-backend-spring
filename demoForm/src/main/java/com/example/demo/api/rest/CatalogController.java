@@ -25,8 +25,8 @@ public class CatalogController {
     }
 
     @GetMapping()
-    public ResponseEntity<Page<CatalogEntity>> getFullCatalog(@RequestParam(name = "search", required = false)String search, Pageable pageable) {
-        Page<CatalogEntity> catalogEntityList = catalogService.listAll(search, pageable);
+    public ResponseEntity<Page<CatalogEntity>> getFullCatalog(@RequestParam(name = "filter", required = false)String filter, Pageable pageable) {
+        Page<CatalogEntity> catalogEntityList = catalogService.listAll(filter, pageable);
         return ResponseEntity.ok(catalogEntityList);
     }
 

@@ -22,9 +22,9 @@ public class CatalogService {
         this.catalogRepository = catalogRepository;
     }
 
-    public Page<CatalogEntity> listAll(String search, Pageable pageable) {
-        if (search != null && !search.isBlank()) {
-            searchParameterAnalyzer.analyzingSearchParameter(search);
+    public Page<CatalogEntity> listAll(String filter, Pageable pageable) {
+        if (filter != null && !filter.isBlank()) {
+            searchParameterAnalyzer.analyzingSearchParameter(filter);
             String productName = searchParameterAnalyzer.getNameOfSearchedProduct();
             double priceTo = searchParameterAnalyzer.getTopLineOfPriceInSearchedProduct();
             double priceFrom = searchParameterAnalyzer.getBottomLineOfPriceInSearchedProduct();

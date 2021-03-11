@@ -51,12 +51,12 @@ export default {
   },
   methods: {
     async searchProductsInCatalog() {
-      var a = await this.$api.catalog.getCatalog('catalog?filter=' + this.searchText);
+      let a = await this.$api.catalog.getCatalogWithFilters(this.searchText);
       console.log(a)
     }
   },
   created: async function () {
-    this.productsFromServer = await this.$api.catalog.getCatalog('catalog');
+    this.productsFromServer = await this.$api.catalog.getCatalog();
     this.products = this.productsFromServer.data.content;
   }
 }
