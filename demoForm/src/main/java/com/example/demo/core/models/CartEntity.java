@@ -1,14 +1,22 @@
 package com.example.demo.core.models;
 
+import com.example.demo.CartCompositeKey;
+
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import java.util.UUID;
 
 @Entity
+@IdClass(CartCompositeKey.class)
 public class CartEntity {
 
     @Id
-    private UUID id;
+    private UUID productId;
+
+    @Id
+    private UUID userId;
 
     private String catalogProductName;
 
@@ -24,12 +32,20 @@ public class CartEntity {
 
     private double productFinalPrice;
 
-    public UUID getId() {
-        return id;
+    public UUID getProductId() {
+        return productId;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    public void setProductId(UUID productId) {
+        this.productId = productId;
+    }
+
+    public UUID getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UUID userId) {
+        this.userId = userId;
     }
 
     public String getCatalogProductName() {
@@ -38,6 +54,14 @@ public class CartEntity {
 
     public void setCatalogProductName(String catalogProductName) {
         this.catalogProductName = catalogProductName;
+    }
+
+    public String getCatalogProductPhoto() {
+        return catalogProductPhoto;
+    }
+
+    public void setCatalogProductPhoto(String catalogProductPhoto) {
+        this.catalogProductPhoto = catalogProductPhoto;
     }
 
     public int getSelectedProductKol() {
@@ -78,13 +102,5 @@ public class CartEntity {
 
     public void setProductFinalPrice(double productFinalPrice) {
         this.productFinalPrice = productFinalPrice;
-    }
-
-    public String getCatalogProductPhoto() {
-        return catalogProductPhoto;
-    }
-
-    public void setCatalogProductPhoto(String catalogProductPhoto) {
-        this.catalogProductPhoto = catalogProductPhoto;
     }
 }

@@ -12,7 +12,13 @@ import org.springframework.data.domain.Page;
 import java.util.Optional;
 import java.util.UUID;
 
-@CrossOrigin(allowedHeaders = {"Access-Control-Allow-Origin","Access-Control-Allow-Headers", "Access-Control-Allow-Methods", "Content-Type" }, methods = {RequestMethod.POST,RequestMethod.OPTIONS, RequestMethod.GET, RequestMethod.DELETE})
+@CrossOrigin(allowedHeaders = {
+        "Access-Control-Allow-Origin",
+        "Access-Control-Allow-Headers",
+        "Access-Control-Allow-Methods",
+        "Content-Type"
+        },
+        methods = { RequestMethod.POST,RequestMethod.OPTIONS, RequestMethod.GET, RequestMethod.DELETE })
 @RestController
 @RequestMapping(value = "/cart")
 public class CartController {
@@ -25,14 +31,15 @@ public class CartController {
     }
 
     @PostMapping()
-    public ResponseEntity<CartEntity> createCart(@RequestBody CartEntity cartEntity) {
-        CartEntity createdCartEntity = cartService.createCart(cartEntity);
+    public ResponseEntity<CartEntity> createCart(@RequestBody CartEntity cartEntity,
+                                                 @RequestParam(name = "productId")UUID productId) {
+        CartEntity createdCartEntity = cartService.createCart(cartEntity, productId);
         return ResponseEntity.ok(createdCartEntity);
     }
 
     @GetMapping()
-    public ResponseEntity<Page<CartEntity>> getAllCart(Pageable pageable) {
-        Page<CartEntity> cartEntityPage = cartService.getAllCart(pageable);
+    public ResponseEntity<Page<CartEntity>> getAllCart(@RequestParam(name = "filter", required = false)String filter, Pageable pageable) {
+        Page<CartEntity> cartEntityPage = cartService.getAllCart(filter, pageable);
         return ResponseEntity.ok(cartEntityPage);
     }
 

@@ -1,7 +1,7 @@
 export default function (instance) {
     return {
-        getCatalog() {
-            return instance.get('catalog')
+        getCatalog(payload) {
+            return instance.get(payload)
         },
         getCatalogItemByUUID(UUID) {
             return instance.get('catalog/' + UUID)

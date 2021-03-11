@@ -14,7 +14,6 @@ import java.util.UUID;
 @Service
 public class CatalogService {
 
-
     private final CatalogRepository catalogRepository;
     SearchParameterAnalyzer searchParameterAnalyzer = new SearchParameterAnalyzer();
 

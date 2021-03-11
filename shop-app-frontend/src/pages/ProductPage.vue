@@ -71,10 +71,11 @@ export default {
       "catalogProductPrice": this.tempPrice,
       "selectedProductKol": this.addToCartKol,
       "catalogProductPhoto": this.productPhoto,
-      "productCost": this.productPrice
+      "productCost": this.productPrice,
       }
-      console.log(productToCart);
-      this.$api.cart.addItemToCart(productToCart);
+      var productId = this.productUUID;
+      console.log(productId, productToCart);
+      this.$api.cart.addItemToCart(productId, productToCart);
       this.$router.push({ name: 'cart', params: { id: this.productUUID } })
       },
       addCol() {
