@@ -54,12 +54,8 @@ export default {
     return {
       searchText: '',
       text: 'Корзина',
-      count: 1,
-      productUUID: '',
       products: [],
       productsFromServer: {},
-      product: {},
-      productsUUID: {},
     }
   },
   methods: {
@@ -71,6 +67,7 @@ export default {
   async mounted() {
     this.productsFromServer = await this.$api.cart.getCart();
     this.products = this.productsFromServer.data.content;
+    console.log(this.products)
   }
 }
 </script>

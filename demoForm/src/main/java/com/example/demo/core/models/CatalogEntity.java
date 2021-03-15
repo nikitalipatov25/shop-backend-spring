@@ -20,6 +20,16 @@ public class CatalogEntity {
 
     private int productKol;
 
+    private String categoryType; // кошки, собаки..
+
+    private String categoryName; // игрушки, лежанки, аксессуары..
+
+    /*
+    *
+    * Добавить две новых поля в сервис
+    *
+    * */
+
     public UUID getId() {
         return id;
     }
@@ -66,5 +76,21 @@ public class CatalogEntity {
 
     public void setProductKol(int productKol) {
         this.productKol = productKol;
+    }
+
+    public String getCategoryType() {
+        return categoryType;
+    }
+
+    public void setCategoryType(String categoryType) {
+        this.categoryType = categoryType;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 }

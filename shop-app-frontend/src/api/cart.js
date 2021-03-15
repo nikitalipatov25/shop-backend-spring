@@ -1,7 +1,7 @@
 export default function (instance) {
     return {
-        getCart() {
-            return instance.get('cart')
+        getCart(userId) {
+            return instance.get('cart?user=' + userId)
         },
         getCartWithFilters(searchText) {
             return instance.get('cart?filter=' + searchText)
@@ -14,6 +14,9 @@ export default function (instance) {
         },
         deleteItemFromCart(UUID) {
             return instance.delete('cart/' + UUID)
+        },
+        modifyCartItem(UUID, payload) {
+            return instance.put('cart/' + UUID, payload)
         }
     }
 }
