@@ -1,25 +1,6 @@
 <template>
   <div class="cart">
-    <div class="footer">
-      <div class="row">
-        <div class="col-3">
-          "Одежда для всей семьи"
-        </div>
-        <div class="col-2">
-          <a href="/catalog">Каталог</a>
-        </div>
-        <div class="col-2">
-          <a href="/cart">Корзина</a>
-        </div>
-        <div class="col-2">
-          <a href="/personalarea">Личный кабинет</a>
-        </div>
-        <div class="col-3">
-          <input type="text" placeholder="Поиск по корзине" v-model="searchText">
-          <button type="button" class="btn btn-primary" @click="searchProductsInCart">Поиск</button>
-        </div>
-      </div>
-    </div>
+    <Header/>
     <div class="body">
       <div class="row">
         <div class="col-9">
@@ -31,10 +12,10 @@
         </div>
         <div class="col-3">
           <p>Итоговая стоимость:</p>
-          <p>Общее кол-во товара:</p>
-          <p>Общая стоимость:</p>
-          <p>Скидка:</p>
-          <p>Итого:</p>
+          <p>Общее кол-во товара: {{ resultProductsCount }} шт.</p>
+          <p>Общая стоимость: {{ resultProductsCost }} руб.</p>
+          <p>Скидка: {{ resultProductsDiscount }} руб.</p>
+          <p>Итого: {{ finalResult }} руб.</p>
           <button type="button" class="btn btn-warning">Оформить</button>
         </div>
       </div>
@@ -44,11 +25,14 @@
 
 <script>
 import CartItem from '../components/CartItem'
+import { eventBus } from '../main'
+import Header from '../components/Header'
 
 export default {
   name: 'Cart',
   components: {
-    CartItem
+    CartItem,
+    Header
   },
   data() {
     return {
@@ -56,18 +40,29 @@ export default {
       text: 'Корзина',
       products: [],
       productsFromServer: {},
+      resultProductsCount: 0,
+      resultProductsCost: 0,
+      resultProductsDiscount: 0,
+      finalResult: 0
     }
   },
   methods: {
+    async getCart() {
+      this.productsFromServer = await this.$api.cart.getCart('cd668994-a73a-4da6-8f03-e7fe7034aa17');
+      this.products = this.productsFromServer.data.catalogPage.content;
+      this.resultProductsCount = this.productsFromServer.data.cartSummary[0];
+      this.resultProductsCost = this.productsFromServer.data.cartSummary[1];
+      this.resultProductsDiscount = this.productsFromServer.data.cartSummary[2];
+      this.finalResult = this.productsFromServer.data.cartSummary[3];
+    },
     async searchProductsInCart() {
-      let temp = await this.$api.cart.getCartWithFilters(this.searchText);
-      console.log(temp);
+      this.productsFromServer = await this.$api.cart.getCartWithFilters(this.searchText);
+      this.products = this.productsFromServer.data.catalogPage.content;
     }
   },
-  async mounted() {
-    this.productsFromServer = await this.$api.cart.getCart();
-    this.products = this.productsFromServer.data.content;
-    console.log(this.products)
+  created() {
+    this.getCart();
+    eventBus.$on('deleteItemFromCart', this.getCart)
   }
 }
 </script>

@@ -1,5 +1,6 @@
 <template>
   <div class="personal-area">
+    <Header/>
     <div class="body">
       <h1>{{ text }}</h1>
       <div class="row">
@@ -39,8 +40,13 @@
 </template>
 
 <script>
+import Header from '../components/Header'
+
 export default {
   name: 'PersonalArea',
+  components: {
+    Header
+  },
   data() {
     return {
       text: 'Личный кабинет',

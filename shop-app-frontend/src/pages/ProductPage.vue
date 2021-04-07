@@ -1,26 +1,6 @@
 <template>
   <div class="product-page">
-    <div class="footer">
-      <div class="row">
-        <div class="col-3">
-          Hand-made магазин "Любимый питомец"
-        </div>
-        <div class="col-2">
-          <a href="/catalog">Каталог</a>
-        </div>
-        <div class="col-2">
-          <a href="/cart">Корзина</a>
-          <span class="badge badge-success">{{ itemsInCart }}</span>
-        </div>
-        <div class="col-2">
-          <a href="/personalarea">Личный кабинет</a>
-        </div>
-        <div class="col-3">
-          <input type="text" placeholder="Поиск товаров в каталоге" v-model="searchText">
-          <button type="button" class="btn btn-primary" @click="searchProductsInCatalog">Поиск</button>
-        </div>
-      </div>
-    </div>
+    <Header/>
     <div class="body">
       <div class="category-nav">
         <a href="#">{{ categoryType }}</a>
@@ -63,8 +43,13 @@
 </template>
 
 <script>
+import Header from '../components/Header'
 
 export default {
+  name: 'ProductPage',
+  components: {
+    Header
+  },
   data() {
     return {
       itemsInCart: 0,

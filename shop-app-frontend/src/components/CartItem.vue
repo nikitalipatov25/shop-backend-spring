@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import { eventBus } from '../main'
 
 export default {
   props: {
@@ -63,7 +64,9 @@ export default {
       this.product.selectedProductKol--;
     },
     async deleteItemFromCart() {
-      this.$api.cart.deleteItemFromCart(this.product.productId);
+      await this.$api.cart.deleteItemFromCart(this.product.productId);
+      eventBus.$emit('deleteItemFromCart');
+
     }
   }
 }
