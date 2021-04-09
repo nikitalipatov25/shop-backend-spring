@@ -23,7 +23,15 @@ public class CatalogService {
         this.catalogRepository = catalogRepository;
     }
 
-    public Page<CatalogEntity> listAll(String search, String category, Pageable pageable) {
+    public Page<CatalogEntity> listAll(String search, String category, String[] checkboxes, Pageable pageable) {
+        try {
+            if (checkboxes.length != 0) {
+                var result = catalogRepository.findByCategoryTypeAndCategoryNameIn(category, checkboxes, pageable);
+                return result;
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         if (search != null && !search.isBlank()) {
             var result = catalogRepository.findByProductNameLike("%" + search + "%", pageable);
             return result;

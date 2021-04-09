@@ -1,22 +1,29 @@
 <template>
-  <div class="card" style="width: 18rem; margin-bottom: 25px; margin-right: 25px">
-    <img
-      style="height: 286px; width: 286px"
-      class="card-img-top"
-      :src="product.productPhoto"
-      alt=""
-      @click="$router.push({ name: 'product-page', params: { id: product.id } })"
-    >
-    <div class="card-body">
-      <h5 class="card-title">{{ product.productName }}</h5>
-      <p class="card-text">Стоимость за шт. {{product.productPrice}} руб.</p>
-      <p class="card-text"> Кол-во на складе: {{product.productKol}} шт.</p>
-    </div>
-    <div class="card-footer">
-      <button class="btn btn-primary" @click="addToCart" v-if="!isAddedToCart">Добавить в корзину</button>
-      <button class="btn btn-danger" @click="deleteFromCart" v-else>Убрать из корзины</button>
+  <div class="test">
+    <div class="custom-card">
+      <div class="card" style="width: 18rem; margin-bottom: 25px; margin-right: 25px">
+        <img
+            style="height: 286px; width: 286px"
+            class="card-img-top"
+            :src="product.productPhoto"
+            alt=""
+            @click="$router.push({ name: 'product-page', params: { id: product.id } })"
+        >
+        <div class="card-body">
+          <h5 class="card-title">{{ product.productName }}</h5>
+          <p class="card-text">Стоимость за шт. {{product.productPrice}} руб.</p>
+          <p class="card-text"> Кол-во на складе: {{product.productKol}} шт.</p>
+        </div>
+        <div class="card-footer">
+          <button class="btn btn-primary" @click="addToCart" v-if="!isAddedToCart">Добавить в корзину</button>
+          <button class="btn btn-danger" @click="deleteFromCart" v-else>Убрать из корзины</button>
+        </div>
+      </div>
     </div>
   </div>
+
+
+
 </template>
 
 <script>
@@ -30,6 +37,9 @@ export default {
   },
   data() {
     return {
+      byDefault: 'list',
+      list: false,
+      card : true,
       isAddedToCart: false,
     }
   },
@@ -49,8 +59,8 @@ export default {
       this.$api.cart.deleteItemFromCart(this.product.id);
       this.isAddedToCart = !this.isAddedToCart;
       eventBus.$emit('deleteFromCart');
+    },
     }
-  },
 }
 </script>
 

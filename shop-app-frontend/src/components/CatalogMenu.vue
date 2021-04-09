@@ -1,20 +1,25 @@
 <template>
-  <div class="custom-nav">
-    {{ arrIndex }}
+  <div class="custom-left-menu">
+    <p>Категория:</p>
     <div class="c-list" v-for="item in dynamicArray" :key="item">
-      <input type="checkbox" v-bind:value="item" v-model="arrIndex"> <label>{{ item }}</label>
+      <input type="checkbox" v-bind:value="item" v-model="checkboxesArray"> <label>{{ item }}</label>
     </div>
+    <p>Цена:</p>
+    <input type="text"> - <input type="text">
+    <button @click="getCategory">Применить</button>
+
   </div>
 </template>
 
 <script>
+import {eventBus} from "@/main";
 
 export default {
   data() {
     return {
-      arrIndex: [],
+      checkboxesArray: [],
       dynamicArrayParameter: '',
-      dynamicArray: [],
+      dynamicArray: ['Товары для собак','Товары для кошек','Товары для рыбок','Товары для грызунов'],
       dogs: ['Ошейники', 'Поводки', 'Шлейки', 'Одежда', 'Игрушки', 'Миски'],
       cats: ['Домики', 'Лежанки', 'Когтеточки','Игрушки', 'Миски'],
       fish: ['Гроты, аксессуары', 'Уборка аквариума'],
@@ -22,21 +27,23 @@ export default {
     }
   },
   methods: {
+    async getCategory() {
+      let arr = [this.dynamicArrayParameter, this.checkboxesArray];
+      eventBus.$emit('getCategory', arr)
+    },
     changeCheckBoxes(dynamicArrayParameter) {
       switch (dynamicArrayParameter) {
-        case 'dogs': this.dynamicArray = this.dogs;
+        case 'Товары для собак': this.dynamicArray = this.dogs;
           break;
-        case 'cats': this.dynamicArray = this.cats;
+        case 'Товары для кошек': this.dynamicArray = this.cats;
           break;
-        case 'fish': this.dynamicArray = this.fish;
+        case 'Товары для рыбок': this.dynamicArray = this.fish;
           break;
-        case 'hamsters': this.dynamicArray = this.hamsters;
+        case 'Товары для грызунов': this.dynamicArray = this.hamsters;
           break;
+        default: this.dynamicArrayParameter = 'empty'
       }
-      console.log(this.dynamicArray);
-    },
-    check(item) {
-      console.log(item)
+      eventBus.$emit('changeCheckBoxes', this.dynamicArrayParameter)
     }
   },
   created() {
@@ -45,3 +52,9 @@ export default {
   }
 }
 </script>
+
+<style>
+.custom-left-menu {
+  background-color: cadetblue;
+}
+</style>

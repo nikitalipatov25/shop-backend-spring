@@ -53,11 +53,12 @@ class CatalogServiceTest {
         }
     }
 String category = "ddfdfd";
+    String[] check;
     @Test
     public void testing() {
         String search = "товар";
         try {
-            var rez = catalogService.listAll(search, category, pageable);
+            var rez = catalogService.listAll(search, category,check, pageable);
             assertAll(
             () -> assertEquals("майка", rez.getContent().get(0).getProductName()),
             () -> assertEquals(200, rez.getContent().get(0).getProductPrice())

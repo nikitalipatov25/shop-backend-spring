@@ -1,5 +1,5 @@
 <template>
-  <nav aria-label="Page navigation example">
+  <nav aria-label="Page navigation">
     <ul class="pagination">
       <li @click="changePageNoIndex('first')" class="page-item"><a class="page-link" >&laquo;</a></li>
       <li @click="changePageNoIndex('previous')" class="page-item"><a class="page-link" >Предыдущая</a></li>
@@ -26,6 +26,10 @@ export default {
       let fromServer = await this.$api.catalog.getCatalog();
       this.totalPages = fromServer.data.totalPages;
     },
+    async countPagesForCategory(category) {
+      let fromServer = await this.$api.catalog.getCategory(category);
+      this.totalPages = fromServer.data.totalPages;
+    },
     async changePage(pageIndex) {
       this.currentPage = pageIndex - 1;
       eventBus.$emit('changePage', this.currentPage);
@@ -36,10 +40,14 @@ export default {
           this.currentPage = 0;
           break;
         case 'previous':
-          this.currentPage = this.currentPage - 1;
+          if (this.currentPage > 0 ) {
+            this.currentPage = this.currentPage - 1;
+          }
           break;
         case 'next':
-          this.currentPage = this.currentPage + 1;
+          if (this.currentPage !== this.totalPages - 1) {
+            this.currentPage = this.currentPage + 1;
+          }
           break;
         case 'last':
           this.currentPage = this.totalPages - 1;
@@ -50,6 +58,7 @@ export default {
   },
   created() {
     this.countPages();
+    eventBus.$on('getCategory', this.countPagesForCategory)
   }
 }
 </script>

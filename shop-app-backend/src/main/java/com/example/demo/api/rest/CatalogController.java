@@ -23,8 +23,11 @@ public class CatalogController {
     }
 
     @GetMapping()
-    public ResponseEntity<Page<CatalogEntity>> getFullCatalog(@RequestParam(name = "search", required = false)String searching,  @RequestParam(name = "category", required = false)String category, Pageable pageable) {
-        Page<CatalogEntity> catalogEntityList = catalogService.listAll(searching, category, pageable);
+    public ResponseEntity<Page<CatalogEntity>> getFullCatalog(@RequestParam(name = "search", required = false)String searching,
+                                                              @RequestParam(name = "category", required = false)String category,
+                                                              @RequestParam(name = "checkboxes", required = false)String[] checkboxes,
+                                                              Pageable pageable) {
+        Page<CatalogEntity> catalogEntityList = catalogService.listAll(searching, category, checkboxes, pageable);
         return ResponseEntity.ok(catalogEntityList);
     }
 

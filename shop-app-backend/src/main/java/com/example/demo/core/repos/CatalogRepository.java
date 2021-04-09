@@ -10,7 +10,9 @@ public interface CatalogRepository extends JpaRepository<CatalogEntity, UUID> {
 
     Page<CatalogEntity> findByProductNameLike(String productName, Pageable pageable);
 
-    Page<CatalogEntity> findByProductPriceBetween(double priceFrom, double priceTo, Pageable pageable);
-
     Page<CatalogEntity> findByCategoryType(String categoryType, Pageable pageable);
+
+    Page<CatalogEntity> findByCategoryTypeAndCategoryNameIn(String category, String[] paramArray, Pageable pageable);
+
+
 }

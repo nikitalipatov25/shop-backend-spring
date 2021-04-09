@@ -16,7 +16,7 @@
       </div>
       <div class="col-3">
         <input type="text" placeholder="Поиск товаров в каталоге" v-model="searchText">
-        <button type="button" class="btn btn-primary" @click="searchProductsInCatalog">Поиск</button>
+        <button type="button" class="btn btn-primary" @click="searchProducts">Поиск</button>
       </div>
     </div>
   </div>
@@ -33,8 +33,8 @@ export default {
     }
   },
   methods : {
-    async searchProductsInCatalog() {
-      eventBus.$emit('searchProductsInCatalog', this.searchText)
+    async searchProducts() {
+      eventBus.$emit('searchProducts', this.searchText)
     },
     addCountedItemsToBadge(itemsInCart) {
       this.itemsInCart = itemsInCart;
