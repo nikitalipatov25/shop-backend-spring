@@ -8,11 +8,21 @@ import java.util.UUID;
 
 public interface CatalogRepository extends JpaRepository<CatalogEntity, UUID> {
 
-    Page<CatalogEntity> findByProductNameLike(String productName, Pageable pageable);
+    Page<CatalogEntity> findByProductNameLikeAndProductPriceBetweenAndCategoryTypeAndCategoryNameIn(String productName, double startPrice, double endPrice, String categoryType, String[] paramArray, Pageable pageable);
 
-    Page<CatalogEntity> findByCategoryType(String categoryType, Pageable pageable);
+    Page<CatalogEntity> findByProductNameLikeAndProductPriceBetweenAndCategoryType(String productName, double startPrice, double endPrice, String categoryType, Pageable pageable);
 
-    Page<CatalogEntity> findByCategoryTypeAndCategoryNameIn(String category, String[] paramArray, Pageable pageable);
+    Page<CatalogEntity> findByProductPriceBetweenAndCategoryTypeAndCategoryNameIn(double startPrice, double endPrice,String categoryType, String[] paramArray, Pageable pageable);
+
+    Page<CatalogEntity> findByProductPriceBetweenAndCategoryType(double startPrice, double endPrice, String categoryType, Pageable pageable);
+
+    Page<CatalogEntity> findByProductNameLikeAndProductPriceBetweenAndCategoryNameIn(String productName, double startPrice, double endPrice, String[] paramArray, Pageable pageable);
+
+    Page<CatalogEntity> findByProductNameLikeAndProductPriceBetween(String productName, double startPrice, double endPrice, Pageable pageable);
+
+    Page<CatalogEntity> findByProductPriceBetweenAndAndCategoryNameIn(double startPrice, double endPrice, String[] paramArray, Pageable pageable);
+
+    Page<CatalogEntity> findByProductPriceBetween(double startPrice, double endPrice, Pageable pageable);
 
 
 }

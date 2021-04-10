@@ -45,6 +45,7 @@
           </div>
         </div>
       </div>
+      <hr>
       <nav aria-label="Page navigation">
         <ul class="pagination">
           <li @click="changePageNoIndex('first')" class="page-item"><a class="page-link" >&laquo;</a></li>
@@ -64,7 +65,7 @@ import ProductCard from '../components/ProductCard'
 import productList from '../components/productList'
 import CatalogMenu from '../components/CatalogMenu'
 import Header from '../components/Header'
-import Footer from '../components/Footer'
+import Footer from '../components/Foter'
 import { eventBus } from '../main'
 
 export default {
@@ -83,9 +84,12 @@ export default {
       products: [],
       productsFromServer: {},
       searchFor: '',
+      searchText: '',
       sortBy: 'productName,asc',
       inCategory: 'empty',
       withChekboxes: [],
+      startPrice: 0,
+      endPerice: 999999,
       text: 'Все товары',
       currentPage: 0,
       pageSize: 4,
@@ -98,13 +102,17 @@ export default {
         await this.getCategory()
       } else {
         console.log(this.inCategory )
-        this.productsFromServer = await this.$api.catalog.getCatalog(this.currentPage, this.pageSize, this.searchFor, this.sortBy);
+        this.searchFor = this.searchText + this.startPrice + '-' + this.endPerice
+        console.log(this.searchFor)
+        this.productsFromServer = await this.$api.catalog.getCatalog(this.currentPage, this.pageSize, this.inCategory, this.withChekboxes, this.searchFor, this.sortBy);
         this.products = this.productsFromServer.data.content;
         this.totalPages = this.productsFromServer.data.totalPages
         console.log(this.totalPages)
       }
     },
     async getCategory() {
+      this.searchFor = this.searchText + this.startPrice + '-' + this.endPerice
+      console.log(this.searchFor)
       this.productsFromServer = await this.$api.catalog.getCategory(this.currentPage, this.pageSize, this.inCategory, this.withChekboxes, this.searchFor, this.sortBy);
       this.products = this.productsFromServer.data.content;
       this.totalPages = this.productsFromServer.data.totalPages
@@ -173,7 +181,7 @@ export default {
     eventBus.$on('deleteFromCart', this.countItemsInCart);
 
     eventBus.$on('searchProducts', data => {
-      this.searchFor = data;
+      this.searchText = data;
       this.getCatalog()
     });
     eventBus.$on('changePage', data => {
@@ -187,9 +195,20 @@ export default {
     eventBus.$on('getCategory', data => {
       this.inCategory = data[0];
       this.withChekboxes = data[1];
+      this.startPrice = data[2];
+      this.endPerice = data[3];
       this.getCategory()
     });
     eventBus.$on('changeCheckBoxes', data => {
+      this.inCategory = data;
+      if (this.inCategory === 'empty') {
+        this.getCatalog();
+      } else {
+        this.text = this.inCategory
+        this.getCategory();
+      }
+    });
+    eventBus.$on('openCatalogCategory', data => {
       this.inCategory = data;
       if (this.inCategory === 'empty') {
         this.getCatalog();
@@ -203,6 +222,10 @@ export default {
 </script>
 
 <style>
+nav {
+  display: flex;
+  justify-content: center;
+}
 /*body {*/
 /*  background: url("../assets/background.jpg") ;*/
 /*}*/

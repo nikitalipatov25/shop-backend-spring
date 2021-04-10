@@ -5,6 +5,9 @@ import Catalog from '../pages/Catalog.vue'
 import ProductPage from '../pages/ProductPage.vue'
 import PersonalArea from '../pages/PersonalArea.vue'
 import Cart from '../pages/Cart.vue'
+import Deals from "@/pages/Deals";
+import QandA from "@/pages/QandA";
+import About from "@/pages/About";
 
 export default new VueRouter({
     mode: 'history',
@@ -24,15 +27,30 @@ export default new VueRouter({
           name: 'product-page',
           component: ProductPage
       },
-    {
-        path: '/personalarea',
-        name: 'personal-area',
-        component: PersonalArea
-    },
-    {
-        path: '/cart',
-        name: 'cart',
-        component: Cart
-    }
+      {
+          path: '/personalarea',
+          name: 'personal-area',
+          component: PersonalArea
+      },
+      {
+          path: '/cart',
+          name: 'cart',
+          component: Cart
+      },
+      {
+          path: '/deals',
+          name: 'deals',
+          component: Deals
+      },
+      {
+          path: '/questions',
+          name: 'questions',
+          component: QandA
+      },
+      {
+          path: '/about',
+          name: 'about',
+          component: About
+      },
   ]  
 })

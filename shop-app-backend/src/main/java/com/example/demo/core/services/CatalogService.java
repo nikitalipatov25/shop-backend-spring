@@ -16,6 +16,8 @@ import java.util.UUID;
 @Service
 public class CatalogService {
 
+    SearchParameterAnalyzer searchParameterAnalyzer = new SearchParameterAnalyzer();
+
     private final CatalogRepository catalogRepository;
 
     @Autowired
@@ -24,23 +26,46 @@ public class CatalogService {
     }
 
     public Page<CatalogEntity> listAll(String search, String category, String[] checkboxes, Pageable pageable) {
+        Page<CatalogEntity> result = catalogRepository.findAll(pageable);
+        searchParameterAnalyzer.analyzingSearchParameter(search);
+        String productName = searchParameterAnalyzer.getProductName();
+        double startPrice = searchParameterAnalyzer.getStartPrice();
+        double endPrice = searchParameterAnalyzer.getEndPrice();
         try {
-            if (checkboxes.length != 0) {
-                var result = catalogRepository.findByCategoryTypeAndCategoryNameIn(category, checkboxes, pageable);
-                return result;
+            if (category.equals("empty") == false) {
+                if (productName != null && checkboxes.length != 0) {
+                    result = catalogRepository.findByProductNameLikeAndProductPriceBetweenAndCategoryTypeAndCategoryNameIn
+                            ("%" + productName + "%", startPrice, endPrice, category, checkboxes, pageable);
+                } else if (productName != null && checkboxes.length == 0) {
+                    result = catalogRepository.findByProductNameLikeAndProductPriceBetweenAndCategoryType
+                            ("%" + productName + "%", startPrice, endPrice, category, pageable);
+                } else if (productName == null && checkboxes.length != 0) {
+                    result = catalogRepository.findByProductPriceBetweenAndCategoryTypeAndCategoryNameIn
+                            (startPrice, endPrice, category, checkboxes, pageable);
+                } else {
+                    result = catalogRepository.findByProductPriceBetweenAndCategoryType
+                            (startPrice, endPrice, category, pageable);
+                }
+            }
+            if (category.equals("empty") == true) {
+                if (productName != null && checkboxes.length != 0) {
+                    result = catalogRepository.findByProductNameLikeAndProductPriceBetweenAndCategoryNameIn
+                            ("%" + productName + "%", startPrice, endPrice, checkboxes, pageable);
+                } else if (productName != null && checkboxes.length == 0) {
+                    result = catalogRepository.findByProductNameLikeAndProductPriceBetween
+                            ("%" + productName + "%", startPrice, endPrice, pageable);
+                } else if (productName == null && checkboxes.length != 0) {
+                    result = catalogRepository.findByProductPriceBetweenAndAndCategoryNameIn
+                            (startPrice, endPrice, checkboxes, pageable);
+                } else {
+                    result = catalogRepository.findByProductPriceBetween
+                            (startPrice, endPrice, pageable);
+                }
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            e.getMessage();
         }
-        if (search != null && !search.isBlank()) {
-            var result = catalogRepository.findByProductNameLike("%" + search + "%", pageable);
-            return result;
-        } else if (category != null && !category.isBlank()) {
-            var result = catalogRepository.findByCategoryType(category, pageable);
-            return result;
-        } else {
-            return catalogRepository.findAll(pageable);
-        }
+        return result;
     }
 
     public Optional<CatalogEntity> getById(UUID id) {

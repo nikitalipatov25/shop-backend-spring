@@ -41,14 +41,14 @@ class CatalogServiceTest {
     public void testingSearchParameterAnalyzer() {
         for (int i=0; i<cases.length; i++) {
             searchParameterAnalyzer.analyzingSearchParameter(cases[i]);
-                if (searchParameterAnalyzer.getNameOfSearchedProduct() == null) {
-                    searchParameterAnalyzer.setNameOfSearchedProduct("empty");
+                if (searchParameterAnalyzer.getProductName() == null) {
+                    searchParameterAnalyzer.setProductName("empty");
                 }
-            assertEquals(expected[i][0], searchParameterAnalyzer.getNameOfSearchedProduct(),
+            assertEquals(expected[i][0], searchParameterAnalyzer.getProductName(),
             "Should contain productname");
-            assertEquals(expected[i][1], searchParameterAnalyzer.getBottomLineOfPriceInSearchedProduct().toString(),
+            assertEquals(expected[i][1], searchParameterAnalyzer.getStartPrice().toString(),
             "Should contain firstprice");
-            assertEquals(expected[i][2], searchParameterAnalyzer.getTopLineOfPriceInSearchedProduct().toString(),
+            assertEquals(expected[i][2], searchParameterAnalyzer.getEndPrice().toString(),
             "Should contain secondprice");
         }
     }

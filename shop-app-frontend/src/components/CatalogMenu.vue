@@ -1,11 +1,12 @@
 <template>
   <div class="custom-left-menu">
+<!--    скрыть блок с категорией, когда отображаютсся все товары. показывать толко по стоимости и аакции-->
     <p>Категория:</p>
     <div class="c-list" v-for="item in dynamicArray" :key="item">
       <input type="checkbox" v-bind:value="item" v-model="checkboxesArray"> <label>{{ item }}</label>
     </div>
     <p>Цена:</p>
-    <input type="text"> - <input type="text">
+    <input type="text" placeholder="от руб." v-model="startPrice"> - <input type="text" placeholder="до руб." v-model="endPrice">
     <button @click="getCategory">Применить</button>
 
   </div>
@@ -17,9 +18,11 @@ import {eventBus} from "@/main";
 export default {
   data() {
     return {
+      startPrice: 0,
+      endPrice: 999999,
       checkboxesArray: [],
       dynamicArrayParameter: '',
-      dynamicArray: ['Товары для собак','Товары для кошек','Товары для рыбок','Товары для грызунов'],
+      dynamicArray: [],
       dogs: ['Ошейники', 'Поводки', 'Шлейки', 'Одежда', 'Игрушки', 'Миски'],
       cats: ['Домики', 'Лежанки', 'Когтеточки','Игрушки', 'Миски'],
       fish: ['Гроты, аксессуары', 'Уборка аквариума'],
@@ -28,7 +31,7 @@ export default {
   },
   methods: {
     async getCategory() {
-      let arr = [this.dynamicArrayParameter, this.checkboxesArray];
+      let arr = [this.dynamicArrayParameter, this.checkboxesArray, this.startPrice, this.endPrice];
       eventBus.$emit('getCategory', arr)
     },
     changeCheckBoxes(dynamicArrayParameter) {
@@ -55,6 +58,6 @@ export default {
 
 <style>
 .custom-left-menu {
-  background-color: cadetblue;
+  background-color: #92cbf8;
 }
 </style>
