@@ -15,8 +15,8 @@
           <p class="card-text"> Кол-во на складе: {{product.productKol}} шт.</p>
         </div>
         <div class="card-footer">
-          <button class="btn btn-primary" @click="addToCart" v-if="!isAddedToCart">Добавить в корзину</button>
-          <button class="btn btn-danger" @click="deleteFromCart" v-else>Убрать из корзины</button>
+          <button class="btn btn-primary" @click="addToCart">Добавить в корзину</button>
+
         </div>
       </div>
     </div>
@@ -40,35 +40,24 @@ export default {
       byDefault: 'list',
       list: false,
       card : true,
-      isAddedToCart: false,
     }
   },
   methods: {
     async addToCart() {
-      const productToCart = {
-        "catalogProductName": this.product.productName,
-        "catalogProductPrice": this.product.productPrice,
-        "selectedProductKol": 1,
-        "catalogProductPhoto": this.product.productPhoto
-        }
-      this.$api.cart.addItemToCart(this.product.id, productToCart);
-      this.isAddedToCart = !this.isAddedToCart;
+      const payload = await this.$api.catalog.getCatalogItemByUUID(this.product.id);
+      console.log(payload)
+      this.$api.cart.addItemToCart(this.product.id, payload);
       eventBus.$emit('addToCart');
     },
     async deleteFromCart() {
       this.$api.cart.deleteItemFromCart(this.product.id);
-      this.isAddedToCart = !this.isAddedToCart;
       eventBus.$emit('deleteFromCart');
     },
-    }
+  }
 }
 </script>
 
 <style>
-/*.container {*/
-/*  width: auto;*/
-/*  margin-bottom: 25px;*/
-/*}*/
 </style>
 
 

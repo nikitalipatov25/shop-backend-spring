@@ -16,7 +16,7 @@
           <p>Общая стоимость: {{ resultProductsCost }} руб.</p>
           <p>Скидка: {{ resultProductsDiscount }} руб.</p>
           <p>Итого: {{ finalResult }} руб.</p>
-          <button type="button" class="btn btn-warning">Оформить</button>
+          <button type="button" class="btn btn-warning" @click="orderProducts">Оформить</button>
         </div>
       </div>
     </div>
@@ -58,11 +58,19 @@ export default {
     async searchProductsInCart() {
       this.productsFromServer = await this.$api.cart.getCartWithFilters(this.searchText);
       this.products = this.productsFromServer.data.catalogPage.content;
+    },
+    async orderProducts() {
+      this.$api.orders.addOrder('cd668994-a73a-4da6-8f03-e7fe7034aa17');
+      console.log('Товары для пользователя добавлены');
+      let a = await this.$api.orders.getOrders('cd668994-a73a-4da6-8f03-e7fe7034aa17')
+      console.log(a)
     }
   },
   created() {
     this.getCart();
     eventBus.$on('deleteItemFromCart', this.getCart)
+    eventBus.$on('addCol', this.getCart)
+    eventBus.$on('subCol', this.getCart)
   }
 }
 </script>

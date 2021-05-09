@@ -26,12 +26,19 @@
             <h2>Заказы</h2>
         </div>
           <div class="col-8">
-            <ul class="list-group list-group-horizontal">
-              <li class="list-group-item">Номер заказа</li>
-              <li class="list-group-item">Итоговая стоимость</li>
-              <li class="list-group-item">Тип заказа</li>
-              <li class="list-group-item">Статус заказа</li>
-            </ul>
+            <div class="row">
+              <div class="col-4" style="border-bottom: black">
+                Nomer
+              </div>
+              <div class="col-4">
+                Soder
+              </div>
+            </div>
+            <orders-component
+            v-for="order in orders"
+            :key="order.orderId"
+            :order="order"
+            />
           </div>
         </div>
       </div>
@@ -41,11 +48,13 @@
 
 <script>
 import Header from '../components/Header'
+import ordersComponent from "@/components/ordersComponent";
 
 export default {
   name: 'PersonalArea',
   components: {
-    Header
+    Header,
+    ordersComponent
   },
   data() {
     return {
@@ -54,7 +63,8 @@ export default {
       phoneNumber: '',
       email: '',
       adress: '',
-      role: ''
+      role: '',
+      orders: '',
     }
   },
   created: async function() {
@@ -65,6 +75,9 @@ export default {
     this.email = userFromServer.data.email;
     this.adress = userFromServer.data.adress;
     this.role = userFromServer.data.role;
+    let a = await this.$api.orders.getOrders('cd668994-a73a-4da6-8f03-e7fe7034aa17')
+    this.orders = a.data
+    console.log(this.orders)
   }
 }
 </script>

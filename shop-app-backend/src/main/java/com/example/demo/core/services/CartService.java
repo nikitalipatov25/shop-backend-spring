@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -35,8 +36,12 @@ public class CartService {
         newCartEntity.setUserId(singleUserId);
         newCartEntity.setCatalogProductName(temp.get().getProductName());
         newCartEntity.setCatalogProductPrice(temp.get().getProductPrice());
-        newCartEntity.setSelectedProductKol(cartEntity.getSelectedProductKol());
-        double productCost = cartAnalyzer.calculateItemCost(temp.get().getProductPrice(), cartEntity.getSelectedProductKol());
+        if (cartEntity.getSelectedProductKol() == 0) {
+            newCartEntity.setSelectedProductKol(1);
+        } else {
+            newCartEntity.setSelectedProductKol(cartEntity.getSelectedProductKol());
+        }
+        double productCost = cartAnalyzer.calculateItemCost(temp.get().getProductPrice(), newCartEntity.getSelectedProductKol());
         newCartEntity.setProductCost(productCost); // здесь установка стоимости товара при добавлении
         newCartEntity.setCatalogProductPhoto(temp.get().getProductPhoto());
         return cartRepository.save(newCartEntity);
@@ -47,8 +52,19 @@ public class CartService {
         return result
                 .map(entity -> {
                     entity.setSelectedProductKol(cartEntity.getSelectedProductKol());
-                    double productCost = cartAnalyzer.calculateItemCost(cartEntity.getCatalogProductPrice(), cartEntity.getSelectedProductKol());
-                    entity.setProductCost(productCost); // здесь установка стоимости товара при добавлении
+                    double a = entity.getCatalogProductPrice();
+                    int b = entity.getSelectedProductKol();
+                    double productCost = cartAnalyzer.calculateItemCost(a, b);
+                    entity.setProductCost(productCost);
+                    double prductDiscount;
+                    if (b >= 10) {
+                        prductDiscount = productCost * 0.05;
+                    } else {
+                        prductDiscount = 0.0;
+                    }
+                    double finalSummary = productCost - prductDiscount;
+                    entity.setProductDiscount(prductDiscount);
+                    entity.setFinalSummary(finalSummary);
                     return cartRepository.save(entity);
                 });
     }
@@ -80,6 +96,10 @@ public class CartService {
                     cartRepository.deleteByProductId(id);
                     return true;
                 });
+    }
+
+    public List<CartEntity> findCartByUserID(UUID userID) {
+        return cartRepository.findAllByUserId(userID);
     }
 
 

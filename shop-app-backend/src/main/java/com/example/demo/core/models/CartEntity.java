@@ -27,6 +27,10 @@ public class CartEntity {
 
     private double productCost;
 
+    private double productDiscount;
+
+    private double finalSummary;
+
     public UUID getProductId() {
         return productId;
     }
@@ -83,4 +87,19 @@ public class CartEntity {
         this.productCost = productCost;
     }
 
+    public double getProductDiscount() {
+        return productDiscount;
+    }
+
+    public void setProductDiscount(double productDiscount) {
+        this.productDiscount = productDiscount;
+    }
+
+    public double getFinalSummary() {
+        return finalSummary;
+    }
+
+    public void setFinalSummary(double finalSummary) {
+        this.finalSummary = finalSummary;
+    }
 }

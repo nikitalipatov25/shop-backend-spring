@@ -45,23 +45,19 @@ export default {
   methods: {
     async addCol() {
       this.product.selectedProductKol++;
-      console.log(this.product);
       let payload = {
-        "productId": this.product.productId,
-        "userId": this.product.userId,
-        "catalogProductName": this.product.catalogProductName,
-        "catalogProductPhoto": this.product.catalogProductPhoto,
         "selectedProductKol": this.product.selectedProductKol,
-        "catalogProductPrice": this.product.catalogProductPrice,
-        "productCost": this.product.productCost
       };
-      console.log(payload);
-
-      let a = await this.$api.cart.modifyCartItem(this.product.productId, payload);
-      console.log(a);
+      await this.$api.cart.modifyCartItem(this.product.productId, payload);
+      eventBus.$emit('addCol')
     },
-    subCol: function() {
+    async subCol() {
       this.product.selectedProductKol--;
+      let payload = {
+        "selectedProductKol": this.product.selectedProductKol,
+      };
+      await this.$api.cart.modifyCartItem(this.product.productId, payload);
+      eventBus.$emit('subCol')
     },
     async deleteItemFromCart() {
       await this.$api.cart.deleteItemFromCart(this.product.productId);
