@@ -20,8 +20,6 @@ public class UserEntity {
 
     private String role;
 
-    private int productsInCart;
-
     public UUID getId() {
         return id;
     }
@@ -60,14 +58,6 @@ public class UserEntity {
 
     public void setRole(String role) {
         this.role = role;
-    }
-
-    public int getProductsInCart() {
-        return productsInCart;
-    }
-
-    public void setProductsInCart(int productsInCart) {
-        this.productsInCart = productsInCart;
     }
 
     public String getAddress() {

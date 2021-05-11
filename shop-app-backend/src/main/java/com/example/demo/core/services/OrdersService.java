@@ -2,13 +2,12 @@ package com.example.demo.core.services;
 
 import com.example.demo.core.models.OrdersEntity;
 import com.example.demo.core.repos.OrdersRepository;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -25,17 +24,26 @@ public class OrdersService {
         this.userService = userService;
     }
 
-    public OrdersEntity generateOrder() {
-        UUID singleUserId = UUID.fromString("cd668994-a73a-4da6-8f03-e7fe7034aa17"); // заменить, когда будет несколько пользователей
+    public OrdersEntity generateOrder(String orderType) {
+        var user = userService.getUserById(UUID.fromString("cd668994-a73a-4da6-8f03-e7fe7034aa17"));
         OrdersEntity ordersEntity = new OrdersEntity();
         ordersEntity.setOrderId(UUID.randomUUID());
-        ordersEntity.setUserId(singleUserId);
-        var cart = cartService.findCartByUserID(singleUserId);
+        ordersEntity.setUserId(user.get().getId());
+        ordersEntity.setUserFIO(user.get().getFullName());
+        ordersEntity.setUserPhoneNumber(user.get().getPhoneNumber());
+        ordersEntity.setUserAddress(user.get().getAddress());
+        ordersEntity.setOrderType(orderType);
+        ordersEntity.setOrderStatus("Принят в магазине");
+        Date currentDate = new Date();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy");
+        String orderDate = simpleDateFormat.format(currentDate);
+        ordersEntity.setOrderDate(orderDate);
+        var cart = cartService.findCartByUserID(user.get().getId());
         String productsInfo = "";
         int totalItems = 0;
         double totalCost = 0.0;
         for (int i = 0; i < cart.size(); i++) {
-            productsInfo = productsInfo + "Артикул: " + cart.get(i).getProductId() + " Кол-во: " + cart.get(i).getSelectedProductKol() + " ";
+            productsInfo = productsInfo + "Товар: " + cart.get(i).getCatalogProductName() + " Кол-во: " + cart.get(i).getSelectedProductKol() + " ";
             totalItems = totalItems + cart.get(i).getSelectedProductKol();
             totalCost = totalCost + cart.get(i).getProductCost();
         }

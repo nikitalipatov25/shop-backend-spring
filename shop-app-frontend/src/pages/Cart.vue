@@ -16,6 +16,11 @@
           <p>Общая стоимость: {{ resultProductsCost }} руб.</p>
           <p>Скидка: {{ resultProductsDiscount }} руб.</p>
           <p>Итого: {{ finalResult }} руб.</p>
+          <select v-model="orderType">
+            <option disabled value="">Выберите один из вариантов доставки</option>
+            <option>Самовывоз из магазина</option>
+            <option>Доставка по указанному в профиле адресу</option>
+          </select>
           <button type="button" class="btn btn-warning" @click="orderProducts">Оформить</button>
         </div>
       </div>
@@ -43,7 +48,8 @@ export default {
       resultProductsCount: 0,
       resultProductsCost: 0,
       resultProductsDiscount: 0,
-      finalResult: 0
+      finalResult: 0,
+      orderType: 'Не выбрано'
     }
   },
   methods: {
@@ -60,10 +66,8 @@ export default {
       this.products = this.productsFromServer.data.catalogPage.content;
     },
     async orderProducts() {
-      this.$api.orders.addOrder('cd668994-a73a-4da6-8f03-e7fe7034aa17');
-      console.log('Товары для пользователя добавлены');
-      let a = await this.$api.orders.getOrders('cd668994-a73a-4da6-8f03-e7fe7034aa17')
-      console.log(a)
+      this.$api.orders.addOrder(this.orderType);
+
     }
   },
   created() {

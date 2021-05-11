@@ -27,13 +27,26 @@
         </div>
           <div class="col-8">
             <div class="row">
-              <div class="col-4" style="border-bottom: black">
-                Nomer
+              <div class="col-2">
+                Номер заказа
               </div>
-              <div class="col-4">
-                Soder
+              <div class="col-2">
+                Стоимость заказа
+              </div>
+              <div class="col-2">
+                Заказанные товары
+              </div>
+              <div class="col-2">
+                Дата заказа
+              </div>
+              <div class="col-2">
+                Тип заказа
+              </div>
+              <div class="col-2">
+                Статус заказа
               </div>
             </div>
+            <hr>
             <orders-component
             v-for="order in orders"
             :key="order.orderId"

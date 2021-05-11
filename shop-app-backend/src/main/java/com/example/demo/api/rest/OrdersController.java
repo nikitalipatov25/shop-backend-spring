@@ -38,8 +38,8 @@ public class OrdersController {
     }
 
     @PostMapping()
-    public ResponseEntity<OrdersEntity> generateOrder() {
-        OrdersEntity result = ordersService.generateOrder();
+    public ResponseEntity<OrdersEntity> generateOrder(@RequestParam(name = "orderType")String orderType) {
+        OrdersEntity result = ordersService.generateOrder(orderType);
         return ResponseEntity.ok(result);
     }
 }

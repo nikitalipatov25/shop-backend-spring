@@ -12,9 +12,21 @@ public class OrdersEntity {
 
     private UUID userId;
 
+    private String userFIO;
+
+    private String userPhoneNumber;
+
+    private String userAddress;
+
     private String productsInfo;
 
     private double finalPrice;
+
+    private String orderStatus;
+
+    private String orderType;
+
+    private String orderDate;
 
     public UUID getOrderId() {
         return orderId;
@@ -46,5 +58,53 @@ public class OrdersEntity {
 
     public void setFinalPrice(double finalPrice) {
         this.finalPrice = finalPrice;
+    }
+
+    public String getUserFIO() {
+        return userFIO;
+    }
+
+    public void setUserFIO(String userFIO) {
+        this.userFIO = userFIO;
+    }
+
+    public String getUserPhoneNumber() {
+        return userPhoneNumber;
+    }
+
+    public void setUserPhoneNumber(String userPhoneNumber) {
+        this.userPhoneNumber = userPhoneNumber;
+    }
+
+    public String getUserAddress() {
+        return userAddress;
+    }
+
+    public void setUserAddress(String userAddress) {
+        this.userAddress = userAddress;
+    }
+
+    public String getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public String getOrderType() {
+        return orderType;
+    }
+
+    public void setOrderType(String orderType) {
+        this.orderType = orderType;
+    }
+
+    public String getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(String orderDate) {
+        this.orderDate = orderDate;
     }
 }
