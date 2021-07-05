@@ -1,24 +1,23 @@
 <template>
   <div class="cart-item">
     <div class="row">
+      <div class="col-1">
+      </div>
       <div class="col-3">
         <img
             :src="product.catalogProductPhoto"
-            width="100px"
-            height="100px"
+            width="200px"
+            height="200px"
             alt="">
       </div>
       <div class="col-2">
         {{ product.catalogProductName }}
-        {{ product.productId }}
       </div>
       <div class="col-3">
+        <p>{{ product.productCost }} руб.</p>
         <button type="button" class="btn btn-primary" v-on:click="addCol">+</button>
         {{ product.selectedProductKol }} шт.
         <button type="button" class="btn btn-primary" v-on:click="subCol">-</button>
-      </div>
-      <div class="col-2">
-        {{ product.productCost }} руб.
       </div>
       <div class="col-2">
         <button type="button" class="btn btn-danger" @click="deleteItemFromCart">Удалить</button>
@@ -39,7 +38,7 @@ export default {
   },
   data() {
     return {
-      count: 1
+      count: 1,
     }
   },
   methods: {

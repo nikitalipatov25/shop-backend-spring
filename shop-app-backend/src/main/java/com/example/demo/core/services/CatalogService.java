@@ -1,5 +1,6 @@
 package com.example.demo.core.services;
 
+import com.example.demo.core.models.CartEntity;
 import com.example.demo.core.supportingClasses.SearchParameterAnalyzer;
 import com.example.demo.core.repos.CatalogRepository;
 import com.example.demo.core.models.CatalogEntity;
@@ -109,6 +110,16 @@ public class CatalogService {
                 .map(catalogEntity -> {
                     catalogRepository.deleteById(id);
                     return true;
+                });
+    }
+
+    public Optional<CatalogEntity> modifyKolInCatalog(UUID productID, int productKolInCart) {
+        Optional<CatalogEntity> result = catalogRepository.findById(productID);
+        int nowInCatalog = result.get().getProductKol();
+        return result
+                .map(modifyingEntity -> {
+                    modifyingEntity.setProductKol(nowInCatalog - productKolInCart);
+                    return catalogRepository.save(modifyingEntity);
                 });
     }
 

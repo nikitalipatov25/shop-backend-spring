@@ -1,5 +1,6 @@
 package com.example.demo.core.services;
 
+import com.example.demo.core.models.CatalogEntity;
 import com.example.demo.core.supportingClasses.CartAnalyzer;
 import com.example.demo.core.models.CartEntity;
 import com.example.demo.core.repos.CartRepository;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
 
 @Service
 @Transactional
@@ -49,9 +51,16 @@ public class CartService {
 
     public Optional<CartEntity> modifyItem(UUID id, CartEntity cartEntity) {
         Optional<CartEntity> result = cartRepository.findByProductId(id);
+        Optional<CatalogEntity> check = catalogService.getById(id);
         return result
                 .map(entity -> {
-                    entity.setSelectedProductKol(cartEntity.getSelectedProductKol());
+                    if (cartEntity.getSelectedProductKol() > check.get().getProductKol()) {
+                        entity.setSelectedProductKol(check.get().getProductKol());
+                    } else if (cartEntity.getSelectedProductKol() < 1) {
+                        entity.setSelectedProductKol(1);
+                    } else {
+                        entity.setSelectedProductKol(cartEntity.getSelectedProductKol());
+                    }
                     double a = entity.getCatalogProductPrice();
                     int b = entity.getSelectedProductKol();
                     double productCost = cartAnalyzer.calculateItemCost(a, b);
@@ -101,6 +110,12 @@ public class CartService {
     public List<CartEntity> findCartByUserID(UUID userID) {
         return cartRepository.findAllByUserId(userID);
     }
+
+    public void deleteAllUserCart(UUID userID) {
+        cartRepository.deleteAllByUserId(userID);
+    }
+
+
 
 
 }

@@ -5,6 +5,6 @@ export default function (instance) {
         },
         addOrder(payload) {
             return instance.post('orders?orderType=' + payload)
-        }
+        },
     }
 }

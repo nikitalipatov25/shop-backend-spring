@@ -43,7 +43,7 @@ public class CartController {
     public ResponseEntity<CartEntity> modifyItemInCart(@PathVariable(name = "id")UUID id, @RequestBody CartEntity cartEntity) {
         Optional<CartEntity> result = cartService.modifyItem(id, cartEntity);
         return result
-                .map(entity -> ResponseEntity.ok(entity))
+                .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
@@ -52,14 +52,14 @@ public class CartController {
         CartDTO cartDTO = new CartDTO();
         cartDTO.setCatalogPage(cartService.getAllCart(filter, pageable));
         cartDTO.setCartSummary(cartService.getCartSummary());
-        return new ResponseEntity<CartDTO>(cartDTO, HttpStatus.OK);
+        return new ResponseEntity<>(cartDTO, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CartEntity> getCartItem(@PathVariable(name = "id") UUID id) {
         Optional<CartEntity> result = cartService.getById(id);
         return result
-                .map(entity -> ResponseEntity.ok(entity))
+                .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 

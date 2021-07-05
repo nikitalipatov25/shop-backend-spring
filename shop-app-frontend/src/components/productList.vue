@@ -12,10 +12,13 @@
       <div class="col-3">
         <p>{{product.productName}}</p>
         <p>Стоимость за шт. {{product.productPrice}} руб.</p>
-        <p>Кол-во на складе: {{product.productKol}} шт.</p>
+        <p style="color: crimson" v-if="product.productKol === 1"> Поторопитесь! Осталась одна штука</p>
+        <p v-else-if="product.productKol === 0"> Товар распродан</p>
+        <p v-else> Кол-во на складе: {{product.productKol}} шт.</p>
       </div>
       <div class="col-3">
-        <button class="btn btn-primary" @click="addToCart">Добавить в корзину</button>
+        <button v-if="product.productKol === 0" class="btn btn-secondary">Добавить в корзину</button>
+        <button v-else class="btn btn-primary" @click="addToCart">Добавить в корзину</button>
       </div>
     </div>
 

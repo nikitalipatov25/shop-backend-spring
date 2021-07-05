@@ -42,4 +42,5 @@ public class OrdersController {
         OrdersEntity result = ordersService.generateOrder(orderType);
         return ResponseEntity.ok(result);
     }
+
 }

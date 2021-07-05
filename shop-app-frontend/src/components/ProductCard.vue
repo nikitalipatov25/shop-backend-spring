@@ -12,11 +12,13 @@
         <div class="card-body">
           <h5 class="card-title">{{ product.productName }}</h5>
           <p class="card-text">Стоимость за шт. {{product.productPrice}} руб.</p>
-          <p class="card-text"> Кол-во на складе: {{product.productKol}} шт.</p>
+          <p class="card-text" style="color: crimson" v-if="product.productKol === 1"> Поторопитесь! Осталась одна штука</p>
+          <p class="card-text" v-else-if="product.productKol === 0"> Товар распродан</p>
+          <p v-else class="card-text"> Кол-во на складе: {{product.productKol}} шт.</p>
         </div>
         <div class="card-footer">
-          <button class="btn btn-primary" @click="addToCart">Добавить в корзину</button>
-
+          <button v-if="product.productKol === 0" class="btn btn-secondary">Добавить в корзину</button>
+          <button v-else class="btn btn-primary" @click="addToCart">Добавить в корзину</button>
         </div>
       </div>
     </div>
