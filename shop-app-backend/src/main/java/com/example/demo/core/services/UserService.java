@@ -1,7 +1,7 @@
 package com.example.demo.core.services;
 
 import com.example.demo.core.models.UserEntity;
-import com.example.demo.core.repos.UserRepository;
+import com.example.demo.core.repos.oldUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,14 +11,14 @@ import java.util.UUID;
 @Service
 public class UserService {
 
-    private final UserRepository userRepository;
+    private final oldUserRepository oldUserRepository;
 
     @Autowired
-    public UserService (UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserService (oldUserRepository oldUserRepository) {
+        this.oldUserRepository = oldUserRepository;
     }
 
     public Optional<UserEntity> getUserById(UUID id) {
-        return userRepository.findById(id);
+        return oldUserRepository.findById(id);
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +34,7 @@ public class CartController {
     }
 
     @PostMapping()
+    @PreAuthorize("hasAuthority('developers:write')")
     public ResponseEntity<CartEntity> createCart(@RequestBody CartEntity cartEntity,
                                                  @RequestParam(name = "productId")UUID productId) {
         CartEntity createdCartEntity = cartService.createCart(cartEntity, productId);
@@ -40,6 +42,7 @@ public class CartController {
     }
 
     @PutMapping(value = "/{id}")
+    @PreAuthorize("hasAuthority('developers:write')")
     public ResponseEntity<CartEntity> modifyItemInCart(@PathVariable(name = "id")UUID id, @RequestBody CartEntity cartEntity) {
         Optional<CartEntity> result = cartService.modifyItem(id, cartEntity);
         return result
@@ -48,6 +51,7 @@ public class CartController {
     }
 
     @GetMapping()
+    @PreAuthorize("hasAuthority('developers:write')")
     public ResponseEntity<?> getAllCart(@RequestParam(name = "filter", required = false)String filter, Pageable pageable) {
         CartDTO cartDTO = new CartDTO();
         cartDTO.setCatalogPage(cartService.getAllCart(filter, pageable));
@@ -56,6 +60,7 @@ public class CartController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('developers:write')")
     public ResponseEntity<CartEntity> getCartItem(@PathVariable(name = "id") UUID id) {
         Optional<CartEntity> result = cartService.getById(id);
         return result
@@ -64,6 +69,7 @@ public class CartController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('developers:write')")
     public ResponseEntity<?> deleteCartItem (@PathVariable(name = "id")UUID id) {
         Optional<Boolean> deletedItem = cartService.deleteCartItem(id);
         return deletedItem

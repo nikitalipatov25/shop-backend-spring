@@ -101,27 +101,22 @@ export default {
       if (this.inCategory !== 'empty') {
         await this.getCategory()
       } else {
-        console.log(this.inCategory )
         this.searchFor = this.searchText + this.startPrice + '-' + this.endPerice
-        console.log(this.searchFor)
         this.productsFromServer = await this.$api.catalog.getCatalog(this.currentPage, this.pageSize, this.inCategory, this.withChekboxes, this.searchFor, this.sortBy);
         this.products = this.productsFromServer.data.content;
         this.totalPages = this.productsFromServer.data.totalPages
-        console.log(this.totalPages)
       }
     },
     async getCategory() {
       this.searchFor = this.searchText + this.startPrice + '-' + this.endPerice
-      console.log(this.searchFor)
       this.productsFromServer = await this.$api.catalog.getCategory(this.currentPage, this.pageSize, this.inCategory, this.withChekboxes, this.searchFor, this.sortBy);
       this.products = this.productsFromServer.data.content;
       this.totalPages = this.productsFromServer.data.totalPages
-      console.log(this.totalPages)
     },
     async countItemsInCart() {
-      const userId = 'cd668994-a73a-4da6-8f03-e7fe7034aa17'
-      const cart = await this.$api.cart.getCart(userId);
-      let itemsInCart = cart.data.catalogPage.numberOfElements;
+      //const userId = 'cd668994-a73a-4da6-8f03-e7fe7034aa17'
+      //const cart = await this.$api.cart.getCart(userId);
+      let itemsInCart = 2;
       eventBus.$emit('addCountedItemsToBadge', itemsInCart)
     },
     sortProducts(event) {

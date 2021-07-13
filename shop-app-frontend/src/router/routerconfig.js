@@ -8,6 +8,8 @@ import Cart from '../pages/Cart.vue'
 import Deals from "@/pages/Deals";
 import QandA from "@/pages/QandA";
 import About from "@/pages/About";
+import registration from "@/pages/auth/registration";
+import login from "@/pages/auth/login";
 
 export default new VueRouter({
     mode: 'history',
@@ -51,6 +53,16 @@ export default new VueRouter({
           path: '/about',
           name: 'about',
           component: About
+      },
+      {
+          path: '/registration',
+          name: 'Registration',
+          component: registration
+      },
+      {
+          path: '/login',
+          name: 'Login',
+          component: login
       },
   ]  
 })

@@ -8,3 +8,7 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
+jwt:
+  secret: nickLipa
+  : 604800
+  header: Authorization

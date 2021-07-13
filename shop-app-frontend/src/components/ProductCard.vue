@@ -48,7 +48,7 @@ export default {
     async addToCart() {
       const payload = await this.$api.catalog.getCatalogItemByUUID(this.product.id);
       console.log(payload)
-      this.$api.cart.addItemToCart(this.product.id, payload);
+      await this.$api.cart.addItemToCart(this.product.id, payload);
       eventBus.$emit('addToCart');
     },
     async deleteFromCart() {

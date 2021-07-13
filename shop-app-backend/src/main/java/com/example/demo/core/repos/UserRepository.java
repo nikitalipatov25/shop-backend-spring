@@ -1,9 +1,11 @@
 package com.example.demo.core.repos;
 
-import com.example.demo.core.models.UserEntity;
+
+import com.example.demo.core.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.UUID;
+import java.util.Optional;
 
-public interface UserRepository extends JpaRepository<UserEntity, UUID> {
+public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByEmail(String email);
 }
