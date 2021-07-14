@@ -6,13 +6,13 @@ import java.util.UUID;
 public class CartCompositeKey implements Serializable {
 
     private UUID productId;
-    private UUID userId;
+    private String userName;
 
     public CartCompositeKey() {}
 
-    public CartCompositeKey(UUID productId, UUID userId) {
+    public CartCompositeKey(UUID productId, String userName) {
         this.productId = productId;
-        this.userId = userId;
+        this.userName = userName;
     }
 
 }

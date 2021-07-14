@@ -4,9 +4,12 @@ import com.example.demo.core.models.CatalogEntity;
 import com.example.demo.core.supportingClasses.CartAnalyzer;
 import com.example.demo.core.models.CartEntity;
 import com.example.demo.core.repos.CartRepository;
+import com.example.demo.security.JwtTokenProvider;
+import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,29 +27,25 @@ public class CartService {
     private final CatalogService catalogService;
     CartAnalyzer cartAnalyzer = new CartAnalyzer();
 
+
+
     @Autowired
     public CartService(CartRepository cartRepository, CatalogService catalogService) {
         this.cartRepository = cartRepository;
         this.catalogService = catalogService;
     }
 
-    public CartEntity createCart(CartEntity cartEntity, UUID productId) {
-        var temp = catalogService.getById(productId);
-        CartEntity newCartEntity = new CartEntity();
-        newCartEntity.setProductId(temp.get().getId());
-        UUID singleUserId = UUID.fromString("cd668994-a73a-4da6-8f03-e7fe7034aa17");
-        newCartEntity.setUserId(singleUserId);
-        newCartEntity.setCatalogProductName(temp.get().getProductName());
-        newCartEntity.setCatalogProductPrice(temp.get().getProductPrice());
-        if (cartEntity.getSelectedProductKol() == 0) {
-            newCartEntity.setSelectedProductKol(1);
-        } else {
-            newCartEntity.setSelectedProductKol(cartEntity.getSelectedProductKol());
-        }
-        double productCost = cartAnalyzer.calculateItemCost(temp.get().getProductPrice(), newCartEntity.getSelectedProductKol());
-        newCartEntity.setProductCost(productCost); // здесь установка стоимости товара при добавлении
-        newCartEntity.setCatalogProductPhoto(temp.get().getProductPhoto());
-        return cartRepository.save(newCartEntity);
+    public CartEntity addItem(UUID productId, String token) {
+        Optional<CatalogEntity> product = catalogService.getById(productId);
+        CartEntity newCartItem = new CartEntity();
+        newCartItem.setProductId(product.get().getId());
+        newCartItem.setUserName("a@mail.ru");
+        newCartItem.setCatalogProductName(product.get().getProductName());
+        newCartItem.setCatalogProductPrice(product.get().getProductPrice());
+        newCartItem.setSelectedProductKol(1);
+        newCartItem.setProductCost(product.get().getProductPrice());
+        newCartItem.setCatalogProductPhoto(product.get().getProductPhoto());
+        return cartRepository.save(newCartItem);
     }
 
     public Optional<CartEntity> modifyItem(UUID id, CartEntity cartEntity) {
@@ -78,19 +77,12 @@ public class CartService {
                 });
     }
 
-    public Page<CartEntity> getAllCart(String filter, Pageable pageable) {
-        if (filter != null && !filter.isBlank()) {
-            var result = cartRepository.findByCatalogProductNameLike("%" + filter + "%", pageable);
-            return result;
-        } else {
-            var result = cartRepository.findAll(pageable);
-            return result;
+    public Page<CartEntity> getAllCart(String user, Pageable pageable) {
+            return cartRepository.findAllByUserName(user, pageable);
         }
-    }
 
-    public ArrayList<Object> getCartSummary() {
-        var result = cartRepository.findAll();
-        return cartAnalyzer.resultOfCalculation(result);
+    public ArrayList<Object> getCartSummary(String user) {
+        return cartAnalyzer.resultOfCalculation(cartRepository.findAllByUserName(user));
     }
 
     public Optional<CartEntity> getById(UUID id) {
@@ -107,12 +99,16 @@ public class CartService {
                 });
     }
 
-    public List<CartEntity> findCartByUserID(UUID userID) {
-        return cartRepository.findAllByUserId(userID);
+    public List<CartEntity> findCartByUserID(String username) {
+        return cartRepository.findAllByUserName(username);
     }
 
-    public void deleteAllUserCart(UUID userID) {
-        cartRepository.deleteAllByUserId(userID);
+    public void deleteAllUserCart(String username) {
+        cartRepository.deleteAllByUserName(username);
+    }
+
+    public String getUsername(String token) {
+        return Jwts.parser().setSigningKey("nickLipa").parseClaimsJws(token).getBody().getSubject();
     }
 
 

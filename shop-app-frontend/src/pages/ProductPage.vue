@@ -90,7 +90,7 @@ export default {
       "productCost": this.productPrice,
       }
       let productId = this.productUUID;
-      this.$api.cart.addItemToCart(productId, productToCart);
+      await this.$api.cart.addItemToCart(productId, productToCart);
       await this.$router.push({ name: 'cart', params: { id: this.productUUID } })
     },
     addCol() {
@@ -111,9 +111,6 @@ export default {
         this.productPrice = this.productPrice - this.tempPrice;
       }
     },
-    searchProductsInCatalog() {
-      console.log('Реализация аналогична поиску в каталоге')
-    }
   }
 }
 </script>

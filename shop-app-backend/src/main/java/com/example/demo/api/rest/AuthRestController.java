@@ -1,5 +1,6 @@
 package com.example.demo.api.rest;
 
+import com.example.demo.core.models.User;
 import com.example.demo.core.repos.UserRepository;
 import com.example.demo.security.JwtTokenProvider;
 import org.springframework.http.HttpStatus;
@@ -7,14 +8,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
-@RequestMapping("api/auth")
+@RequestMapping(value = "api/auth", method = RequestMethod.POST,
+        consumes = "application/json;charset=UTF-8",
+        produces = {"application/json;charset=UTF-8", "application/xml"})
 public class AuthRestController {
 
     private final AuthenticationManager authenticationManager;
@@ -30,13 +36,16 @@ public class AuthRestController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthenticationRequestDTO requestDTO) {
         try {
-            String email = requestDTO.getEmail();
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(requestDTO.getEmail(), requestDTO.getPassword()));
+            User user = userRepository.findByEmail(requestDTO.getEmail()).orElseThrow(() -> new UsernameNotFoundException("User does not exist"));
+            String token = jwtTokenProvider.createToken(requestDTO.getEmail(), user.getRole().name());
+            Map<Object, Object> response = new HashMap<>();
+            response.put("email", requestDTO.getEmail());
+            response.put("token", token);
+            return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
             return new ResponseEntity<>("Invalid email/password combination", HttpStatus.FORBIDDEN);
         }
-
-        return null;
     }
 
     @PostMapping("/logout")

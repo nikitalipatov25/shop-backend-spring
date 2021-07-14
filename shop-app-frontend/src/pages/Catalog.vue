@@ -66,7 +66,7 @@ import productList from '../components/productList'
 import CatalogMenu from '../components/CatalogMenu'
 import Header from '../components/Header'
 import Footer from '../components/Foter'
-import { eventBus } from '../main'
+import { eventBus } from '@/main'
 
 export default {
   name: 'Catalog',
@@ -102,14 +102,14 @@ export default {
         await this.getCategory()
       } else {
         this.searchFor = this.searchText + this.startPrice + '-' + this.endPerice
-        this.productsFromServer = await this.$api.catalog.getCatalog(this.currentPage, this.pageSize, this.inCategory, this.withChekboxes, this.searchFor, this.sortBy);
+        this.productsFromServer = await this.$api.catalog.getCatalog(this.currentPage, this.pageSize, this.inCategory, this.withChekboxes, this.searchFor, this.sortBy, this.token);
         this.products = this.productsFromServer.data.content;
         this.totalPages = this.productsFromServer.data.totalPages
       }
     },
     async getCategory() {
       this.searchFor = this.searchText + this.startPrice + '-' + this.endPerice
-      this.productsFromServer = await this.$api.catalog.getCategory(this.currentPage, this.pageSize, this.inCategory, this.withChekboxes, this.searchFor, this.sortBy);
+      this.productsFromServer = await this.$api.catalog.getCategory(this.currentPage, this.pageSize, this.inCategory, this.withChekboxes, this.searchFor, this.sortBy, this.token);
       this.products = this.productsFromServer.data.content;
       this.totalPages = this.productsFromServer.data.totalPages
     },
@@ -211,6 +211,10 @@ export default {
         this.text = this.inCategory
         this.getCategory();
       }
+    });
+    eventBus.$on('testLogin', data => {
+      this.token = data;
+      console.log(this.token)
     })
   }
 }

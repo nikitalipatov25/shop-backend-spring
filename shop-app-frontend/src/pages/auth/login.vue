@@ -1,34 +1,49 @@
 <template>
 
   <div class="container">
-    <form class="form-signin">
-      <h2 class="form-signin-heading">Login</h2>
+    <Header/>
+    <form>
+      <h2>Login</h2>
       <p>
-        <label for="username">Username</label>
-        <input type="text" id="username" name="username" class="form-control" placeholder="Username" required v-model="username">
+        <label>Username</label>
+        <input v-model="username">
       </p>
       <p>
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" class="form-control" placeholder="Password" required v-model="password">
+        <label >Password</label>
+        <input v-model="password">
       </p>
-      <button class="btn btn-lg btn-primary btn-block" type="submit" @click="testLogin">Sign in</button>
+      <button @click="testLogin">Sign in</button>
     </form>
+    <Footer/>
   </div>
 
 </template>
 
 <script>
+import Header from "@/components/Header";
+import Footer from "@/components/Foter";
+
+
 export default {
   name: 'Login',
+  components: {
+    Header,
+    Footer
+  },
   data() {
     return {
-      username: '',
-      password: ''
+      username: 'a@mail.ru',
+      password: 'admin'
     }
   },
   methods: {
     async testLogin() {
-      await this.$api.auth.login(this.username, this.password)
+      let payload = {
+        "email": this.username,
+        "password": this.password
+      }
+      let uid = await this.$api.auth.login(payload);
+      console.log(uid)
     }
   }
 }

@@ -23,7 +23,8 @@ import java.util.UUID;
         methods = { RequestMethod.POST,RequestMethod.OPTIONS, RequestMethod.GET, RequestMethod.DELETE, RequestMethod.PUT })
 @RestController
 @Transactional
-@RequestMapping(value = "/cart")
+@RequestMapping(
+        value = "/cart")
 public class CartController {
 
     private final CartService cartService;
@@ -33,35 +34,32 @@ public class CartController {
         this.cartService = cartService;
     }
 
-    @PostMapping()
-    @PreAuthorize("hasAuthority('developers:write')")
-    public ResponseEntity<CartEntity> createCart(@RequestBody CartEntity cartEntity,
-                                                 @RequestParam(name = "productId")UUID productId) {
-        CartEntity createdCartEntity = cartService.createCart(cartEntity, productId);
+    @GetMapping("/add")
+    @PreAuthorize("hasAuthority('admin')")
+    public ResponseEntity<CartEntity> addItem(@RequestParam(name = "productId")UUID productId,
+                                              @RequestParam(name = "token")String token) {
+        CartEntity createdCartEntity = cartService.addItem(productId, token);
         return ResponseEntity.ok(createdCartEntity);
     }
 
     @PutMapping(value = "/{id}")
-    @PreAuthorize("hasAuthority('developers:write')")
-    public ResponseEntity<CartEntity> modifyItemInCart(@PathVariable(name = "id")UUID id, @RequestBody CartEntity cartEntity) {
+    public ResponseEntity<CartEntity> modifyItem(@PathVariable(name = "id")UUID id, @RequestBody CartEntity cartEntity) {
         Optional<CartEntity> result = cartService.modifyItem(id, cartEntity);
         return result
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping()
-    @PreAuthorize("hasAuthority('developers:write')")
-    public ResponseEntity<?> getAllCart(@RequestParam(name = "filter", required = false)String filter, Pageable pageable) {
+    @GetMapping("/get")
+    public ResponseEntity<?> getCart(@RequestParam(name = "user")String user, Pageable pageable) {
         CartDTO cartDTO = new CartDTO();
-        cartDTO.setCatalogPage(cartService.getAllCart(filter, pageable));
-        cartDTO.setCartSummary(cartService.getCartSummary());
+        cartDTO.setCatalogPage(cartService.getAllCart(user, pageable));
+        cartDTO.setCartSummary(cartService.getCartSummary(user));
         return new ResponseEntity<>(cartDTO, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('developers:write')")
-    public ResponseEntity<CartEntity> getCartItem(@PathVariable(name = "id") UUID id) {
+    public ResponseEntity<CartEntity> getItem(@PathVariable(name = "id") UUID id) {
         Optional<CartEntity> result = cartService.getById(id);
         return result
                 .map(ResponseEntity::ok)
@@ -69,8 +67,7 @@ public class CartController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('developers:write')")
-    public ResponseEntity<?> deleteCartItem (@PathVariable(name = "id")UUID id) {
+    public ResponseEntity<?> deleteItem(@PathVariable(name = "id")UUID id) {
         Optional<Boolean> deletedItem = cartService.deleteCartItem(id);
         return deletedItem
                 .map(e -> ResponseEntity.noContent().build())

@@ -65,6 +65,7 @@ export default {
   },
   data() {
     return {
+      token:"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhQG1haWwucnUiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE2MjYyNjg4MTEsImV4cCI6MTYyNjg3MzYxMX0.2WQ1l5GdTIbS00VmY65oO57oCki7OiueE8KqMUuwUBg",
       searchText: '',
       text: 'Корзина',
       products: [],
@@ -91,16 +92,12 @@ export default {
   },
   methods: {
     async getCart() {
-      this.productsFromServer = await this.$api.cart.getCart('cd668994-a73a-4da6-8f03-e7fe7034aa17');
+      this.productsFromServer = await this.$api.cart.getCart('a@mail.ru', this.token);
       this.products = this.productsFromServer.data.catalogPage.content;
       this.resultProductsCount = this.productsFromServer.data.cartSummary[0];
       this.resultProductsCost = this.productsFromServer.data.cartSummary[1];
       this.resultProductsDiscount = this.productsFromServer.data.cartSummary[2];
       this.finalResult = this.productsFromServer.data.cartSummary[3];
-    },
-    async searchProductsInCart() {
-      this.productsFromServer = await this.$api.cart.getCartWithFilters(this.searchText);
-      this.products = this.productsFromServer.data.catalogPage.content;
     },
     orderProducts() {
       this.$api.orders.addOrder(this.typeToServer);

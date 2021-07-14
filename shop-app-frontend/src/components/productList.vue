@@ -43,8 +43,11 @@
 },
   methods: {
   async addToCart() {
-  const payload = await this.$api.catalog.getCatalogItemByUUID(this.product.id);
-  this.$api.cart.addItemToCart(this.product.id, payload);
+
+
+    let token = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhQG1haWwucnUiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE2MjYyNzAyNjksImV4cCI6MTYyNjg3NTA2OX0.94eJt0Xxg8ItQ7O9lxVvuTsixFfYlLpL2ipXYx7v7t4'
+
+  await this.$api.cart.addItemToCart(this.product.id, token);
   eventBus.$emit('addToCart');
 },
   async deleteFromCart() {

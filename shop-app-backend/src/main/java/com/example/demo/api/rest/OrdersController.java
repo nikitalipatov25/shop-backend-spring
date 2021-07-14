@@ -4,13 +4,11 @@ import com.example.demo.core.models.OrdersEntity;
 import com.example.demo.core.services.OrdersService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @CrossOrigin(allowedHeaders = {
@@ -32,12 +30,14 @@ public class OrdersController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<List<OrdersEntity>> getOrdersForUser(@PathVariable(name = "id")UUID id) {
+    @PreAuthorize("hasAuthority('admin')")
+    public ResponseEntity<List<OrdersEntity>> getUserOrders(@PathVariable(name = "id")UUID id) {
         var result = ordersService.getAllByID(id);
         return ResponseEntity.ok(result);
     }
 
     @PostMapping()
+    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<OrdersEntity> generateOrder(@RequestParam(name = "orderType")String orderType) {
         OrdersEntity result = ordersService.generateOrder(orderType);
         return ResponseEntity.ok(result);

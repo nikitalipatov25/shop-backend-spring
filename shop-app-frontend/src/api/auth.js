@@ -1,7 +1,7 @@
 export default function (instance) {
     return {
-        login(login, password) {
-            return instance.post('/auth/login', login, password)
+        login(payload) {
+            return instance.post('api/auth/login',  payload)
         }
     }
 }

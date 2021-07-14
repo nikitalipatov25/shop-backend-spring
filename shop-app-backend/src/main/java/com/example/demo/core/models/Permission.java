@@ -1,8 +1,8 @@
 package com.example.demo.core.models;
 
 public enum Permission {
-    DEVELOPERS_READ("developers:read"),
-    DEVELOPERS_WRITE("developers:write");
+    AUTH_USER("authUser"),
+    ADMIN("admin");
 
     private final String permission;
 

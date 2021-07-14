@@ -32,7 +32,7 @@ public class OrdersService {
 
     public OrdersEntity generateOrder(String orderType) {
         var user = userService.getUserById(UUID.fromString("cd668994-a73a-4da6-8f03-e7fe7034aa17"));
-        var cart = cartService.findCartByUserID(user.get().getId());
+        var cart = cartService.findCartByUserID("a@mail.ru");
         OrdersEntity ordersEntity = new OrdersEntity();
         ordersEntity.setOrderId(UUID.randomUUID());
         ordersEntity.setUserId(user.get().getId());
@@ -49,7 +49,7 @@ public class OrdersService {
         ВРЕМЕННЫЕ КАСТЫЛИ
         */
         reorganizeCatalog(cart);
-        cartService.deleteAllUserCart(ordersEntity.getUserId());
+        cartService.deleteAllUserCart("a@mail.ru");
         return ordersRepository.save(ordersEntity);
 
     }

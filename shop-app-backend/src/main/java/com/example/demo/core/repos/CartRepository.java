@@ -13,7 +13,8 @@ public interface CartRepository extends JpaRepository<CartEntity, UUID> {
     Page<CartEntity> findByCatalogProductNameLike(String filter, Pageable pageable);
     Optional<CartEntity> findByProductId(UUID uuid);
     Optional<CartEntity> deleteByProductId(UUID uuid);
-    List<CartEntity> findAllByUserId(UUID userID);
-    Optional<CartEntity> deleteAllByUserId(UUID userID);
+    List<CartEntity> findAllByUserName(String username);
+    Page<CartEntity> findAllByUserName(String username, Pageable pageable);
+    Optional<CartEntity> deleteAllByUserName(String username);
 
 }

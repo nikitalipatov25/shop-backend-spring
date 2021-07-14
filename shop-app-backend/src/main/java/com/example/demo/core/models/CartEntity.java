@@ -15,7 +15,7 @@ public class CartEntity {
     private UUID productId;
 
     @Id
-    private UUID userId;
+    private String userName;
 
     private String catalogProductName;
 
@@ -39,12 +39,12 @@ public class CartEntity {
         this.productId = productId;
     }
 
-    public UUID getUserId() {
-        return userId;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUserId(UUID userId) {
-        this.userId = userId;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getCatalogProductName() {

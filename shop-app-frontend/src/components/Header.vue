@@ -13,6 +13,7 @@
       </div>
       <div class="col-2">
         <a href="/personalarea">Личный кабинет</a>
+        <a href="/login">Войти</a>
       </div>
       <div class="col-3">
         <input type="text" placeholder="Поиск товаров в каталоге" v-model="searchText">

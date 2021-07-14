@@ -39,6 +39,7 @@ export default {
   data() {
     return {
       count: 1,
+      token:'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhQG1haWwucnUiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE2MjYyNTYzNTIsImV4cCI6MTYyNjg2MTE1Mn0.MBbfdwjDStIFvIyClbRSLgHOCSY6P7kkbpWoOjuZkMM',
     }
   },
   methods: {
@@ -59,7 +60,7 @@ export default {
       eventBus.$emit('subCol')
     },
     async deleteItemFromCart() {
-      await this.$api.cart.deleteItemFromCart(this.product.productId);
+      await this.$api.cart.deleteItemFromCart(this.product.productId, this.token);
       eventBus.$emit('deleteItemFromCart');
 
     }

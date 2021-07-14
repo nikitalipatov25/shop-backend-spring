@@ -20,12 +20,9 @@ public class JwtTokenProvider {
 
     private final UserDetailsService userDetailsService;
 
-    @Value("${jwt.header}")
-    private String authHeader;
-    @Value("${jwt.secret}")
-    private String secretKey;
-    @Value("${jwt.expiration}")
-    private long validiyInMs;
+    private final String authHeader = "Authorization";
+    private String secretKey = "nickLipa";
+    private final long validiyInMs = 604800;
 
     public JwtTokenProvider(@Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;

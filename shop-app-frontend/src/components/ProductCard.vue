@@ -42,17 +42,18 @@ export default {
       byDefault: 'list',
       list: false,
       card : true,
+      userId: '0'
     }
   },
   methods: {
     async addToCart() {
       const payload = await this.$api.catalog.getCatalogItemByUUID(this.product.id);
       console.log(payload)
-      await this.$api.cart.addItemToCart(this.product.id, payload);
+      await this.$api.cart.addItemToCart(this.product.id, payload, this.userId);
       eventBus.$emit('addToCart');
     },
     async deleteFromCart() {
-      this.$api.cart.deleteItemFromCart(this.product.id);
+      this.$api.cart.deleteItemFromCart(this.product.id,this.token);
       eventBus.$emit('deleteFromCart');
     },
   }

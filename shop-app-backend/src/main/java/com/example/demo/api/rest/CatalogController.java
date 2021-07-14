@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -23,16 +24,16 @@ public class CatalogController {
     }
 
     @GetMapping()
-    public ResponseEntity<Page<CatalogEntity>> getFullCatalog(@RequestParam(name = "search", required = false)String searching,
-                                                              @RequestParam(name = "category", required = false)String category,
-                                                              @RequestParam(name = "checkboxes", required = false)String[] checkboxes,
-                                                              Pageable pageable) {
+    public ResponseEntity<Page<CatalogEntity>> getCatalog(@RequestParam(name = "search", required = false)String searching,
+                                                          @RequestParam(name = "category", required = false)String category,
+                                                          @RequestParam(name = "checkboxes", required = false)String[] checkboxes,
+                                                          Pageable pageable) {
         Page<CatalogEntity> catalogEntityList = catalogService.listAll(searching, category, checkboxes, pageable);
         return ResponseEntity.ok(catalogEntityList);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CatalogEntity> getCatalogItem(@PathVariable(name = "id") UUID id) {
+    public ResponseEntity<CatalogEntity> getItem(@PathVariable(name = "id") UUID id) {
         Optional<CatalogEntity> result = catalogService.getById(id);
         return result
                 .map(entity -> ResponseEntity.ok(entity))
@@ -40,7 +41,8 @@ public class CatalogController {
     }
 
     @PostMapping()
-    public ResponseEntity<CatalogEntity> createCatalog(@RequestBody CatalogEntity catalogEntity) {
+    @PreAuthorize("hasAuthority('admin')")
+    public ResponseEntity<CatalogEntity> addItem(@RequestBody CatalogEntity catalogEntity) {
        // проверить валидность catalogEntity
         boolean result = catalogService.validateEntity(catalogEntity);
         // если фальш выдаем ошибку bedRequest
@@ -54,7 +56,8 @@ public class CatalogController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<CatalogEntity> editCatalogItem(@PathVariable(name = "id")UUID id, @RequestBody CatalogEntity catalogEntity) {
+    @PreAuthorize("hasAuthority('admin')")
+    public ResponseEntity<CatalogEntity> editItem(@PathVariable(name = "id")UUID id, @RequestBody CatalogEntity catalogEntity) {
         boolean result = catalogService.validateEntity(catalogEntity);
         if (result) {
             Optional<CatalogEntity> resEdit = catalogService.editCatalog(id, catalogEntity);
@@ -67,7 +70,8 @@ public class CatalogController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteCatalogItem(@PathVariable(name = "id") UUID id) {
+    @PreAuthorize("hasAuthority('admin')")
+    public ResponseEntity<?> deleteItem(@PathVariable(name = "id") UUID id) {
         Optional<Boolean> result = catalogService.deleteById(id);
         return result
                 .map(e -> ResponseEntity.noContent().build())
