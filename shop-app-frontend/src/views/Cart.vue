@@ -1,6 +1,7 @@
 <template>
   <div class="cart">
     <Header/>
+    {{testtoken}}
     <div class="body">
       <div class="row">
         <div class="col-7">
@@ -65,7 +66,7 @@ export default {
   },
   data() {
     return {
-      token:"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhQG1haWwucnUiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE2MjYyNjg4MTEsImV4cCI6MTYyNjg3MzYxMX0.2WQ1l5GdTIbS00VmY65oO57oCki7OiueE8KqMUuwUBg",
+      token: 'empty',
       searchText: '',
       text: 'Корзина',
       products: [],
@@ -74,7 +75,7 @@ export default {
       resultProductsCost: 0,
       resultProductsDiscount: 0,
       finalResult: 0,
-      userName:"",
+      userName:'empty',
       userAdress:"",
       userPhone:"",
       orderType: [
@@ -91,24 +92,31 @@ export default {
     }
   },
   methods: {
-    async getCart() {
-      this.productsFromServer = await this.$api.cart.getCart('a@mail.ru', this.token);
-      this.products = this.productsFromServer.data.catalogPage.content;
-      this.resultProductsCount = this.productsFromServer.data.cartSummary[0];
-      this.resultProductsCost = this.productsFromServer.data.cartSummary[1];
-      this.resultProductsDiscount = this.productsFromServer.data.cartSummary[2];
-      this.finalResult = this.productsFromServer.data.cartSummary[3];
+     getCart() {
+      // HERE
+
+      // this.productsFromServer = this.$api.cart.getCart(this.userName,this.token);
+      // this.products = this.productsFromServer.data.catalogPage.content;
+      // this.resultProductsCount = this.productsFromServer.data.cartSummary[0];
+      // this.resultProductsCost = this.productsFromServer.data.cartSummary[1];
+      // this.resultProductsDiscount = this.productsFromServer.data.cartSummary[2];
+      // this.finalResult = this.productsFromServer.data.cartSummary[3];
     },
     orderProducts() {
       this.$api.orders.addOrder(this.typeToServer);
       this.$router.push({name: 'personal-area'})
     }
   },
+  computed: {
+    testtoken() {
+      return this.$store.getters.getToken
+    }
+  },
   created() {
-    this.getCart();
     eventBus.$on('deleteItemFromCart', this.getCart)
     eventBus.$on('addCol', this.getCart)
     eventBus.$on('subCol', this.getCart)
+    this.getCart();
   }
 }
 </script>

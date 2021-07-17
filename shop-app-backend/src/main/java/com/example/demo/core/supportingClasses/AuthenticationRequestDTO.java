@@ -1,4 +1,4 @@
-package com.example.demo.api.rest;
+package com.example.demo.core.supportingClasses;
 
 public class AuthenticationRequestDTO {
 

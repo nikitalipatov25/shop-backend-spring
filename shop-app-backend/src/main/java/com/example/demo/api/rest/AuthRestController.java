@@ -2,6 +2,7 @@ package com.example.demo.api.rest;
 
 import com.example.demo.core.models.User;
 import com.example.demo.core.repos.UserRepository;
+import com.example.demo.core.supportingClasses.AuthenticationRequestDTO;
 import com.example.demo.security.JwtTokenProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

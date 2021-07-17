@@ -13,10 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Function;
 
 @Service
@@ -39,7 +36,7 @@ public class CartService {
         Optional<CatalogEntity> product = catalogService.getById(productId);
         CartEntity newCartItem = new CartEntity();
         newCartItem.setProductId(product.get().getId());
-        newCartItem.setUserName("a@mail.ru");
+        newCartItem.setUserName(getUsername(token));
         newCartItem.setCatalogProductName(product.get().getProductName());
         newCartItem.setCatalogProductPrice(product.get().getProductPrice());
         newCartItem.setSelectedProductKol(1);
@@ -108,7 +105,9 @@ public class CartService {
     }
 
     public String getUsername(String token) {
-        return Jwts.parser().setSigningKey("nickLipa").parseClaimsJws(token).getBody().getSubject();
+        String secretKey = "nickLipa";
+        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
 

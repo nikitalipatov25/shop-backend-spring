@@ -10,7 +10,7 @@
           <div class="catalog-nav">
             <div class="row">
               <div class="col-3">
-                <h1>{{text}}</h1>
+                <h1>{{testToken}}</h1>
               </div>
               <div class="col-4">
               </div>
@@ -170,8 +170,15 @@ export default {
       await this.getCatalog()
     }
   },
-  created() {
-    this.countItemsInCart();
+  computed: {
+    testToken() {
+      return this.$store.getters.getToken
+    }
+
+  },
+   async created() {
+    await this.$store.dispatch('loadToken')
+    await this.countItemsInCart();
     eventBus.$on('addToCart', this.countItemsInCart);
     eventBus.$on('deleteFromCart', this.countItemsInCart);
 

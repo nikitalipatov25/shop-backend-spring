@@ -2,7 +2,6 @@
 
   <div class="container">
     <Header/>
-    <form>
       <h2>Login</h2>
       <p>
         <label>Username</label>
@@ -12,8 +11,8 @@
         <label >Password</label>
         <input v-model="password">
       </p>
-      <button @click="testLogin">Sign in</button>
-    </form>
+      <button @click="oldlogin">Sign in</button>
+
     <Footer/>
   </div>
 
@@ -22,7 +21,6 @@
 <script>
 import Header from "@/components/Header";
 import Footer from "@/components/Foter";
-
 
 export default {
   name: 'Login',
@@ -37,13 +35,15 @@ export default {
     }
   },
   methods: {
-    async testLogin() {
+    async login() {
       let payload = {
         "email": this.username,
         "password": this.password
       }
-      let uid = await this.$api.auth.login(payload);
-      console.log(uid)
+      let a = await this.$api.auth.login(payload);
+      let token = a.data.token
+      await this.$store.dispatch('loadToken', token)
+      console.log(token)
     }
   }
 }
