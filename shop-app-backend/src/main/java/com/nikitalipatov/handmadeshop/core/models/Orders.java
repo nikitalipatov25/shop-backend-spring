@@ -5,7 +5,7 @@ import javax.persistence.Id;
 import java.util.UUID;
 
 @Entity
-public class OrdersEntity {
+public class Orders {
 
     @Id
     private UUID orderId;

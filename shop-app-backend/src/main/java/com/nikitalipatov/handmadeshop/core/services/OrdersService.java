@@ -1,7 +1,7 @@
 package com.nikitalipatov.handmadeshop.core.services;
 
-import com.nikitalipatov.handmadeshop.core.models.CartEntity;
-import com.nikitalipatov.handmadeshop.core.models.OrdersEntity;
+import com.nikitalipatov.handmadeshop.core.models.Cart;
+import com.nikitalipatov.handmadeshop.core.models.Orders;
 import com.nikitalipatov.handmadeshop.core.repos.OrdersRepository;
 import com.nikitalipatov.handmadeshop.supportingClasses.CartInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,42 +17,35 @@ public class OrdersService {
 
     private final OrdersRepository ordersRepository;
     private final CartService cartService;
-    private final UserService userService;
     private final CatalogService catalogService;
 
     @Autowired
-    public OrdersService (OrdersRepository ordersRepository, CartService cartService, UserService userService, CatalogService catalogService) {
+    public OrdersService (OrdersRepository ordersRepository, CartService cartService, CatalogService catalogService) {
         this.ordersRepository = ordersRepository;
         this.cartService = cartService;
-        this.userService = userService;
         this.catalogService = catalogService;
     }
 
-    public OrdersEntity generateOrder(String orderType) {
-        var user = userService.getUserById(UUID.fromString("cd668994-a73a-4da6-8f03-e7fe7034aa17"));
+    public Orders generateOrder(String orderType) {
         var cart = cartService.findCartByUserID("a@mail.ru");
-        OrdersEntity ordersEntity = new OrdersEntity();
-        ordersEntity.setOrderId(UUID.randomUUID());
-        ordersEntity.setUserId(user.get().getId());
-        ordersEntity.setUserFIO(user.get().getFullName());
-        ordersEntity.setUserPhoneNumber(user.get().getPhoneNumber());
-        ordersEntity.setUserAddress(user.get().getAddress());
-        ordersEntity.setOrderType(orderType);
-        ordersEntity.setOrderStatus("Принят в магазине");
-        ordersEntity.setOrderDate(calculateOrderDate());
+        Orders orders = new Orders();
+        orders.setOrderId(UUID.randomUUID());
+        orders.setOrderType(orderType);
+        orders.setOrderStatus("Принят в магазине");
+        orders.setOrderDate(calculateOrderDate());
         CartInfo cartInfo = calculateCart(cart);
-        ordersEntity.setProductsInfo(cartInfo.getProductsInfo());
-        ordersEntity.setFinalPrice(cartInfo.getTotalCost());
+        orders.setProductsInfo(cartInfo.getProductsInfo());
+        orders.setFinalPrice(cartInfo.getTotalCost());
         /*
         ВРЕМЕННЫЕ КАСТЫЛИ
         */
         reorganizeCatalog(cart);
         cartService.deleteAllUserCart("a@mail.ru");
-        return ordersRepository.save(ordersEntity);
+        return ordersRepository.save(orders);
 
     }
 
-    public List<OrdersEntity> getAllByID(UUID userId) {
+    public List<Orders> getAllByID(UUID userId) {
         return ordersRepository.findByUserId(userId);
     }
 
@@ -62,7 +55,7 @@ public class OrdersService {
         return simpleDateFormat.format(currentDate);
     }
 
-    public CartInfo calculateCart(List<CartEntity> cart) {
+    public CartInfo calculateCart(List<Cart> cart) {
         CartInfo cartInfo = new CartInfo();
         String productsInfo = "";
         int totalItems = 0;
@@ -83,7 +76,7 @@ public class OrdersService {
         return cartInfo;
     }
 
-    public void reorganizeCatalog(List<CartEntity> cart) {
+    public void reorganizeCatalog(List<Cart> cart) {
         for (int i = 0; i < cart.size(); i++) {
             catalogService.modifyKolInCatalog(cart.get(i).getProductId(), cart.get(i).getSelectedProductKol());
         }

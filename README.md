@@ -1,3 +1,1 @@
-# shop-app
-Test shop application
-Change with installed Sourcetree
+# Магазин "Любимый питомец"

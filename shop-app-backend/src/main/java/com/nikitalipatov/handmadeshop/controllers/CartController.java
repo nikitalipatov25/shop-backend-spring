@@ -1,26 +1,22 @@
 package com.nikitalipatov.handmadeshop.controllers;
 
 import com.nikitalipatov.handmadeshop.supportingClasses.CartDTO;
-import com.nikitalipatov.handmadeshop.core.models.CartEntity;
+import com.nikitalipatov.handmadeshop.core.models.Cart;
 import com.nikitalipatov.handmadeshop.core.services.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.web.header.Header;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import java.util.UUID;
 
-@CrossOrigin(allowedHeaders = {
-        "Access-Control-Allow-Origin",
-        "Access-Control-Allow-Headers",
-        "Access-Control-Allow-Methods",
-        "Content-Type"
-        },
-        methods = { RequestMethod.POST,RequestMethod.OPTIONS, RequestMethod.GET, RequestMethod.DELETE, RequestMethod.PUT })
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @Transactional
 @RequestMapping(
@@ -35,16 +31,14 @@ public class CartController {
     }
 
     @GetMapping("/add")
-    @PreAuthorize("hasAuthority('admin')")
-    public ResponseEntity<CartEntity> addItem(@RequestParam(name = "productId")UUID productId,
-                                              @RequestParam(name = "token")String token) {
-        CartEntity createdCartEntity = cartService.addItem(productId, token);
-        return ResponseEntity.ok(createdCartEntity);
+    public ResponseEntity<Cart> addItem(@RequestParam(name = "productUUID")UUID productId, HttpServletRequest request) {
+        Cart createdCart = cartService.addItem(productId, request);
+        return ResponseEntity.ok(createdCart);
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<CartEntity> modifyItem(@PathVariable(name = "id")UUID id, @RequestBody CartEntity cartEntity) {
-        Optional<CartEntity> result = cartService.modifyItem(id, cartEntity);
+    public ResponseEntity<Cart> modifyItem(@PathVariable(name = "id")UUID id, @RequestBody Cart cart) {
+        Optional<Cart> result = cartService.modifyItem(id, cart);
         return result
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -59,8 +53,8 @@ public class CartController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CartEntity> getItem(@PathVariable(name = "id") UUID id) {
-        Optional<CartEntity> result = cartService.getById(id);
+    public ResponseEntity<Cart> getItem(@PathVariable(name = "id") UUID id) {
+        Optional<Cart> result = cartService.getById(id);
         return result
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());

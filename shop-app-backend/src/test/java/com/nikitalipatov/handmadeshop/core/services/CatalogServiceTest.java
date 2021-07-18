@@ -58,10 +58,10 @@ String category = "ddfdfd";
     public void testing() {
         String search = "товар";
         try {
-            var rez = catalogService.listAll(search, category,check, pageable);
+            var rez = catalogService.listAll(pageable);
             assertAll(
-            () -> assertEquals("майка", rez.getContent().get(0).getProductName()),
-            () -> assertEquals(200, rez.getContent().get(0).getProductPrice())
+            () -> assertEquals("майка", rez.getContent().get(0).getName()),
+            () -> assertEquals(200, rez.getContent().get(0).getPrice())
             );
         } catch (Exception ex) {
             System.out.println("Search parameter is empty, showing all catalog");

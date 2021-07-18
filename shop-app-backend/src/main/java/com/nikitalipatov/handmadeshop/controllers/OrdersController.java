@@ -1,6 +1,6 @@
 package com.nikitalipatov.handmadeshop.controllers;
 
-import com.nikitalipatov.handmadeshop.core.models.OrdersEntity;
+import com.nikitalipatov.handmadeshop.core.models.Orders;
 import com.nikitalipatov.handmadeshop.core.services.OrdersService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,15 +31,15 @@ public class OrdersController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('admin')")
-    public ResponseEntity<List<OrdersEntity>> getUserOrders(@PathVariable(name = "id")UUID id) {
+    public ResponseEntity<List<Orders>> getUserOrders(@PathVariable(name = "id")UUID id) {
         var result = ordersService.getAllByID(id);
         return ResponseEntity.ok(result);
     }
 
     @PostMapping()
     @PreAuthorize("hasAuthority('admin')")
-    public ResponseEntity<OrdersEntity> generateOrder(@RequestParam(name = "orderType")String orderType) {
-        OrdersEntity result = ordersService.generateOrder(orderType);
+    public ResponseEntity<Orders> generateOrder(@RequestParam(name = "orderType")String orderType) {
+        Orders result = ordersService.generateOrder(orderType);
         return ResponseEntity.ok(result);
     }
 

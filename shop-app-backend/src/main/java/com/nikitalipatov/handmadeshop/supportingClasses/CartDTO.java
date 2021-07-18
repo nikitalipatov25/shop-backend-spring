@@ -1,20 +1,20 @@
 package com.nikitalipatov.handmadeshop.supportingClasses;
 
-import com.nikitalipatov.handmadeshop.core.models.CartEntity;
+import com.nikitalipatov.handmadeshop.core.models.Cart;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public class CartDTO {
 
-    private Page<CartEntity> catalogPage;
+    private Page<Cart> catalogPage;
     private List<?> cartSummary;
 
-    public Page<CartEntity> getCatalogPage() {
+    public Page<Cart> getCatalogPage() {
         return catalogPage;
     }
 
-    public void setCatalogPage(Page<CartEntity> catalogPage) {
+    public void setCatalogPage(Page<Cart> catalogPage) {
         this.catalogPage = catalogPage;
     }
 

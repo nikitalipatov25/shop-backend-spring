@@ -1,8 +1,8 @@
 package com.nikitalipatov.handmadeshop.core.services;
 
-import com.nikitalipatov.handmadeshop.core.models.CatalogEntity;
+import com.nikitalipatov.handmadeshop.core.models.Catalog;
 import com.nikitalipatov.handmadeshop.supportingClasses.CartAnalyzer;
-import com.nikitalipatov.handmadeshop.core.models.CartEntity;
+import com.nikitalipatov.handmadeshop.core.models.Cart;
 import com.nikitalipatov.handmadeshop.core.repos.CartRepository;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 @Service
@@ -29,30 +30,33 @@ public class CartService {
         this.catalogService = catalogService;
     }
 
-    public CartEntity addItem(UUID productId, String token) {
-        Optional<CatalogEntity> product = catalogService.getById(productId);
-        CartEntity newCartItem = new CartEntity();
+    public Cart addItem(UUID productUUID, HttpServletRequest request) {
+        Optional<Catalog> product = catalogService.getById(productUUID);
+        Cart newCartItem = new Cart();
+        String header = request.getHeader("Authorization");
+        String token = header.substring(7, header.length());
+        String username = Jwts.parser().setSigningKey("bezKoderSecretKey").parseClaimsJws(token).getBody().getSubject();
+        newCartItem.setUserName(username);
         newCartItem.setProductId(product.get().getId());
-        newCartItem.setUserName(getUsername(token));
-        newCartItem.setCatalogProductName(product.get().getProductName());
-        newCartItem.setCatalogProductPrice(product.get().getProductPrice());
+        newCartItem.setCatalogProductName(product.get().getName());
+        newCartItem.setCatalogProductPrice(product.get().getPrice());
         newCartItem.setSelectedProductKol(1);
-        newCartItem.setProductCost(product.get().getProductPrice());
-        newCartItem.setCatalogProductPhoto(product.get().getProductPhoto());
+        newCartItem.setProductCost(product.get().getPrice());
+        newCartItem.setCatalogProductPhoto(product.get().getPhoto());
         return cartRepository.save(newCartItem);
     }
 
-    public Optional<CartEntity> modifyItem(UUID id, CartEntity cartEntity) {
-        Optional<CartEntity> result = cartRepository.findByProductId(id);
-        Optional<CatalogEntity> check = catalogService.getById(id);
+    public Optional<Cart> modifyItem(UUID id, Cart cart) {
+        Optional<Cart> result = cartRepository.findByProductId(id);
+        Optional<Catalog> check = catalogService.getById(id);
         return result
                 .map(entity -> {
-                    if (cartEntity.getSelectedProductKol() > check.get().getProductKol()) {
-                        entity.setSelectedProductKol(check.get().getProductKol());
-                    } else if (cartEntity.getSelectedProductKol() < 1) {
+                    if (cart.getSelectedProductKol() > check.get().getQuantity()) {
+                        entity.setSelectedProductKol(check.get().getQuantity());
+                    } else if (cart.getSelectedProductKol() < 1) {
                         entity.setSelectedProductKol(1);
                     } else {
-                        entity.setSelectedProductKol(cartEntity.getSelectedProductKol());
+                        entity.setSelectedProductKol(cart.getSelectedProductKol());
                     }
                     double a = entity.getCatalogProductPrice();
                     int b = entity.getSelectedProductKol();
@@ -71,7 +75,7 @@ public class CartService {
                 });
     }
 
-    public Page<CartEntity> getAllCart(String user, Pageable pageable) {
+    public Page<Cart> getAllCart(String user, Pageable pageable) {
             return cartRepository.findAllByUserName(user, pageable);
         }
 
@@ -79,13 +83,13 @@ public class CartService {
         return cartAnalyzer.resultOfCalculation(cartRepository.findAllByUserName(user));
     }
 
-    public Optional<CartEntity> getById(UUID id) {
+    public Optional<Cart> getById(UUID id) {
         return cartRepository.findByProductId(id);
     }
 
 
     public Optional<Boolean> deleteCartItem(UUID id) {
-        Optional<CartEntity> deletedItem = cartRepository.findByProductId(id);
+        Optional<Cart> deletedItem = cartRepository.findByProductId(id);
         return deletedItem
                 .map(cartEntity -> {
                     cartRepository.deleteByProductId(id);
@@ -93,7 +97,7 @@ public class CartService {
                 });
     }
 
-    public List<CartEntity> findCartByUserID(String username) {
+    public List<Cart> findCartByUserID(String username) {
         return cartRepository.findAllByUserName(username);
     }
 

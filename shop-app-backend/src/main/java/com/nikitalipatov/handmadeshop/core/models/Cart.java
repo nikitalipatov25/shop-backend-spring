@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @Entity
 @IdClass(CartCompositeKey.class)
-public class CartEntity {
+public class Cart {
 
     @Id
     private UUID productId;
