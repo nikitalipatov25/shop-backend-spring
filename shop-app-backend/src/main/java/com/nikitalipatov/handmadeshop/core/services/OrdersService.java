@@ -4,43 +4,60 @@ import com.nikitalipatov.handmadeshop.core.models.Cart;
 import com.nikitalipatov.handmadeshop.core.models.Orders;
 import com.nikitalipatov.handmadeshop.core.repos.OrdersRepository;
 import com.nikitalipatov.handmadeshop.supportingClasses.CartInfo;
+import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 @Service
+@Transactional
 public class OrdersService {
 
     private final OrdersRepository ordersRepository;
     private final CartService cartService;
     private final CatalogService catalogService;
+    private final UserService userService;
 
     @Autowired
-    public OrdersService (OrdersRepository ordersRepository, CartService cartService, CatalogService catalogService) {
+    public OrdersService (OrdersRepository ordersRepository, CartService cartService, CatalogService catalogService, UserService userService) {
         this.ordersRepository = ordersRepository;
         this.cartService = cartService;
         this.catalogService = catalogService;
+        this.userService = userService;
     }
 
-    public Orders generateOrder(String orderType) {
-        var cart = cartService.findCartByUserID("a@mail.ru");
-        Orders orders = new Orders();
-        orders.setOrderId(UUID.randomUUID());
-        orders.setOrderType(orderType);
-        orders.setOrderStatus("Принят в магазине");
-        orders.setOrderDate(calculateOrderDate());
-        CartInfo cartInfo = calculateCart(cart);
+    public Orders generateOrder(Orders orders, HttpServletRequest request) {
+        String header = request.getHeader("Authorization");
+        String token = header.substring(7, header.length());
+        String username = Jwts.parser().setSigningKey("bezKoderSecretKey").parseClaimsJws(token).getBody().getSubject();
+        var userCart = cartService.findCartByUserID(username);
+        var user = userService.findUser(username);
+        Orders newOrder = new Orders();
+        newOrder.setOrderId(UUID.randomUUID());
+        newOrder.setUserId(user.get().getId());
+        newOrder.setUserFIO(user.get().getFullName());
+        newOrder.setUserPhoneNumber(user.get().getPhoneNumber());
+        newOrder.setUserAddress(user.get().getAddress());
+
+        CartInfo cartInfo = calculateCart(userCart);
         orders.setProductsInfo(cartInfo.getProductsInfo());
         orders.setFinalPrice(cartInfo.getTotalCost());
+
+        orders.setOrderType(orders.getOrderType());
+        orders.setOrderStatus("Принят в магазине");
+        orders.setOrderDate(calculateOrderDate());
+
         /*
         ВРЕМЕННЫЕ КАСТЫЛИ
         */
-        reorganizeCatalog(cart);
-        cartService.deleteAllUserCart("a@mail.ru");
+        reorganizeCatalog(userCart);
+        cartService.deleteAllUserCart(username);
         return ordersRepository.save(orders);
 
     }

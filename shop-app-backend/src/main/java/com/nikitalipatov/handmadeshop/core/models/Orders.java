@@ -10,7 +10,7 @@ public class Orders {
     @Id
     private UUID orderId;
 
-    private UUID userId;
+    private Long userId;
 
     private String userFIO;
 
@@ -36,28 +36,12 @@ public class Orders {
         this.orderId = orderId;
     }
 
-    public UUID getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(UUID userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
-    }
-
-    public String getProductsInfo() {
-        return productsInfo;
-    }
-
-    public void setProductsInfo(String productsInfo) {
-        this.productsInfo = productsInfo;
-    }
-
-    public double getFinalPrice() {
-        return finalPrice;
-    }
-
-    public void setFinalPrice(double finalPrice) {
-        this.finalPrice = finalPrice;
     }
 
     public String getUserFIO() {
@@ -82,6 +66,22 @@ public class Orders {
 
     public void setUserAddress(String userAddress) {
         this.userAddress = userAddress;
+    }
+
+    public String getProductsInfo() {
+        return productsInfo;
+    }
+
+    public void setProductsInfo(String productsInfo) {
+        this.productsInfo = productsInfo;
+    }
+
+    public double getFinalPrice() {
+        return finalPrice;
+    }
+
+    public void setFinalPrice(double finalPrice) {
+        this.finalPrice = finalPrice;
     }
 
     public String getOrderStatus() {
