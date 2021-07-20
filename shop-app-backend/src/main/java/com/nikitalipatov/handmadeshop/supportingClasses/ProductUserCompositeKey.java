@@ -2,15 +2,15 @@ package com.nikitalipatov.handmadeshop.supportingClasses;
 
 import java.io.Serializable;
 import java.util.UUID;
-
-public class CartCompositeKey implements Serializable {
+            //CartComposeKey
+public class ProductUserCompositeKey implements Serializable {
 
     private UUID productId;
     private String userName;
 
-    public CartCompositeKey() {}
+    public ProductUserCompositeKey() {}
 
-    public CartCompositeKey(UUID productId, String userName) {
+    public ProductUserCompositeKey(UUID productId, String userName) {
         this.productId = productId;
         this.userName = userName;
     }
