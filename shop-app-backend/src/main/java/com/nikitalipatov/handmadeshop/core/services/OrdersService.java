@@ -37,11 +37,8 @@ public class OrdersService {
     }
 
     public Orders generateOrder(Orders orders, HttpServletRequest request) {
-        String header = request.getHeader("Authorization");
-        String token = header.substring(7, header.length());
-        String username = Jwts.parser().setSigningKey("bezKoderSecretKey").parseClaimsJws(token).getBody().getSubject();
-        var userCart = cartService.findCartByUserID(username);
-        var user = userService.findUser(username);
+        var user = userService.findUser(request);
+        var userCart = cartService.findCartByUserID(user.get().getUsername());
         Orders newOrder = new Orders();
         newOrder.setOrderId(UUID.randomUUID());
         newOrder.setUserId(user.get().getId());
@@ -55,14 +52,13 @@ public class OrdersService {
         ВРЕМЕННЫЕ КАСТЫЛИ
         */
         reorganizeCatalog(userCart);
-        cartService.deleteAllUserCart(username);
+        cartService.deleteAllUserCart(user.get().getUsername());
         return ordersRepository.save(newOrder);
 
     }
 
     public Page<Orders> getUserOrders(HttpServletRequest request, Pageable pageable) {
-        String username = AuthHelper.getUsernameFromToken(request);
-        var user = userService.findUser(username);
+        var user = userService.findUser(request);
         return ordersRepository.findByUserId(user.get().getId(), pageable);
     }
 
