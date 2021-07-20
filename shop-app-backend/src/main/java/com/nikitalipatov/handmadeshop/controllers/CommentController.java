@@ -7,10 +7,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Transactional
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping(value = "/comments")
 public class CommentController {
@@ -49,9 +52,9 @@ public class CommentController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("del/{userName}")
-    public ResponseEntity<?> deleteComment(@PathVariable(name = "userName")String username){
-        Optional<Boolean> deletedComment = commentService.delComment(username);
+    @DeleteMapping("del/{id}")
+    public ResponseEntity<?> deleteComment(@PathVariable(name = "id")Long id){
+        Optional<Boolean> deletedComment = commentService.delComment(id);
         return deletedComment
                 .map(e -> ResponseEntity.noContent().build())
                 .orElseGet(() -> ResponseEntity.notFound().build());

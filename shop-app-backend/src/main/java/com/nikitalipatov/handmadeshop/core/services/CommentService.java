@@ -9,12 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Transactional
 @Service
 public class CommentService {
 
@@ -40,10 +42,11 @@ public class CommentService {
         Date date = new Date();
         Optional<Catalog> product = catalogService.getById(productUUID);
         Comment newComment = new Comment();
-        String header = request.getHeader("Authorization");
-        String token = header.substring(7, header.length());
-        String username = Jwts.parser().setSigningKey("bezKoderSecretKey").parseClaimsJws(token).getBody().getSubject();
-        newComment.setUserName(username);
+//        String header = request.getHeader("Authorization");
+//        String token = header.substring(7, header.length());
+//        String username = Jwts.parser().setSigningKey("bezKoderSecretKey").parseClaimsJws(token).getBody().getSubject();
+//        System.out.println(username);
+        newComment.setUserName("NewUser");
         newComment.setProductId(product.get().getId());
         newComment.setDate(formatter.format(date));
         newComment.setRating(comment.getRating());
@@ -64,11 +67,11 @@ public class CommentService {
                 });
     }
 
-    public Optional<Boolean> delComment(String username){
-        Optional<Comment> deleteComment = commentRepository.findByUserName(username);
-        return deleteComment
+    public Optional<Boolean> delComment(Long id){
+        Optional<Comment> deletedComment = commentRepository.findByCommentId(id);
+        return deletedComment
                 .map(entity -> {
-                   commentRepository.deleteByUserName(username);
+                   commentRepository.deleteByCommentId(id);
                    return true;
                 });
     }

@@ -1,23 +1,23 @@
 package com.nikitalipatov.handmadeshop.core.models;
 
-import com.nikitalipatov.handmadeshop.supportingClasses.ProductUserCompositeKey;
+import com.nikitalipatov.handmadeshop.supportingClasses.CommentComposeKey;
 import org.springframework.beans.factory.annotation.Value;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
 @Table(name = "comment")
-@IdClass(ProductUserCompositeKey.class)
+@IdClass(CommentComposeKey.class)
 public class Comment {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long commentId;
 
     @Id
     private UUID productId;
 
-    @Id
     private String userName;
 
     private String text;
@@ -29,15 +29,12 @@ public class Comment {
     @Value("false")
     private Boolean changeable;
 
-    public Comment() {
+    public Long getCommentId() {
+        return commentId;
     }
 
-    public boolean isChangeable(boolean b) {
-        return changeable;
-    }
-
-    public void setChangeable(boolean changeable) {
-        this.changeable = changeable;
+    public void setCommentId(Long commentId) {
+        this.commentId = commentId;
     }
 
     public UUID getProductId() {
@@ -78,5 +75,13 @@ public class Comment {
 
     public void setRating(byte rating) {
         this.rating = rating;
+    }
+
+    public Boolean getChangeable() {
+        return changeable;
+    }
+
+    public void setChangeable(Boolean changeable) {
+        this.changeable = changeable;
     }
 }
