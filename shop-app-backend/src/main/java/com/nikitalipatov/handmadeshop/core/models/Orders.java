@@ -1,22 +1,23 @@
 package com.nikitalipatov.handmadeshop.core.models;
 
+import com.nikitalipatov.handmadeshop.supportingClasses.OrdersCompositeKey;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
+import javax.persistence.Table;
 import java.util.UUID;
 
 @Entity
+@Table(name = "orders")
+@IdClass(OrdersCompositeKey.class)
 public class Orders {
 
     @Id
     private UUID orderId;
 
+    @Id
     private Long userId;
-
-    private String userFIO;
-
-    private String userPhoneNumber;
-
-    private String userAddress;
 
     private String productsInfo;
 
@@ -42,30 +43,6 @@ public class Orders {
 
     public void setUserId(Long userId) {
         this.userId = userId;
-    }
-
-    public String getUserFIO() {
-        return userFIO;
-    }
-
-    public void setUserFIO(String userFIO) {
-        this.userFIO = userFIO;
-    }
-
-    public String getUserPhoneNumber() {
-        return userPhoneNumber;
-    }
-
-    public void setUserPhoneNumber(String userPhoneNumber) {
-        this.userPhoneNumber = userPhoneNumber;
-    }
-
-    public String getUserAddress() {
-        return userAddress;
-    }
-
-    public void setUserAddress(String userAddress) {
-        this.userAddress = userAddress;
     }
 
     public String getProductsInfo() {

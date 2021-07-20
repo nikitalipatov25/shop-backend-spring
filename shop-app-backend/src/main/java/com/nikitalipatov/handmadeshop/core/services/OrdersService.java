@@ -3,9 +3,12 @@ package com.nikitalipatov.handmadeshop.core.services;
 import com.nikitalipatov.handmadeshop.core.models.Cart;
 import com.nikitalipatov.handmadeshop.core.models.Orders;
 import com.nikitalipatov.handmadeshop.core.repos.OrdersRepository;
+import com.nikitalipatov.handmadeshop.helpers.AuthHelper;
 import com.nikitalipatov.handmadeshop.supportingClasses.CartInfo;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -41,29 +45,25 @@ public class OrdersService {
         Orders newOrder = new Orders();
         newOrder.setOrderId(UUID.randomUUID());
         newOrder.setUserId(user.get().getId());
-        newOrder.setUserFIO(user.get().getFullName());
-        newOrder.setUserPhoneNumber(user.get().getPhoneNumber());
-        newOrder.setUserAddress(user.get().getAddress());
-
         CartInfo cartInfo = calculateCart(userCart);
-        orders.setProductsInfo(cartInfo.getProductsInfo());
-        orders.setFinalPrice(cartInfo.getTotalCost());
-
-        orders.setOrderType(orders.getOrderType());
-        orders.setOrderStatus("Принят в магазине");
-        orders.setOrderDate(calculateOrderDate());
-
+        newOrder.setProductsInfo(cartInfo.getProductsInfo());
+        newOrder.setFinalPrice(cartInfo.getTotalCost());
+        newOrder.setOrderType(orders.getOrderType());
+        newOrder.setOrderStatus("Принят в магазине");
+        newOrder.setOrderDate(calculateOrderDate());
         /*
         ВРЕМЕННЫЕ КАСТЫЛИ
         */
         reorganizeCatalog(userCart);
         cartService.deleteAllUserCart(username);
-        return ordersRepository.save(orders);
+        return ordersRepository.save(newOrder);
 
     }
 
-    public List<Orders> getAllByID(UUID userId) {
-        return ordersRepository.findByUserId(userId);
+    public Page<Orders> getUserOrders(HttpServletRequest request, Pageable pageable) {
+        String username = AuthHelper.getUsernameFromToken(request);
+        var user = userService.findUser(username);
+        return ordersRepository.findByUserId(user.get().getId(), pageable);
     }
 
     public String calculateOrderDate() {

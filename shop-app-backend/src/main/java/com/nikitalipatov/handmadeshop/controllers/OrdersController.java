@@ -4,6 +4,8 @@ import com.nikitalipatov.handmadeshop.core.models.Orders;
 import com.nikitalipatov.handmadeshop.core.services.OrdersService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,9 +28,9 @@ public class OrdersController {
         this.ordersService = ordersService;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<List<Orders>> getUserOrders(@PathVariable(name = "id")UUID id) {
-        var result = ordersService.getAllByID(id);
+    @GetMapping()
+    public ResponseEntity<Page<Orders>> getUserOrders(HttpServletRequest request, Pageable pageable) {
+        var result = ordersService.getUserOrders(request, pageable);
         return ResponseEntity.ok(result);
     }
 
