@@ -42,11 +42,10 @@ public class CommentService {
         Date date = new Date();
         Optional<Catalog> product = catalogService.getById(productUUID);
         Comment newComment = new Comment();
-//        String header = request.getHeader("Authorization");
-//        String token = header.substring(7, header.length());
-//        String username = Jwts.parser().setSigningKey("bezKoderSecretKey").parseClaimsJws(token).getBody().getSubject();
-//        System.out.println(username);
-        newComment.setUserName("NewUser");
+        String header = request.getHeader("Authorization");
+        String token = header.substring(7, header.length());
+        String username = Jwts.parser().setSigningKey("bezKoderSecretKey").parseClaimsJws(token).getBody().getSubject();
+        newComment.setUserName(username);
         newComment.setProductId(product.get().getId());
         newComment.setDate(formatter.format(date));
         newComment.setRating(comment.getRating());

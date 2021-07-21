@@ -12,9 +12,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@Transactional
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "*", maxAge = 3600,
+        allowedHeaders = {
+                "*"
+        },
+        methods = { RequestMethod.POST,RequestMethod.OPTIONS, RequestMethod.GET, RequestMethod.DELETE, RequestMethod.PUT }
+)
 @RestController
+@Transactional
 @RequestMapping(value = "/comments")
 public class CommentController {
 
@@ -38,7 +43,7 @@ public class CommentController {
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/add/{id}")
+    @PostMapping("/{id}")
     public ResponseEntity<Comment> addComment(@PathVariable(name = "id")UUID productId, @RequestBody Comment comment, HttpServletRequest request){
         Comment createComment = commentService.saveComment(productId, comment, request);
         return ResponseEntity.ok(createComment);
@@ -52,7 +57,7 @@ public class CommentController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("del/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteComment(@PathVariable(name = "id")Long id){
         Optional<Boolean> deletedComment = commentService.delComment(id);
         return deletedComment
