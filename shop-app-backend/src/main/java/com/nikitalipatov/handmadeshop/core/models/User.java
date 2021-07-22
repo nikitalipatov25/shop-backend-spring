@@ -20,7 +20,7 @@ public class User {
 
 	@NotBlank
 	@Size(max = 20)
-	private String username;
+	private String username; // ФИО человка
 
 	@NotBlank
 	@Size(max = 50)
@@ -30,8 +30,6 @@ public class User {
 	@NotBlank
 	@Size(max = 120)
 	private String password;
-
-	private String fullName;
 
 	private String phoneNumber;
 
@@ -90,14 +88,6 @@ public class User {
 
 	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
-	}
-
-	public String getFullName() {
-		return fullName;
-	}
-
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
 	}
 
 	public String getPhoneNumber() {

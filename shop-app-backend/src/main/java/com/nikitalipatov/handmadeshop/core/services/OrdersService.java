@@ -3,50 +3,63 @@ package com.nikitalipatov.handmadeshop.core.services;
 import com.nikitalipatov.handmadeshop.core.models.Cart;
 import com.nikitalipatov.handmadeshop.core.models.Orders;
 import com.nikitalipatov.handmadeshop.core.repos.OrdersRepository;
+import com.nikitalipatov.handmadeshop.helpers.AuthHelper;
 import com.nikitalipatov.handmadeshop.supportingClasses.CartInfo;
+import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Transactional
 public class OrdersService {
 
     private final OrdersRepository ordersRepository;
     private final CartService cartService;
     private final CatalogService catalogService;
+    private final UserService userService;
 
     @Autowired
-    public OrdersService (OrdersRepository ordersRepository, CartService cartService, CatalogService catalogService) {
+    public OrdersService (OrdersRepository ordersRepository, CartService cartService, CatalogService catalogService, UserService userService) {
         this.ordersRepository = ordersRepository;
         this.cartService = cartService;
         this.catalogService = catalogService;
+        this.userService = userService;
     }
 
-    public Orders generateOrder(String orderType) {
-        var cart = cartService.findCartByUserID("a@mail.ru");
-        Orders orders = new Orders();
-        orders.setOrderId(UUID.randomUUID());
-        orders.setOrderType(orderType);
-        orders.setOrderStatus("Принят в магазине");
-        orders.setOrderDate(calculateOrderDate());
-        CartInfo cartInfo = calculateCart(cart);
-        orders.setProductsInfo(cartInfo.getProductsInfo());
-        orders.setFinalPrice(cartInfo.getTotalCost());
+    public Orders generateOrder(Orders orders, HttpServletRequest request) {
+        var user = userService.findUser(request);
+        var userCart = cartService.findCartByUserID(user.get().getUsername());
+        Orders newOrder = new Orders();
+        newOrder.setOrderId(UUID.randomUUID());
+        newOrder.setUserId(user.get().getId());
+        CartInfo cartInfo = calculateCart(userCart);
+        newOrder.setProductsInfo(cartInfo.getProductsInfo());
+        newOrder.setFinalPrice(cartInfo.getTotalCost());
+        newOrder.setOrderType(orders.getOrderType());
+        newOrder.setOrderStatus("Принят в магазине");
+        newOrder.setOrderDate(calculateOrderDate());
         /*
         ВРЕМЕННЫЕ КАСТЫЛИ
         */
-        reorganizeCatalog(cart);
-        cartService.deleteAllUserCart("a@mail.ru");
-        return ordersRepository.save(orders);
+        reorganizeCatalog(userCart);
+        cartService.deleteAllUserCart(user.get().getUsername());
+        return ordersRepository.save(newOrder);
 
     }
 
-    public List<Orders> getAllByID(UUID userId) {
-        return ordersRepository.findByUserId(userId);
+    public Page<Orders> getUserOrders(HttpServletRequest request, Pageable pageable) {
+        var user = userService.findUser(request);
+        return ordersRepository.findByUserId(user.get().getId(), pageable);
     }
 
     public String calculateOrderDate() {
