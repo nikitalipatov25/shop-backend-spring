@@ -1,6 +1,6 @@
 package com.nikitalipatov.handmadeshop.core.models;
 
-import com.nikitalipatov.handmadeshop.supportingClasses.CartCompositeKey;
+import com.nikitalipatov.handmadeshop.supportingClasses.ProductUserCompositeKey;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -8,7 +8,7 @@ import javax.persistence.IdClass;
 import java.util.UUID;
 
 @Entity
-@IdClass(CartCompositeKey.class)
+@IdClass(ProductUserCompositeKey.class)
 public class Cart {
 
     @Id
