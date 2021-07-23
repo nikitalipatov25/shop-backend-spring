@@ -42,6 +42,13 @@ public class Catalog {
     @Size(max = 20)
     private String category;
 
+    private String promotion;
+
+    private double promotionPrice;
+
+    public Catalog() {
+    }
+
     public UUID getId() {
         return id;
     }
@@ -104,5 +111,21 @@ public class Catalog {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public String getPromotion() {
+        return promotion;
+    }
+
+    public void setPromotion(String promotion) {
+        this.promotion = promotion;
+    }
+
+    public double getPromotionPrice() {
+        return promotionPrice;
+    }
+
+    public void setPromotionPrice(double promotionPrice) {
+        this.promotionPrice = promotionPrice;
     }
 }

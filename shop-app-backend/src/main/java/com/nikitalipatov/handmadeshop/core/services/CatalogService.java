@@ -119,4 +119,14 @@ public class CatalogService {
                 });
     }
 
+    public void setPromotion(String promotionType, int promotionDiscount) {
+        var result = catalogRepository.findAllByCategory(promotionType);
+        for (int i = 0; i < result.size(); i++) {
+            result.get(i).setPromotion(promotionType);
+            double temp = result.get(i).getPrice() * promotionDiscount / 100;
+            result.get(i).setPromotionPrice(result.get(i).getPrice() - temp);
+        }
+
+    }
+
 }
