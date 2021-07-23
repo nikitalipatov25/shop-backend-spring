@@ -1,6 +1,7 @@
 package com.nikitalipatov.handmadeshop.core.models;
 
 import com.nikitalipatov.handmadeshop.supportingClasses.CommentComposeKey;
+import net.bytebuddy.dynamic.loading.InjectionClassLoader;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
@@ -12,7 +13,7 @@ import java.util.UUID;
 public class Comment {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long commentId;
 
     @Id
@@ -26,8 +27,7 @@ public class Comment {
 
     private byte rating;
 
-    @Value("false")
-    private Boolean changeable;
+    private String dateUpdate;
 
     public Long getCommentId() {
         return commentId;
@@ -77,11 +77,11 @@ public class Comment {
         this.rating = rating;
     }
 
-    public Boolean getChangeable() {
-        return changeable;
+    public String getDateUpdate() {
+        return dateUpdate;
     }
 
-    public void setChangeable(Boolean changeable) {
-        this.changeable = changeable;
+    public void setDateUpdate(String dateUpdate) {
+        this.dateUpdate = dateUpdate;
     }
 }

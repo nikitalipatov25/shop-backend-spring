@@ -22,15 +22,15 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final CatalogService catalogService;
+    private final UserService userService;
 
     SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-YYYY");
 
-
-
     @Autowired
-    public CommentService(CommentRepository commentRepository, CatalogService catalogService) {
+    public CommentService(CommentRepository commentRepository, CatalogService catalogService, UserService userService) {
         this.commentRepository = commentRepository;
         this.catalogService = catalogService;
+        this.userService = userService;
     }
 
     public List<Comment> findAllComment(UUID uuid){
@@ -42,10 +42,8 @@ public class CommentService {
         Date date = new Date();
         Optional<Catalog> product = catalogService.getById(productUUID);
         Comment newComment = new Comment();
-        String header = request.getHeader("Authorization");
-        String token = header.substring(7, header.length());
-        String username = Jwts.parser().setSigningKey("bezKoderSecretKey").parseClaimsJws(token).getBody().getSubject();
-        newComment.setUserName(username);
+        var user = userService.findUser(request);
+        newComment.setUserName(user.get().getUsername());
         newComment.setProductId(product.get().getId());
         newComment.setDate(formatter.format(date));
         newComment.setRating(comment.getRating());
@@ -53,15 +51,14 @@ public class CommentService {
         return commentRepository.save(newComment);
     }
 
-    public Optional<Comment> modifyComment(String username ,Comment comment){
-        Optional<Comment> result = commentRepository.findByUserName(username);
+    public Optional<Comment> modifyComment(Long id ,Comment comment, HttpServletRequest request){
         Date date = new Date();
+        Optional<Comment> result = commentRepository.findByCommentId(id);
         return result
                 .map(entity -> {
                     entity.setText(comment.getText());
                     entity.setRating(comment.getRating());
-                    entity.setChangeable(true);
-                    entity.setDate(formatter.format(date));
+                    entity.setDateUpdate(formatter.format(date));
                     return commentRepository.save(entity);
                 });
     }

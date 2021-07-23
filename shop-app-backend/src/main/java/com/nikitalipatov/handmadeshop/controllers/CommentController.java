@@ -26,7 +26,7 @@ public class CommentController {
     /*
     37fd1a62-f27b-4c5c-b259-47916521c44a Stas
     416b0124-dafb-4de0-826d-3ba1ad9fb025 NewUser eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJOZXdVc2VyIiwiaWF0IjoxNjI2NzcyMDE5LCJleHAiOjE2MjY4NTg0MTl9.pP3KjVUqbf_Qqn8phlU7Uc9IDDnYq_g6SbP6E_gBA34RJg3n-9Xk4WDyBAbyYRzP1apL9zRXCAfy6m5DbYOrNQ
-
+eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJOZXdVc2VyIiwiaWF0IjoxNjI2OTQxNDE1LCJleHAiOjE2MjcwMjc4MTV9.TvrEKAJqleXWoPoBnQwuw2RbqW5WqvmKgH117W5PMRk9W7zLrOgUhcqDbtjEHlvtW8PpzzTSntkPWNKww9F9sg
 
      */
 
@@ -49,9 +49,9 @@ public class CommentController {
         return ResponseEntity.ok(createComment);
     }
 
-    @PutMapping(value = "/{userName}")
-    public ResponseEntity<Comment> modifyComment(@PathVariable(name = "userName")String username, @RequestBody Comment comment){
-        Optional<Comment> result = commentService.modifyComment(username, comment);
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<Comment> modifyComment(@PathVariable(name = "id")Long id, @RequestBody Comment comment, HttpServletRequest request){
+        Optional<Comment> result = commentService.modifyComment(id, comment, request);
         return result
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
