@@ -21,6 +21,10 @@ public class Promotion {
 
     private int discount;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "promotion_image")
+    private File file;
+
     public Promotion() {
     }
 
@@ -62,5 +66,13 @@ public class Promotion {
 
     public void setDiscount(int discount) {
         this.discount = discount;
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
     }
 }

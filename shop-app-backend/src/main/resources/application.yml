@@ -3,8 +3,16 @@ spring:
     url: jdbc:postgresql://localhost:5432/test_db
     username: postgres
     password: root
+  servlet:
+    multipart:
+      max-file-size: 2MB
+      max-request-size: 2MB
+
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL95Dialect
     show-sql: true
     hibernate:
       ddl-auto: update
+
+#      spring.servlet.multipart.max-file-size=2MB
+#      spring.servlet.multipart.max-request-size=2MB
