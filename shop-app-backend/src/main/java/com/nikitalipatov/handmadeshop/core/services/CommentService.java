@@ -51,7 +51,7 @@ public class CommentService {
         return commentRepository.save(newComment);
     }
 
-    public Optional<Comment> modifyComment(Long id ,Comment comment, HttpServletRequest request){
+    public Optional<Comment> modifyComment(Long id ,Comment comment){
         Date date = new Date();
         Optional<Comment> result = commentRepository.findByCommentId(id);
         return result

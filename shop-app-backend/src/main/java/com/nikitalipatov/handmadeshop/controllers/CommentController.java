@@ -50,8 +50,8 @@ eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJOZXdVc2VyIiwiaWF0IjoxNjI2OTQxNDE1LCJleHAiOjE2Mjc
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Comment> modifyComment(@PathVariable(name = "id")Long id, @RequestBody Comment comment, HttpServletRequest request){
-        Optional<Comment> result = commentService.modifyComment(id, comment, request);
+    public ResponseEntity<Comment> modifyComment(@PathVariable(name = "id")Long id, @RequestBody Comment comment){
+        Optional<Comment> result = commentService.modifyComment(id, comment);
         return result
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());

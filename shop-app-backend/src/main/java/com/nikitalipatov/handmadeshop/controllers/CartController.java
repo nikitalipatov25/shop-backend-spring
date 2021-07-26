@@ -11,10 +11,16 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "*", maxAge = 3600,
+        allowedHeaders = {
+        "*"
+},
+        methods = { RequestMethod.POST,RequestMethod.OPTIONS, RequestMethod.GET, RequestMethod.DELETE, RequestMethod.PUT }
+)
 @RestController
 @Transactional
 @RequestMapping(
@@ -66,6 +72,17 @@ public class CartController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @DeleteMapping("/all")
+    public ResponseEntity<?> deleteAll(HttpServletRequest request){
+        cartService.deleteAllUserCart(request);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/selected")
+    public  ResponseEntity<?> deleteSelectedCartItems(HttpServletRequest request, @RequestBody ArrayList<String> list){
+        cartService.deleteSelectedCartItems(request, list);
+        return  ResponseEntity.noContent().build();
+    }
 
 
 

@@ -52,7 +52,7 @@ public class OrdersService {
         ВРЕМЕННЫЕ КАСТЫЛИ
         */
         reorganizeCatalog(userCart);
-        cartService.deleteAllUserCart(user.get().getUsername());
+        cartService.deleteAllUserCart(request);
         return ordersRepository.save(newOrder);
 
     }

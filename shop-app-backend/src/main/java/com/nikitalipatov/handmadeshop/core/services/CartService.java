@@ -20,14 +20,14 @@ public class CartService {
 
     private final CartRepository cartRepository;
     private final CatalogService catalogService;
+    private final UserService userService;
     CartAnalyzer cartAnalyzer = new CartAnalyzer();
 
 
-
-    @Autowired
-    public CartService(CartRepository cartRepository, CatalogService catalogService) {
+    public CartService(CartRepository cartRepository, CatalogService catalogService, UserService userService) {
         this.cartRepository = cartRepository;
         this.catalogService = catalogService;
+        this.userService = userService;
     }
 
     public Cart addItem(UUID productUUID, HttpServletRequest request) {
@@ -101,8 +101,17 @@ public class CartService {
         return cartRepository.findAllByUserName(username);
     }
 
-    public void deleteAllUserCart(String username) {
-        cartRepository.deleteAllByUserName(username);
+    public void deleteAllUserCart(HttpServletRequest request) {
+        var user = userService.findUser(request);
+        cartRepository.deleteAllByUserName(user.get().getUsername());
+    }
+
+    public void deleteSelectedCartItems(HttpServletRequest request, ArrayList<String> list){
+        var user = userService.findUser(request);
+        for (int i = 0; i < list.size(); i++) {
+             cartRepository.deleteByProductId(UUID.fromString(list.get(i)));
+
+        }
     }
 
     public String getUsername(String token) {
