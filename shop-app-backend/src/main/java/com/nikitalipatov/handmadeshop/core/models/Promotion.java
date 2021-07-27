@@ -1,7 +1,5 @@
 package com.nikitalipatov.handmadeshop.core.models;
 
-import org.springframework.web.bind.annotation.RequestBody;
-
 import javax.persistence.*;
 import java.util.Date;
 
@@ -15,18 +13,17 @@ public class Promotion {
 
     private String name;
 
-    private String expirationDate;
+    private String description;
 
     private String type;
 
     private int discount;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "promotion_image")
-    private File file;
+    private String image;
 
-    public Promotion() {
-    }
+    private String date;
+
+    private String expirationDate;
 
     public Long getId() {
         return id;
@@ -44,12 +41,12 @@ public class Promotion {
         this.name = name;
     }
 
-    public String getExpirationDate() {
-        return expirationDate;
+    public String getDescription() {
+        return description;
     }
 
-    public void setExpirationDate(String expirationDate) {
-        this.expirationDate = expirationDate;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getType() {
@@ -68,11 +65,27 @@ public class Promotion {
         this.discount = discount;
     }
 
-    public File getFile() {
-        return file;
+    public String getImage() {
+        return image;
     }
 
-    public void setFile(File file) {
-        this.file = file;
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getExpirationDate() {
+        return expirationDate;
+    }
+
+    public void setExpirationDate(String expirationDate) {
+        this.expirationDate = expirationDate;
     }
 }

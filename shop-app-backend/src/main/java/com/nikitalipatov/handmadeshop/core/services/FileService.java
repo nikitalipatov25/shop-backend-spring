@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+
 @Service
 public class FileService {
 
@@ -25,6 +26,10 @@ public class FileService {
 
     public File getFile(String id) {
         return fileRepository.findById(id).get();
+    }
+
+    public File getFileByName(String name) {
+        return fileRepository.getFileByName(name).get();
     }
 
     public Stream<File> getAllFiles() {
