@@ -27,18 +27,21 @@ public class OrdersService {
     private final CartService cartService;
     private final CatalogService catalogService;
     private final UserService userService;
+    private final SaleReportService saleReportService;
 
-    @Autowired
-    public OrdersService (OrdersRepository ordersRepository, CartService cartService, CatalogService catalogService, UserService userService) {
+    public OrdersService(OrdersRepository ordersRepository, CartService cartService, CatalogService catalogService, UserService userService, SaleReportService saleReportService) {
         this.ordersRepository = ordersRepository;
         this.cartService = cartService;
         this.catalogService = catalogService;
         this.userService = userService;
+        this.saleReportService = saleReportService;
     }
 
     public Orders generateOrder(Orders orders, HttpServletRequest request) {
         var user = userService.findUser(request);
         var userCart = cartService.findCartByUserID(user.get().getUsername());
+        // получение списка всех товаров в корзине
+        saleReportService.checkReport(userCart);
         Orders newOrder = new Orders();
         newOrder.setOrderId(UUID.randomUUID());
         newOrder.setUserId(user.get().getId());
@@ -52,6 +55,7 @@ public class OrdersService {
         ВРЕМЕННЫЕ КАСТЫЛИ
         */
         reorganizeCatalog(userCart);
+//        Очистка корзины
         cartService.deleteAllUserCart(request);
         return ordersRepository.save(newOrder);
 
