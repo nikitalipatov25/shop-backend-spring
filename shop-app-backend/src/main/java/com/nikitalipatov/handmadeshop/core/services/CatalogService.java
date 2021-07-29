@@ -17,10 +17,12 @@ public class CatalogService {
     SearchParameterAnalyzer searchParameterAnalyzer = new SearchParameterAnalyzer();
 
     private final CatalogRepository catalogRepository;
+    private final FileService fileService;
 
     @Autowired
-    public CatalogService(CatalogRepository catalogRepository) {
+    public CatalogService(CatalogRepository catalogRepository, FileService fileService) {
         this.catalogRepository = catalogRepository;
+        this.fileService = fileService;
     }
 
     public Page<Catalog> listAll(Pageable pageable) {
@@ -81,8 +83,16 @@ public class CatalogService {
         newEntity.setDescription(catalog.getDescription());
         newEntity.setQuantity(catalog.getQuantity());
         newEntity.setName(catalog.getName());
-        newEntity.setPhoto(catalog.getPhoto());
+
+        newEntity.setAnimal(catalog.getAnimal());
+        newEntity.setCategory(catalog.getCategory());
+
+        var result = fileService.getFileByName(catalog.getPhoto());
+        newEntity.setPhoto(result.getId());
+
         newEntity.setPrice(catalog.getPrice());
+        newEntity.setPromotion("-");
+        newEntity.setPromotionPrice(0.0);
         return catalogRepository.save(newEntity);
     }
 
@@ -91,10 +101,15 @@ public class CatalogService {
         return result
                 .map(entity -> {
                     entity.setQuantity(catalog.getQuantity());
-                    entity.setPhoto(catalog.getPhoto());
+                    if (catalog.getPhoto() != null) {
+                        var file = fileService.getFileByName(catalog.getPhoto());
+                        entity.setPhoto(file.getId());
+                    }
                     entity.setPrice(catalog.getPrice());
                     entity.setName(catalog.getName());
                     entity.setDescription(catalog.getDescription());
+                    entity.setAnimal(catalog.getAnimal());
+                    entity.setCategory(catalog.getCategory());
                     return catalogRepository.save(entity);
                 });
 
