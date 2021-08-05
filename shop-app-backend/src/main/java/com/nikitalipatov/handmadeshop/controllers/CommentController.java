@@ -1,5 +1,6 @@
 package com.nikitalipatov.handmadeshop.controllers;
 
+import com.nikitalipatov.handmadeshop.core.models.Answer;
 import com.nikitalipatov.handmadeshop.core.models.Comment;
 import com.nikitalipatov.handmadeshop.core.services.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,4 +65,27 @@ eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJOZXdVc2VyIiwiaWF0IjoxNjI2OTQxNDE1LCJleHAiOjE2Mjc
                 .map(e -> ResponseEntity.noContent().build())
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    //answer
+    @GetMapping("/{id}/answer")
+    public ResponseEntity<Optional<Answer>> findAnswer(@PathVariable(name = "id")Long id){
+        var result = commentService.getAnswerByCommentId(id);
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/{id}/answer")
+    public ResponseEntity<Answer> addAnswer(@PathVariable(name = "id")Long id, @RequestBody Answer answer, HttpServletRequest request){
+        Answer createAnswer = commentService.saveAnswer(id, answer, request);
+        return ResponseEntity.ok(createAnswer);
+    }
+//
+//    @DeleteMapping("/{id}/answer")
+//    public ResponseEntity<?> delAnswer(@PathVariable(name = "id")Long id){
+//        Optional<Boolean> deleteAnswer = commentService.delAnswer(id);
+//        return deleteAnswer
+//                .map(e -> ResponseEntity.noContent().build())
+//                .orElseGet(() -> ResponseEntity.notFound().build());
+//    }
+
+
 }

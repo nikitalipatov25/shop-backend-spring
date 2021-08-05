@@ -5,6 +5,9 @@ import net.bytebuddy.dynamic.loading.InjectionClassLoader;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -13,10 +16,12 @@ import java.util.UUID;
 public class Comment {
 
     @Id
+    @Column(name = "comment_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long commentId;
 
     @Id
+    @Column(name = "product_id")
     private UUID productId;
 
     private String userName;
@@ -28,6 +33,23 @@ public class Comment {
     private byte rating;
 
     private String dateUpdate;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "answer_id")
+    private List<Answer> answers;
+
+    public Comment() {
+    }
+
+    public Comment(UUID productId, String userName, String text, String date, byte rating, String dateUpdate, List<Answer> answers) {
+        this.productId = productId;
+        this.userName = userName;
+        this.text = text;
+        this.date = date;
+        this.rating = rating;
+        this.dateUpdate = dateUpdate;
+        this.answers = answers;
+    }
 
     public Long getCommentId() {
         return commentId;
@@ -83,5 +105,13 @@ public class Comment {
 
     public void setDateUpdate(String dateUpdate) {
         this.dateUpdate = dateUpdate;
+    }
+
+    public List<Answer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
     }
 }

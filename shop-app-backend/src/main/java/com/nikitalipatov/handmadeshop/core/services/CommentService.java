@@ -1,34 +1,33 @@
 package com.nikitalipatov.handmadeshop.core.services;
 
+import com.nikitalipatov.handmadeshop.core.models.Answer;
 import com.nikitalipatov.handmadeshop.core.models.Catalog;
 import com.nikitalipatov.handmadeshop.core.models.Comment;
-import com.nikitalipatov.handmadeshop.core.repos.CatalogRepository;
+import com.nikitalipatov.handmadeshop.core.repos.AnswerRepository;
 import com.nikitalipatov.handmadeshop.core.repos.CommentRepository;
-import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Transactional
 @Service
 public class CommentService {
 
     private final CommentRepository commentRepository;
+    private final AnswerRepository answerRepository;
     private final CatalogService catalogService;
     private final UserService userService;
 
     SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-YYYY");
 
     @Autowired
-    public CommentService(CommentRepository commentRepository, CatalogService catalogService, UserService userService) {
+    public CommentService(CommentRepository commentRepository, AnswerRepository answerRepository,CatalogService catalogService, UserService userService) {
         this.commentRepository = commentRepository;
+        this.answerRepository = answerRepository;
         this.catalogService = catalogService;
         this.userService = userService;
     }
@@ -71,5 +70,34 @@ public class CommentService {
                    return true;
                 });
     }
+
+    //answers
+    public Optional<Answer> getAnswerByCommentId(Long commentId){
+        var result = answerRepository.findAllByCommentCommentId(commentId);
+        return result;
+    }
+
+    public Answer saveAnswer(Long commentId, Answer answer, HttpServletRequest request){
+        Date date = new Date();
+        var user = userService.findUser(request);
+        Answer newAnswer = new Answer();
+        newAnswer.setUserName(user.get().getUsername());
+        newAnswer.setText(answer.getText());
+        newAnswer.setDate(formatter.format(date));
+        Optional<Comment> comment = commentRepository.findByCommentId(commentId);
+        List<Answer> answerList = new ArrayList<>();
+        answerList.add(newAnswer);
+        comment.get().setAnswers(answerList);
+        return answerRepository.save(newAnswer);
+    }
+//
+//    public Optional<Boolean> delAnswer(Long id){
+//        Optional<Answer> deleteAnswer = answerRepository.findByAnswerId(id);
+//        return deleteAnswer
+//                .map(entity -> {
+//                    answerRepository.deleteAnswerByAnswerId(id);
+//                    return true;
+//                });
+//    }
 
 }

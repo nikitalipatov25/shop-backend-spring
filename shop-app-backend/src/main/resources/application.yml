@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/test_db
+    url: jdbc:postgresql://localhost:5432/shopBase
     username: postgres
     password: root
   servlet:
