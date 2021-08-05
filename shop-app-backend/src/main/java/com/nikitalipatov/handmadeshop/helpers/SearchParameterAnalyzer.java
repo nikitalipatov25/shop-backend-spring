@@ -1,4 +1,4 @@
-package com.nikitalipatov.handmadeshop.supportingClasses;
+package com.nikitalipatov.handmadeshop.helpers;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

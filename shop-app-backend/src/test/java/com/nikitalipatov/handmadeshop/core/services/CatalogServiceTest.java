@@ -1,7 +1,7 @@
 package com.nikitalipatov.handmadeshop.core.services;
 
-import com.nikitalipatov.handmadeshop.supportingClasses.SearchParameterAnalyzer;
-import com.nikitalipatov.handmadeshop.core.repos.CatalogRepository;
+import com.nikitalipatov.handmadeshop.helpers.SearchParameterAnalyzer;
+import com.nikitalipatov.handmadeshop.core.repositories.CatalogRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

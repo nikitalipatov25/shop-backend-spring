@@ -1,4 +1,4 @@
-package com.nikitalipatov.handmadeshop.core.repos;
+package com.nikitalipatov.handmadeshop.core.repositories;
 
 import com.nikitalipatov.handmadeshop.core.models.Cart;
 import org.springframework.data.jpa.repository.JpaRepository;

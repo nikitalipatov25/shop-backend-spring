@@ -1,6 +1,6 @@
 package com.nikitalipatov.handmadeshop.core.models;
 
-import com.nikitalipatov.handmadeshop.supportingClasses.OrdersCompositeKey;
+import com.nikitalipatov.handmadeshop.helpers.OrdersCompositeKey;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

@@ -1,7 +1,7 @@
 package com.nikitalipatov.handmadeshop.core.services;
 
 import com.nikitalipatov.handmadeshop.core.models.Promotion;
-import com.nikitalipatov.handmadeshop.core.repos.PromotionRepository;
+import com.nikitalipatov.handmadeshop.core.repositories.PromotionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

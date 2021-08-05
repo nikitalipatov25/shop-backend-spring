@@ -2,8 +2,7 @@ package com.nikitalipatov.handmadeshop.core.services;
 
 import com.nikitalipatov.handmadeshop.core.models.Catalog;
 import com.nikitalipatov.handmadeshop.core.models.Comment;
-import com.nikitalipatov.handmadeshop.core.repos.CatalogRepository;
-import com.nikitalipatov.handmadeshop.core.repos.CommentRepository;
+import com.nikitalipatov.handmadeshop.core.repositories.CommentRepository;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

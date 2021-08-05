@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.stream.Stream;
 
 import com.nikitalipatov.handmadeshop.core.models.File;
-import com.nikitalipatov.handmadeshop.core.repos.FileRepository;
+import com.nikitalipatov.handmadeshop.core.repositories.FileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;

@@ -1,7 +1,7 @@
 package com.nikitalipatov.handmadeshop.core.services;
 
 import com.nikitalipatov.handmadeshop.core.models.User;
-import com.nikitalipatov.handmadeshop.core.repos.UserRepository;
+import com.nikitalipatov.handmadeshop.core.repositories.UserRepository;
 import com.nikitalipatov.handmadeshop.helpers.AuthHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

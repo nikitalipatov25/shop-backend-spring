@@ -2,7 +2,7 @@ package com.nikitalipatov.handmadeshop.security.services;
 
 
 import com.nikitalipatov.handmadeshop.core.models.User;
-import com.nikitalipatov.handmadeshop.core.repos.UserRepository;
+import com.nikitalipatov.handmadeshop.core.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

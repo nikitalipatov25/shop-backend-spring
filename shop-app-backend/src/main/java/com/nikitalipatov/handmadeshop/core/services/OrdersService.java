@@ -2,10 +2,8 @@ package com.nikitalipatov.handmadeshop.core.services;
 
 import com.nikitalipatov.handmadeshop.core.models.Cart;
 import com.nikitalipatov.handmadeshop.core.models.Orders;
-import com.nikitalipatov.handmadeshop.core.repos.OrdersRepository;
-import com.nikitalipatov.handmadeshop.helpers.AuthHelper;
-import com.nikitalipatov.handmadeshop.supportingClasses.CartInfo;
-import io.jsonwebtoken.Jwts;
+import com.nikitalipatov.handmadeshop.core.repositories.OrdersRepository;
+import com.nikitalipatov.handmadeshop.helpers.CartInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service

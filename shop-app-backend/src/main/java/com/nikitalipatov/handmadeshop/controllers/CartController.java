@@ -1,6 +1,6 @@
 package com.nikitalipatov.handmadeshop.controllers;
 
-import com.nikitalipatov.handmadeshop.supportingClasses.CartDTO;
+import com.nikitalipatov.handmadeshop.helpers.CartDTO;
 import com.nikitalipatov.handmadeshop.core.models.Cart;
 import com.nikitalipatov.handmadeshop.core.services.CartService;
 import org.springframework.beans.factory.annotation.Autowired;

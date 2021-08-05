@@ -1,4 +1,4 @@
-package com.nikitalipatov.handmadeshop.supportingClasses;
+package com.nikitalipatov.handmadeshop.helpers;
 
 import com.nikitalipatov.handmadeshop.core.models.Cart;
 

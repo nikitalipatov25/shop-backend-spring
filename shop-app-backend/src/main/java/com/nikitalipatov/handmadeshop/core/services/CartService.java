@@ -1,9 +1,9 @@
 package com.nikitalipatov.handmadeshop.core.services;
 
 import com.nikitalipatov.handmadeshop.core.models.Catalog;
-import com.nikitalipatov.handmadeshop.supportingClasses.CartAnalyzer;
+import com.nikitalipatov.handmadeshop.helpers.CartAnalyzer;
 import com.nikitalipatov.handmadeshop.core.models.Cart;
-import com.nikitalipatov.handmadeshop.core.repos.CartRepository;
+import com.nikitalipatov.handmadeshop.core.repositories.CartRepository;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

@@ -1,6 +1,6 @@
 package com.nikitalipatov.handmadeshop.core.models;
 
-import com.nikitalipatov.handmadeshop.supportingClasses.CommentComposeKey;
+import com.nikitalipatov.handmadeshop.helpers.CommentComposeKey;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
