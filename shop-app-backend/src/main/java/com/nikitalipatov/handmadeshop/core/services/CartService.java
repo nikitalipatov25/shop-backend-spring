@@ -1,6 +1,6 @@
 package com.nikitalipatov.handmadeshop.core.services;
 
-import com.nikitalipatov.handmadeshop.core.models.Catalog;
+import com.nikitalipatov.handmadeshop.core.models.Product;
 import com.nikitalipatov.handmadeshop.helpers.CartAnalyzer;
 import com.nikitalipatov.handmadeshop.core.models.Cart;
 import com.nikitalipatov.handmadeshop.core.repositories.CartRepository;
@@ -19,19 +19,19 @@ import java.util.*;
 public class CartService {
 
     private final CartRepository cartRepository;
-    private final CatalogService catalogService;
+    private final ProductService productService;
     CartAnalyzer cartAnalyzer = new CartAnalyzer();
 
 
 
     @Autowired
-    public CartService(CartRepository cartRepository, CatalogService catalogService) {
+    public CartService(CartRepository cartRepository, ProductService productService) {
         this.cartRepository = cartRepository;
-        this.catalogService = catalogService;
+        this.productService = productService;
     }
 
     public Cart addItem(UUID productUUID, HttpServletRequest request) {
-        Optional<Catalog> product = catalogService.getById(productUUID);
+        Optional<Product> product = productService.getById(productUUID);
         Cart newCartItem = new Cart();
         String header = request.getHeader("Authorization");
         String token = header.substring(7, header.length());
@@ -42,17 +42,17 @@ public class CartService {
         newCartItem.setCatalogProductPrice(product.get().getPrice());
         newCartItem.setSelectedProductKol(1);
         newCartItem.setProductCost(product.get().getPrice());
-        newCartItem.setCatalogProductPhoto(product.get().getPhoto());
+        newCartItem.setCatalogProductPhoto(product.get().getImage());
         return cartRepository.save(newCartItem);
     }
 
     public Optional<Cart> modifyItem(UUID id, Cart cart) {
         Optional<Cart> result = cartRepository.findByProductId(id);
-        Optional<Catalog> check = catalogService.getById(id);
+        Optional<Product> check = productService.getById(id);
         return result
                 .map(entity -> {
-                    if (cart.getSelectedProductKol() > check.get().getQuantity()) {
-                        entity.setSelectedProductKol(check.get().getQuantity());
+                    if (cart.getSelectedProductKol() > check.get().getAmount()) {
+                        entity.setSelectedProductKol(check.get().getAmount());
                     } else if (cart.getSelectedProductKol() < 1) {
                         entity.setSelectedProductKol(1);
                     } else {

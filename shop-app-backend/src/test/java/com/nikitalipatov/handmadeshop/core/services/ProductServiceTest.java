@@ -1,7 +1,7 @@
 package com.nikitalipatov.handmadeshop.core.services;
 
 import com.nikitalipatov.handmadeshop.helpers.SearchParameterAnalyzer;
-import com.nikitalipatov.handmadeshop.core.repositories.CatalogRepository;
+import com.nikitalipatov.handmadeshop.core.repositories.ProductRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,13 +10,13 @@ import org.springframework.data.domain.Pageable;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class CatalogServiceTest {
+class ProductServiceTest {
 
     @Autowired
-    CatalogService catalogService;
+    ProductService productService;
 
     @Autowired
-    CatalogRepository catalogRepository;
+    ProductRepository productRepository;
 
     Pageable pageable;
 
@@ -58,14 +58,14 @@ String category = "ddfdfd";
     public void testing() {
         String search = "товар";
         try {
-            var rez = catalogService.listAll(pageable);
+            var rez = productService.listAll(pageable);
             assertAll(
             () -> assertEquals("майка", rez.getContent().get(0).getName()),
             () -> assertEquals(200, rez.getContent().get(0).getPrice())
             );
         } catch (Exception ex) {
             System.out.println("Search parameter is empty, showing all catalog");
-            catalogRepository.findAll();
+            productRepository.findAll();
         }
     }
 }

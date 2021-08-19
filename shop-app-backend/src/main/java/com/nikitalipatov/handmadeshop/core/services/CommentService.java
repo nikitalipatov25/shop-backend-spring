@@ -1,77 +1,104 @@
 package com.nikitalipatov.handmadeshop.core.services;
 
-import com.nikitalipatov.handmadeshop.core.models.Catalog;
+import com.nikitalipatov.handmadeshop.core.models.Answer;
+import com.nikitalipatov.handmadeshop.core.models.Product;
 import com.nikitalipatov.handmadeshop.core.models.Comment;
+import com.nikitalipatov.handmadeshop.core.repositories.AnswerRepository;
 import com.nikitalipatov.handmadeshop.core.repositories.CommentRepository;
-import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Transactional
 @Service
 public class CommentService {
 
     private final CommentRepository commentRepository;
-    private final CatalogService catalogService;
+    private final AnswerRepository answerRepository;
+    private final ProductService productService;
+    private final UserService userService;
 
     SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-YYYY");
 
-
-
     @Autowired
-    public CommentService(CommentRepository commentRepository, CatalogService catalogService) {
+    public CommentService(CommentRepository commentRepository, AnswerRepository answerRepository, ProductService productService, UserService userService) {
         this.commentRepository = commentRepository;
-        this.catalogService = catalogService;
+        this.answerRepository = answerRepository;
+        this.productService = productService;
+        this.userService = userService;
     }
 
     public List<Comment> findAllComment(UUID uuid){
-        var result = commentRepository.findAllByProductId(uuid);
+        var result = commentRepository.findAll();
         return result;
     }
 
     public Comment saveComment(UUID productUUID, Comment comment, HttpServletRequest request){
         Date date = new Date();
-        Optional<Catalog> product = catalogService.getById(productUUID);
+        Optional<Product> product = productService.getById(productUUID);
         Comment newComment = new Comment();
-        String header = request.getHeader("Authorization");
-        String token = header.substring(7, header.length());
-        String username = Jwts.parser().setSigningKey("bezKoderSecretKey").parseClaimsJws(token).getBody().getSubject();
-        newComment.setUserName(username);
-        newComment.setProductId(product.get().getId());
+        var user = userService.findUser(request);
         newComment.setDate(formatter.format(date));
         newComment.setRating(comment.getRating());
         newComment.setText(comment.getText());
+        HashSet<Comment> set = new HashSet<>();
+        set.add(newComment);
+        product.get().setComments(set);
+//        productService.editCatalog(productUUID, product.get());
         return commentRepository.save(newComment);
     }
 
-    public Optional<Comment> modifyComment(String username ,Comment comment){
-        Optional<Comment> result = commentRepository.findByUserName(username);
+    public Optional<Comment> modifyComment(Long id ,Comment comment){
         Date date = new Date();
+        Optional<Comment> result = commentRepository.findById(id);
         return result
                 .map(entity -> {
                     entity.setText(comment.getText());
                     entity.setRating(comment.getRating());
-                    entity.setChangeable(true);
-                    entity.setDate(formatter.format(date));
                     return commentRepository.save(entity);
                 });
     }
 
     public Optional<Boolean> delComment(Long id){
-        Optional<Comment> deletedComment = commentRepository.findByCommentId(id);
+        Optional<Comment> deletedComment = commentRepository.findById(id);
         return deletedComment
                 .map(entity -> {
-                   commentRepository.deleteByCommentId(id);
+                   commentRepository.deleteById(id);
                    return true;
                 });
     }
+
+    //answers
+    public Optional<Answer> getAnswerByCommentId(Long commentId){
+        var com = commentRepository.findById(commentId);
+        var result = answerRepository.findByComment(com.get());
+        return Optional.ofNullable(result);
+    }
+
+    public Answer saveAnswer(Long commentId, Answer answer, HttpServletRequest request){
+        Date date = new Date();
+        var user = userService.findUser(request);
+        Answer newAnswer = new Answer();
+        newAnswer.setText(answer.getText());
+        newAnswer.setDate(formatter.format(date));
+        Optional<Comment> comment = commentRepository.findById(commentId);
+        Set<Answer> answerList = new HashSet<>();
+        answerList.add(newAnswer);
+        comment.get().setAnswers(answerList);
+        return answerRepository.save(newAnswer);
+    }
+//
+//    public Optional<Boolean> delAnswer(Long id){
+//        Optional<Answer> deleteAnswer = answerRepository.findByAnswerId(id);
+//        return deleteAnswer
+//                .map(entity -> {
+//                    answerRepository.deleteAnswerByAnswerId(id);
+//                    return true;
+//                });
+//    }
 
 }

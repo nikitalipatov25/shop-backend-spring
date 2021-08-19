@@ -1,5 +1,6 @@
 package com.nikitalipatov.handmadeshop.controllers;
 
+import com.nikitalipatov.handmadeshop.core.models.Answer;
 import com.nikitalipatov.handmadeshop.core.models.Comment;
 import com.nikitalipatov.handmadeshop.core.services.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +24,6 @@ import java.util.UUID;
 @RequestMapping(value = "/comments")
 public class CommentController {
 
-    /*
-    37fd1a62-f27b-4c5c-b259-47916521c44a Stas
-    416b0124-dafb-4de0-826d-3ba1ad9fb025 NewUser eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJOZXdVc2VyIiwiaWF0IjoxNjI2NzcyMDE5LCJleHAiOjE2MjY4NTg0MTl9.pP3KjVUqbf_Qqn8phlU7Uc9IDDnYq_g6SbP6E_gBA34RJg3n-9Xk4WDyBAbyYRzP1apL9zRXCAfy6m5DbYOrNQ
-
-
-     */
 
     CommentService commentService;
 
@@ -49,9 +44,9 @@ public class CommentController {
         return ResponseEntity.ok(createComment);
     }
 
-    @PutMapping(value = "/{userName}")
-    public ResponseEntity<Comment> modifyComment(@PathVariable(name = "userName")String username, @RequestBody Comment comment){
-        Optional<Comment> result = commentService.modifyComment(username, comment);
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<Comment> modifyComment(@PathVariable(name = "id")Long id, @RequestBody Comment comment){
+        Optional<Comment> result = commentService.modifyComment(id, comment);
         return result
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -64,4 +59,27 @@ public class CommentController {
                 .map(e -> ResponseEntity.noContent().build())
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    //answer
+    @GetMapping("/{id}/answer")
+    public ResponseEntity<Optional<Answer>> findAnswer(@PathVariable(name = "id")Long id){
+        var result = commentService.getAnswerByCommentId(id);
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/{id}/answer")
+    public ResponseEntity<Answer> addAnswer(@PathVariable(name = "id")Long id, @RequestBody Answer answer, HttpServletRequest request){
+        Answer createAnswer = commentService.saveAnswer(id, answer, request);
+        return ResponseEntity.ok(createAnswer);
+    }
+//
+//    @DeleteMapping("/{id}/answer")
+//    public ResponseEntity<?> delAnswer(@PathVariable(name = "id")Long id){
+//        Optional<Boolean> deleteAnswer = commentService.delAnswer(id);
+//        return deleteAnswer
+//                .map(e -> ResponseEntity.noContent().build())
+//                .orElseGet(() -> ResponseEntity.notFound().build());
+//    }
+
+
 }

@@ -1,30 +1,28 @@
 package com.nikitalipatov.handmadeshop.core.models;
 
-import com.nikitalipatov.handmadeshop.helpers.CommentComposeKey;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Entity
-@Table(name = "comments")
+@Table(name = "answers")
 @Getter
 @Setter
 @AllArgsConstructor
-public class Comment {
+public class Answer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String text;
     private String date;
-    private double rating;
-    @OneToMany(mappedBy = "comment")
-    private Set<Answer> answers;
+    @ManyToOne
+    @JoinColumn(name = "comment_id")
+    private Comment comment;
 
-    public Comment() {
+    public Answer() {
     }
 }

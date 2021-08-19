@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-    class OldCatalogServiceTest {
+    class OldProductServiceTest {
 
         @RepeatedTest(10)
         void testing () {

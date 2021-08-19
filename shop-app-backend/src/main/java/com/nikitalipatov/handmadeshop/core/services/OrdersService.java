@@ -22,14 +22,14 @@ public class OrdersService {
 
     private final OrdersRepository ordersRepository;
     private final CartService cartService;
-    private final CatalogService catalogService;
+    private final ProductService productService;
     private final UserService userService;
 
     @Autowired
-    public OrdersService (OrdersRepository ordersRepository, CartService cartService, CatalogService catalogService, UserService userService) {
+    public OrdersService (OrdersRepository ordersRepository, CartService cartService, ProductService productService, UserService userService) {
         this.ordersRepository = ordersRepository;
         this.cartService = cartService;
-        this.catalogService = catalogService;
+        this.productService = productService;
         this.userService = userService;
     }
 
@@ -88,7 +88,7 @@ public class OrdersService {
 
     public void reorganizeCatalog(List<Cart> cart) {
         for (int i = 0; i < cart.size(); i++) {
-            catalogService.modifyKolInCatalog(cart.get(i).getProductId(), cart.get(i).getSelectedProductKol());
+            productService.modifyKolInCatalog(cart.get(i).getProductId(), cart.get(i).getSelectedProductKol());
         }
 
     }

@@ -4,7 +4,9 @@ import java.io.Serializable;
 import java.util.UUID;
 
 public class CommentComposeKey implements Serializable {
+
     private Long commentId;
+
     private UUID productId;
 
     public CommentComposeKey() {}

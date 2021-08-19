@@ -15,13 +15,13 @@ import javax.transaction.Transactional;
 public class PromotionService {
 
     private final PromotionRepository promotionRepository;
-    private final CatalogService catalogService;
+    private final ProductService productService;
     private final FileService fileService;
 
     @Autowired
-    public PromotionService(PromotionRepository promotionRepository, CatalogService catalogService, FileService fileService) {
+    public PromotionService(PromotionRepository promotionRepository, ProductService productService, FileService fileService) {
         this.promotionRepository = promotionRepository;
-        this.catalogService = catalogService;
+        this.productService = productService;
         this.fileService = fileService;
     }
 
@@ -37,9 +37,9 @@ public class PromotionService {
         var result = fileService.getFileByName(promotion.getImage());
         newPromotion.setImage(result.getId());
 
-        if (products == null) {
-            catalogService.setPromotion(promotion.getType(), promotion.getDiscount());
-        }
+//        if (products == null) {
+//            productService.setPromotion(promotion.getType(), promotion.getDiscount());
+//        }
         return promotionRepository.save(newPromotion);
     }
 
