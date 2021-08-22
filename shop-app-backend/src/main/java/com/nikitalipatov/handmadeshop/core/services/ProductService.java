@@ -1,14 +1,21 @@
 package com.nikitalipatov.handmadeshop.core.services;
 
+import com.nikitalipatov.handmadeshop.core.models.Animal;
+import com.nikitalipatov.handmadeshop.core.models.Category;
 import com.nikitalipatov.handmadeshop.core.repositories.ProductRepository;
+import com.nikitalipatov.handmadeshop.helpers.FilterDTO;
 import com.nikitalipatov.handmadeshop.helpers.SearchParameterAnalyzer;
 import com.nikitalipatov.handmadeshop.core.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -16,11 +23,15 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final FileService fileService;
+    private final AnimalService animalService;
+    private final CategoryService categoryService;
 
     @Autowired
-    public ProductService(ProductRepository productRepository, FileService fileService) {
+    public ProductService(ProductRepository productRepository, FileService fileService, AnimalService animalService, CategoryService categoryService) {
         this.productRepository = productRepository;
         this.fileService = fileService;
+        this.animalService = animalService;
+        this.categoryService = categoryService;
     }
 
     public Page<Product> listAll(Pageable pageable) {
@@ -38,14 +49,12 @@ public class ProductService {
         newEntity.setDescription(product.getDescription());
         newEntity.setAmount(product.getAmount());
         newEntity.setName(product.getName());
-
+        var image = fileService.getFileByName(product.getImage());
+        newEntity.setImage(image.getId());
+        newEntity.setPrice(product.getPrice());
         newEntity.setAnimal(product.getAnimal());
         newEntity.setCategory(product.getCategory());
-
-        var result = fileService.getFileByName(product.getImage());
-        newEntity.setImage(result.getId());
-
-        newEntity.setPrice(product.getPrice());
+        newEntity.setRating(0.0);
         return productRepository.save(newEntity);
     }
 
@@ -62,8 +71,6 @@ public class ProductService {
                     entity.setName(product.getName());
                     entity.setDescription(product.getDescription());
                     entity.setComments(product.getComments());
-                    entity.setAnimal(product.getAnimal());
-                    entity.setCategory(product.getCategory());
                     return productRepository.save(entity);
                 });
 
@@ -86,6 +93,18 @@ public class ProductService {
                     modifyingEntity.setAmount(nowInCatalog - productKolInCart);
                     return productRepository.save(modifyingEntity);
                 });
+    }
+
+    public Product filterProducts(FilterDTO filterDTO, Pageable pageable) {
+        FilterDTO example = FilterDTO
+                .builder()
+                .animal(filterDTO.getAnimal())
+                .categories(filterDTO.getCategories())
+                .isDeal(filterDTO.isDeal())
+                .priceFrom(filterDTO.getPriceFrom())
+                .priceTo(filterDTO.getPriceTo())
+                .build();
+        return productRepository.findAll(Example.of(example));
     }
 
 //    public void setPromotion(String promotionType, int promotionDiscount) {

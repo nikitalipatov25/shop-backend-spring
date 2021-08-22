@@ -2,6 +2,7 @@ package com.nikitalipatov.handmadeshop.controllers;
 
 import com.nikitalipatov.handmadeshop.core.models.Product;
 import com.nikitalipatov.handmadeshop.core.services.ProductService;
+import com.nikitalipatov.handmadeshop.helpers.FilterDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,7 +15,7 @@ import java.util.*;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @Transactional
-@RequestMapping(value = "/catalog")
+@RequestMapping(value = "/api/products")
 public class ProductController {
 
     private final ProductService productService;
@@ -30,6 +31,12 @@ public class ProductController {
         return ResponseEntity.ok(catalogEntityList);
     }
 
+    @PostMapping("/filter")
+    public ResponseEntity<Product> getCatalogWithFilters(@RequestBody FilterDTO filterDTO, Pageable pageable) {
+        Product filteredProducts = productService.filterProducts(filterDTO, pageable);
+        return ResponseEntity.ok(filteredProducts);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Product> getItem(@PathVariable(name = "id") UUID id) {
         Optional<Product> result = productService.getById(id);
@@ -37,31 +44,4 @@ public class ProductController {
                 .map(entity -> ResponseEntity.ok(entity))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
-
-    @PostMapping("/add")
-    public ResponseEntity<Product> addItem(@RequestBody Product product) {
-           Product resSave = productService.save(product);
-           return ResponseEntity.ok(resSave);
-    }
-
-    @PutMapping(value = "/modify/{id}")
-    public ResponseEntity<Product> editItem(@PathVariable(name = "id")UUID id, @RequestBody Product product) {
-            Optional<Product> resEdit = productService.editCatalog(id, product);
-            return resEdit
-                    .map(entity -> ResponseEntity.ok(entity))
-                    .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteItem(@PathVariable(name = "id") UUID id) {
-        Optional<Boolean> result = productService.deleteById(id);
-        return result
-                .map(e -> ResponseEntity.noContent().build())
-                .orElseGet(() -> ResponseEntity.notFound().build());
-
-    }
-
-
-
-
 }

@@ -21,29 +21,33 @@ public class AdminService {
         this.categoryRepository = categoryRepository;
     }
 
-    public List<Animal> getAnimalList() {
-        return animalRepository.findAll();
+    public Set<Animal> getAnimalsSet() {
+        return new HashSet<>(animalRepository.findAll());
+    }
+
+    public Optional<Animal> getAnimal(String name) {
+        return animalRepository.findByName(name);
     }
 
     public List<Animal> getAnimalsListByName(String name) {
         return animalRepository.findAllByName(name);
     }
 
-    public Animal addAnimal(String animal, String[] categoryArray) {
-        Animal newAnimal = new Animal();
-        newAnimal.setName(animal);
-        Set<Category> categorySet = new HashSet<>();
-        for (int i = 0; i < categoryArray.length; i++) {
-            if (categoryRepository.findByName(categoryArray[i]) == null) {
-                Category category = new Category();
-                category.setName(categoryArray[i]);
-                categoryRepository.save(category);
-            }
-            categorySet.add(categoryRepository.findByName(categoryArray[i]));
-        }
-        newAnimal.setCategories(categorySet);
-        return animalRepository.save(newAnimal);
-    }
+//    public Animal addAnimal(String animal, String[] categoryArray) {
+//        Animal newAnimal = new Animal();
+//        newAnimal.setName(animal);
+//        Set<Category> categorySet = new HashSet<>();
+//        for (int i = 0; i < categoryArray.length; i++) {
+//            if (categoryRepository.findByName(categoryArray[i]) == null) {
+//                Category category = new Category();
+//                category.setName(categoryArray[i]);
+//                categoryRepository.save(category);
+//            }
+//            categorySet.add(categoryRepository.findByName(categoryArray[i]));
+//        }
+//        newAnimal.setCategories(categorySet);
+//        return animalRepository.save(newAnimal);
+//    }
 
     public List<Category> getCategoriesList() {
         return categoryRepository.findAll();

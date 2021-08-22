@@ -1,9 +1,16 @@
 package com.nikitalipatov.handmadeshop.core.models;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.Set;
 
 @Entity
+@Getter
+@Setter
+@AllArgsConstructor
 @Table(name = "animals")
 public class Animal {
 
@@ -18,30 +25,5 @@ public class Animal {
     private Set<Category> categories;
 
     public Animal() {
-    }
-
-    public Animal(String name, Set<Category> categories) {
-        this.name = name;
-        this.categories = categories;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Set<Category> getCategories() {
-        return categories;
-    }
-
-    public void setCategories(Set<Category> categories) {
-        this.categories = categories;
     }
 }

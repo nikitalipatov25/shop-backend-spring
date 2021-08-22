@@ -12,9 +12,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "products",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = "name")})
+@Table(name = "products")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -26,9 +24,10 @@ public class Product {
     private String description;
     private double price;
     private String image;
-    private int amount;
     private String animal;
     private String category;
+    private int amount;
+    private double rating;
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id")
     private Set<Comment> comments;
