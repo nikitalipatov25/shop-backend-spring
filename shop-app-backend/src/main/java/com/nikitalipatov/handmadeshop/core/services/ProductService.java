@@ -95,17 +95,6 @@ public class ProductService {
                 });
     }
 
-    public Product filterProducts(FilterDTO filterDTO, Pageable pageable) {
-        FilterDTO example = FilterDTO
-                .builder()
-                .animal(filterDTO.getAnimal())
-                .categories(filterDTO.getCategories())
-                .isDeal(filterDTO.isDeal())
-                .priceFrom(filterDTO.getPriceFrom())
-                .priceTo(filterDTO.getPriceTo())
-                .build();
-        return productRepository.findAll(Example.of(example));
-    }
 
 //    public void setPromotion(String promotionType, int promotionDiscount) {
 //        var result = productRepository.findAllByCategory(promotionType);
