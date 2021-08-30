@@ -3,11 +3,15 @@ package com.nikitalipatov.handmadeshop.controllers;
 import com.nikitalipatov.handmadeshop.core.models.Product;
 import com.nikitalipatov.handmadeshop.core.repositories.ProductRepository;
 import com.nikitalipatov.handmadeshop.core.services.ProductService;
-import com.nikitalipatov.handmadeshop.helpers.FilterDTO;
-import com.nikitalipatov.handmadeshop.specifications.ProductSpecifications;
+import com.nikitalipatov.handmadeshop.helpers.ProductFilterDTO;
+import static com.nikitalipatov.handmadeshop.specifications.ProductSpecifications.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import static org.springframework.data.jpa.domain.Specification.*;
+
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,10 +40,9 @@ public class ProductController {
         return ResponseEntity.ok(catalogEntityList);
     }
 
-    @GetMapping("/{animal}/{category}")
-    public List<Product> filter(@PathVariable(name = "animal")String animal, @PathVariable(name = "category")String[] category) {
-        Specification<Product> specification = Specification.where(ProductSpecifications.equalsAnimal(animal).and(ProductSpecifications.inCategories(category)));
-        return productRepository.findAll(specification);
+    @PostMapping("/filter")
+    public ResponseEntity<Page<Product>> filterProducts(@RequestBody ProductFilterDTO productFilterDTO) {
+        return ResponseEntity.ok(productService.findAllWithFilters(productFilterDTO));
     }
 
     @GetMapping("/{id}")

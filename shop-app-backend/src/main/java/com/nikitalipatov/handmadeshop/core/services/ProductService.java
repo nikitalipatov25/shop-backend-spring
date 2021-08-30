@@ -1,22 +1,21 @@
 package com.nikitalipatov.handmadeshop.core.services;
 
-import com.nikitalipatov.handmadeshop.core.models.Animal;
-import com.nikitalipatov.handmadeshop.core.models.Category;
 import com.nikitalipatov.handmadeshop.core.repositories.ProductRepository;
-import com.nikitalipatov.handmadeshop.helpers.FilterDTO;
-import com.nikitalipatov.handmadeshop.helpers.SearchParameterAnalyzer;
 import com.nikitalipatov.handmadeshop.core.models.Product;
+import com.nikitalipatov.handmadeshop.helpers.ProductFilterDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
+
+import static com.nikitalipatov.handmadeshop.specifications.ProductSpecifications.*;
+import static org.springframework.data.jpa.domain.Specification.where;
 
 @Service
 public class ProductService {
@@ -32,6 +31,20 @@ public class ProductService {
         this.fileService = fileService;
         this.animalService = animalService;
         this.categoryService = categoryService;
+    }
+
+    public Page<Product> findAllWithFilters(ProductFilterDTO productFilterDTO) {
+        Specification<Product> specification = where(
+                equalAnimalName(productFilterDTO.getAnimal())
+                        .and(inCategories(productFilterDTO.getCategories()))
+                        .and(inPriceRange(productFilterDTO.getPriceFrom(), productFilterDTO.getPriceTo()))
+                        .and(likeSearchText(productFilterDTO.getSearchText())));
+        Pageable pageable = PageRequest.of(
+                productFilterDTO.getPageNumber(),
+                productFilterDTO.getPageSize(),
+                Sort.by(Sort.Direction.valueOf(productFilterDTO.getSortDirection()), productFilterDTO.getSortBy()));
+        Page<Product> result = productRepository.findAll(specification, pageable);
+        return result;
     }
 
     public Page<Product> listAll(Pageable pageable) {
