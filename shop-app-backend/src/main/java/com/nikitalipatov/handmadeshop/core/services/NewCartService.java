@@ -5,10 +5,12 @@ import com.nikitalipatov.handmadeshop.core.models.Product;
 import com.nikitalipatov.handmadeshop.core.repositories.NewCartRepository;
 import com.nikitalipatov.handmadeshop.helpers.CartSummary;
 import com.nikitalipatov.handmadeshop.helpers.NewCartDTO;
+import com.nikitalipatov.handmadeshop.helpers.OrderDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,8 +27,6 @@ public class NewCartService {
     private final UserService userService;
     private final ProductService productService;
     private final NewCartRepository newCartRepository;
-
-
 
     @Autowired
     public NewCartService(UserService userService, ProductService productService, NewCartRepository newCartRepository) {
@@ -45,7 +45,7 @@ public class NewCartService {
     }
 
     public Page<NewCart> getUserCart(HttpServletRequest request) {
-        Pageable pageable = PageRequest.of(0,4); // page size and number. need change when pagination on client
+        Pageable pageable = PageRequest.of(0,4, Sort.by(Sort.Direction.ASC, "productId")); // page size and number. need change when pagination on client
         return newCartRepository.findAllByUserId(userService.findUser(request).get().getId(), pageable);
     }
 
@@ -86,6 +86,22 @@ public class NewCartService {
         }
         CartSummary cartSummary = new CartSummary();
         return cartSummary.cartSummary(products, amounts);
+    }
+
+    public List<Object> cartSummaryForOrders(List<UUID> productsUUID, HttpServletRequest request) {
+        List<NewCart> result= newCartRepository.findAllByUserIdAndProductIdIn(userService.findUser(request).get().getId(), productsUUID);
+        List<Product> products = new ArrayList<>();
+        List<Integer> amounts = new ArrayList<>();
+        for (NewCart newCart : result) {
+            products.add(newCart.getProduct());
+            amounts.add(newCart.getAmount());
+        }
+        CartSummary cartSummary = new CartSummary();
+        return cartSummary.cartSummary(products, amounts);
+    }
+
+    public List<NewCart> findUserCart(List<UUID> products, HttpServletRequest request) {
+            return newCartRepository.findAllByUserIdAndProductIdIn(userService.findUser(request).get().getId(), products);
     }
 }
 
