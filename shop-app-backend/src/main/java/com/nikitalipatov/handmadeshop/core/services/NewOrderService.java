@@ -58,7 +58,15 @@ public class NewOrderService {
         newOrder.setOrderType(orderDTO.getOrderType());
         /*
         Не забыть очистить корзину после оформления заказа
+        и не забыть изменить данные юзера, если отмечен соотв. чекбокс
          */
+        if (orderDTO.isChangeData()) {
+            String extraInformation = "Получатель: " + orderDTO.getFullName() + ". Номер телефона: " + orderDTO.getPhoneNumber();
+            if (orderDTO.getOrderType().equals("Доставка")) {
+                extraInformation = extraInformation + ". Адрес: " + orderDTO.getAddress();
+            }
+            newOrder.setExtraInformation(extraInformation);
+        }
         return newOrderRepository.save(newOrder);
     }
 

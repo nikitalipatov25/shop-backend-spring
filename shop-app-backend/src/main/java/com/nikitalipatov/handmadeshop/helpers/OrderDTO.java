@@ -24,6 +24,6 @@ public class OrderDTO {
     private String fullName;
     private String address;
     private String phoneNumber;
-    private String email;
-
+    private boolean changeData;
+    private boolean saveData;
 }
