@@ -2,10 +2,9 @@ package com.nikitalipatov.handmadeshop.controllers;
 
 import com.nikitalipatov.handmadeshop.core.models.NewOrder;
 import com.nikitalipatov.handmadeshop.core.models.OrderStatus;
-import com.nikitalipatov.handmadeshop.core.repositories.OrderStatusRepository;
 import com.nikitalipatov.handmadeshop.core.services.NewOrderService;
-import com.nikitalipatov.handmadeshop.helpers.OrderDTO;
-import com.nikitalipatov.handmadeshop.helpers.OrderStatusDTO;
+import com.nikitalipatov.handmadeshop.dto.OrderDTO;
+import com.nikitalipatov.handmadeshop.dto.OrderStatusDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController

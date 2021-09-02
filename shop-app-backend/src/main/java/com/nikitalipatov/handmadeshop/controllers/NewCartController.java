@@ -2,11 +2,9 @@ package com.nikitalipatov.handmadeshop.controllers;
 
 import com.nikitalipatov.handmadeshop.core.models.NewCart;
 import com.nikitalipatov.handmadeshop.core.services.NewCartService;
-import com.nikitalipatov.handmadeshop.helpers.CartSummary;
-import com.nikitalipatov.handmadeshop.helpers.NewCartDTO;
+import com.nikitalipatov.handmadeshop.dto.NewCartDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;

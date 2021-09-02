@@ -1,4 +1,4 @@
-package com.nikitalipatov.handmadeshop.helpers;
+package com.nikitalipatov.handmadeshop.keys;
 
 import java.io.Serializable;
 import java.util.UUID;

@@ -1,4 +1,4 @@
-package com.nikitalipatov.handmadeshop.helpers;
+package com.nikitalipatov.handmadeshop.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

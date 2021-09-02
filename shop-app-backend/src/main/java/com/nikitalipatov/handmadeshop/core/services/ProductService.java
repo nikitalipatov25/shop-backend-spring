@@ -2,7 +2,7 @@ package com.nikitalipatov.handmadeshop.core.services;
 
 import com.nikitalipatov.handmadeshop.core.repositories.ProductRepository;
 import com.nikitalipatov.handmadeshop.core.models.Product;
-import com.nikitalipatov.handmadeshop.helpers.ProductFilterDTO;
+import com.nikitalipatov.handmadeshop.dto.ProductFilterDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

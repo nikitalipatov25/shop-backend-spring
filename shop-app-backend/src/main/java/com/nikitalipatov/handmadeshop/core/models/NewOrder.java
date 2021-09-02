@@ -1,6 +1,6 @@
 package com.nikitalipatov.handmadeshop.core.models;
 
-import com.nikitalipatov.handmadeshop.helpers.OrderCompositeKey;
+import com.nikitalipatov.handmadeshop.keys.OrderCompositeKey;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,4 +1,4 @@
-package com.nikitalipatov.handmadeshop.helpers;
+package com.nikitalipatov.handmadeshop.dto;
 
 import com.nikitalipatov.handmadeshop.core.models.Cart;
 import org.springframework.data.domain.Page;
