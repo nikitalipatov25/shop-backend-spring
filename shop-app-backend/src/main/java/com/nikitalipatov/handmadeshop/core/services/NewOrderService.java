@@ -2,17 +2,21 @@ package com.nikitalipatov.handmadeshop.core.services;
 
 import com.nikitalipatov.handmadeshop.core.models.NewCart;
 import com.nikitalipatov.handmadeshop.core.models.NewOrder;
+import com.nikitalipatov.handmadeshop.core.models.OrderStatus;
 import com.nikitalipatov.handmadeshop.core.repositories.NewOrderRepository;
+import com.nikitalipatov.handmadeshop.core.repositories.OrderStatusRepository;
 import com.nikitalipatov.handmadeshop.helpers.OrderDTO;
+import com.nikitalipatov.handmadeshop.helpers.OrderStatusDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Transactional
@@ -21,16 +25,22 @@ public class NewOrderService {
     private final UserService userService;
     private final NewCartService newCartService;
     private final NewOrderRepository newOrderRepository;
+    private final OrderStatusRepository orderStatusRepository;
 
     @Autowired
-    public NewOrderService(UserService userService, NewCartService newCartService, NewOrderRepository newOrderRepository) {
+    public NewOrderService(UserService userService, NewCartService newCartService, NewOrderRepository newOrderRepository, OrderStatusRepository orderStatusRepository) {
         this.userService = userService;
         this.newCartService = newCartService;
         this.newOrderRepository = newOrderRepository;
+        this.orderStatusRepository = orderStatusRepository;
+    }
+
+    public List<OrderStatus> getOrderStatus() {
+        return orderStatusRepository.findAll();
     }
 
     public NewOrder createOrder(OrderDTO orderDTO, HttpServletRequest request) {
-        var userCart = newCartService.findUserCart(orderDTO.getProducts(), request);
+        List<NewCart> userCart = newCartService.findUserCart(orderDTO.getProducts(), request);
         NewOrder newOrder = new NewOrder();
         newOrder.setOrderId(UUID.randomUUID());
         newOrder.setUserId(userService.findUser(request).get().getId());
@@ -46,6 +56,23 @@ public class NewOrderService {
         newOrder.setDate(new Date());
         newOrder.setOrderStatus("Оформлен");
         newOrder.setOrderType(orderDTO.getOrderType());
+        /*
+        Не забыть очистить корзину после оформления заказа
+         */
         return newOrderRepository.save(newOrder);
+    }
+
+    public Page<NewOrder> getOrders(HttpServletRequest request) {
+        Pageable pageable = PageRequest.of(0,4, Sort.by("date")); // не забыть передавать номера страниц
+        return newOrderRepository.findAllByUserId(userService.findUser(request).get().getId(), pageable);
+    }
+
+    public Optional<NewOrder> modifyOrderStatus(OrderStatusDTO orderStatusDTO) {
+        Optional<NewOrder> result = newOrderRepository.findByOrderId(orderStatusDTO.getOrderId());
+        return result
+                .map(e -> {
+                  e.setOrderStatus(orderStatusDTO.getOrderStatus());
+                  return newOrderRepository.save(e);
+                });
     }
 }
