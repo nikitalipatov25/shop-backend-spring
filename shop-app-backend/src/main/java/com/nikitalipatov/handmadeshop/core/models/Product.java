@@ -31,6 +31,9 @@ public class Product {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id")
     private Set<Comment> comments;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "sale_id")
+    private Sale sale;
 
     public Product() {
     }
