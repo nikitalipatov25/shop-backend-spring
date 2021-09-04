@@ -47,27 +47,4 @@ public class AdminController {
         List<Category> result = adminService.getCategoriesList();
         return ResponseEntity.ok(result);
     }
-
-    @PostMapping("/add/product")
-    public ResponseEntity<Product> addItem(@RequestBody Product product) {
-        Product resSave = productService.save(product);
-        return ResponseEntity.ok(resSave);
-    }
-
-    @PutMapping(value = "/modify/product/{id}")
-    public ResponseEntity<Product> editItem(@PathVariable(name = "id") UUID id, @RequestBody Product product) {
-        Optional<Product> resEdit = productService.editCatalog(id, product);
-        return resEdit
-                .map(entity -> ResponseEntity.ok(entity))
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @DeleteMapping("/delete/product/{id}")
-    public ResponseEntity<?> deleteItem(@PathVariable(name = "id") UUID id) {
-        Optional<Boolean> result = productService.deleteById(id);
-        return result
-                .map(e -> ResponseEntity.noContent().build())
-                .orElseGet(() -> ResponseEntity.notFound().build());
-
-    }
 }

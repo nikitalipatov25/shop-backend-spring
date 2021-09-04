@@ -47,4 +47,26 @@ public class ProductController {
                 .map(entity -> ResponseEntity.ok(entity))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    @PostMapping("/add")
+    public ResponseEntity<Product> addItem(@RequestBody Product product) {
+        Product resSave = productService.save(product);
+        return ResponseEntity.ok(resSave);
+    }
+
+    @PutMapping(value = "/modify/{id}")
+    public ResponseEntity<Product> editItem(@PathVariable(name = "id") UUID id, @RequestBody Product product) {
+        Optional<Product> resEdit = productService.editCatalog(id, product);
+        return resEdit
+                .map(entity -> ResponseEntity.ok(entity))
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteItem(@PathVariable(name = "id") UUID id) {
+        Optional<Boolean> result = productService.deleteById(id);
+        return result
+                .map(e -> ResponseEntity.noContent().build())
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
 }

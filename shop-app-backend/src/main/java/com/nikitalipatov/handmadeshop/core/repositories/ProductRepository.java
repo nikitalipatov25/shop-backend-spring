@@ -1,6 +1,7 @@
 package com.nikitalipatov.handmadeshop.core.repositories;
 
 import com.nikitalipatov.handmadeshop.core.models.Product;
+import com.nikitalipatov.handmadeshop.core.models.Sale;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -15,4 +16,5 @@ public interface ProductRepository extends JpaRepository<Product, UUID>, JpaSpec
     List<Product> findAllByAnimalIn(List<String> animals);
     List<Product> findAllByCategoryIn(List<String> categories);
     List<Product> findAllByIdIn(List<UUID> productIds);
+    List<Product> findAllBySale(Sale sale);
 }

@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Optional;
+import java.util.UUID;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -32,9 +34,25 @@ public class SaleController {
         return ResponseEntity.ok(newSale);
     }
 
-    @GetMapping()
-    public ResponseEntity<Page<Sale>> getPromotions(Pageable pageable) {
-        var result = saleService.getPromotions(pageable);
+    @GetMapping("/get")
+    public ResponseEntity<Page<Sale>> getSales() {
+        Page<Sale> result = saleService.getSales();
         return ResponseEntity.ok(result);
+    }
+
+    @DeleteMapping("/delete/{id}")
+        public ResponseEntity<?> deleteSale(@PathVariable(name = "id")UUID saleId) {
+        Optional<Boolean> result = saleService.deleteSaleManually(saleId);
+        return result
+                .map(e -> ResponseEntity.noContent().build())
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/modify")
+    public ResponseEntity<Sale> modifySale(@RequestBody SaleDTO saleDTO) {
+        Optional<Sale> result = saleService.modifySale(saleDTO);
+        return result
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

@@ -100,6 +100,7 @@ public class ProductService {
                     return true;
                 });
     }
+
     public Optional<Product> modifyKolInCatalog(UUID productID, int productKolInCart) {
         Optional<Product> result = productRepository.findById(productID);
         int nowInCatalog = result.get().getAmount();
@@ -128,6 +129,22 @@ public class ProductService {
         var result = productRepository.findAllByIdIn(products);
         for (int i = 0; i < result.size(); i++) {
             result.get(i).setSale(newSale);
+        }
+    }
+
+    public void disableSales(List<Sale> sales) {
+        for (int i = 0; i < sales.size(); i++) {
+            List<Product> products = productRepository.findAllBySale(sales.get(i));
+            for (int k = 0; k < products.size(); k++) {
+                products.get(k).setSale(null);
+            }
+        }
+    }
+
+    public void disableSaleManually(Sale sale) {
+        List<Product> products = productRepository.findAllBySale(sale);
+        for (int i = 0; i < products.size(); i++) {
+            products.get(i).setSale(null);
         }
     }
 }
