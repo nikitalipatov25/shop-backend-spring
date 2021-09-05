@@ -3,6 +3,7 @@ package com.nikitalipatov.handmadeshop.controllers;
 import com.nikitalipatov.handmadeshop.core.models.Product;
 import com.nikitalipatov.handmadeshop.core.repositories.ProductRepository;
 import com.nikitalipatov.handmadeshop.core.services.ProductService;
+import com.nikitalipatov.handmadeshop.dto.ModifyProductDTO;
 import com.nikitalipatov.handmadeshop.dto.ProductFilterDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -55,8 +56,8 @@ public class ProductController {
     }
 
     @PutMapping(value = "/modify/{id}")
-    public ResponseEntity<Product> editItem(@PathVariable(name = "id") UUID id, @RequestBody Product product) {
-        Optional<Product> resEdit = productService.editCatalog(id, product);
+    public ResponseEntity<Product> editItem(@PathVariable(name = "id") UUID id, @RequestBody ModifyProductDTO modifyProductDTO) {
+        Optional<Product> resEdit = productService.editCatalog(id, modifyProductDTO);
         return resEdit
                 .map(entity -> ResponseEntity.ok(entity))
                 .orElseGet(() -> ResponseEntity.notFound().build());

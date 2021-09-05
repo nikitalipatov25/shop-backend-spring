@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -33,6 +34,11 @@ public class NewOrderController {
         return ResponseEntity.ok(newOrderService.getOrderStatus());
     }
 
+    @GetMapping("/get/{id}")
+    public ResponseEntity<Optional<NewOrder>> getOrder(@PathVariable(name = "id")UUID id) {
+        return ResponseEntity.ok(newOrderService.getOrder(id));
+    }
+
     @PostMapping("/add")
     public ResponseEntity<NewOrder> createOrder(@RequestBody OrderDTO orderDTO, HttpServletRequest request) {
         return ResponseEntity.ok(newOrderService.createOrder(orderDTO, request));
@@ -50,5 +56,4 @@ public class NewOrderController {
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
-
 }
