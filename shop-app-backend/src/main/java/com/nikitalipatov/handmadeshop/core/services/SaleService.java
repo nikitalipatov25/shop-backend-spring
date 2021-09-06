@@ -49,7 +49,8 @@ public class SaleService {
         newSale.setId(UUID.randomUUID());
         newSale.setName(saleDTO.getName());
         newSale.setDescription(saleDTO.getDescription());
-        newSale.setImage(saleDTO.getImage());
+        var image = fileService.getFileByName(saleDTO.getImage());
+        newSale.setImage(image.getId());
         newSale.setDate(formatter.parse(saleDTO.getDate()));
         newSale.setExpirationDate(formatter.parse(saleDTO.getExpirationDate()));
         newSale.setDiscount(saleDTO.getDiscount());

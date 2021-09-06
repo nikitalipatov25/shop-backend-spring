@@ -1,15 +1,12 @@
 package com.nikitalipatov.handmadeshop.controllers;
 
-import com.nikitalipatov.handmadeshop.core.models.Animal;
 import com.nikitalipatov.handmadeshop.core.models.Category;
 import com.nikitalipatov.handmadeshop.core.services.CategoryService;
+import com.nikitalipatov.handmadeshop.dto.CategoryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 
@@ -30,5 +27,10 @@ public class CategoryController {
     public ResponseEntity<Set<Category>> getCategoriesSet() {
         Set<Category> result = categoryService.getCategoriesSet();
         return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<Category> addNewCategory(@RequestBody CategoryDTO categoryDTO) {
+        return ResponseEntity.ok(categoryService.addNewCategory(categoryDTO));
     }
 }

@@ -2,12 +2,12 @@ package com.nikitalipatov.handmadeshop.controllers;
 
 import com.nikitalipatov.handmadeshop.core.models.Animal;
 import com.nikitalipatov.handmadeshop.core.services.AnimalService;
+import com.nikitalipatov.handmadeshop.dto.AnimalDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.Access;
 import java.util.Optional;
 import java.util.Set;
 
@@ -34,5 +34,10 @@ public class AnimalController {
     public ResponseEntity<Optional<Animal>> getAnimal(@PathVariable(name = "name") String name) {
         Optional<Animal> result = animalService.getAnimal(name);
         return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<Animal> addNewAnimal(@RequestBody AnimalDTO animalDTO) {
+        return ResponseEntity.ok(animalService.addNewAnimal(animalDTO));
     }
 }
