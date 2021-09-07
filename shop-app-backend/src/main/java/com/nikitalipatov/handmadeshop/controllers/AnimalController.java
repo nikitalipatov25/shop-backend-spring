@@ -40,4 +40,20 @@ public class AnimalController {
     public ResponseEntity<Animal> addNewAnimal(@RequestBody AnimalDTO animalDTO) {
         return ResponseEntity.ok(animalService.addNewAnimal(animalDTO));
     }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteAnimal(@PathVariable(name = "id")Long id) {
+        Optional<Boolean> result = animalService.deleteAnimal(id);
+        return result
+                .map(e -> ResponseEntity.noContent().build())
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/modify/{id}")
+    public ResponseEntity<Animal> editAnimal(@PathVariable(name = "id")Long id, @RequestBody AnimalDTO animalDTO) {
+        Optional<Animal> result = animalService.editAnimal(id, animalDTO);
+        return result
+                .map(e -> ResponseEntity.ok(e))
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
 }
