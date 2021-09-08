@@ -27,6 +27,14 @@ public class SaleController {
         this.saleService = saleService;
     }
 
+    @GetMapping("/get/{id}")
+    public ResponseEntity<Sale> getSale(@PathVariable(name = "id")UUID id) {
+        Optional<Sale> result = saleService.getSale(id);
+        return result
+                .map(e -> ResponseEntity.ok(e))
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
     @PostMapping("/add")
     public ResponseEntity<Sale> createSale(@RequestBody SaleDTO saleDTO) {
         Sale newSale = saleService.createSale(saleDTO);

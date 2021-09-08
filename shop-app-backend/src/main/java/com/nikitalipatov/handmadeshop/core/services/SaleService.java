@@ -101,4 +101,8 @@ public class SaleService {
                     return saleRepository.save(e);
                 });
     }
+
+    public Optional<Sale> getSale(UUID id) {
+        return saleRepository.findById(id);
+    }
 }
