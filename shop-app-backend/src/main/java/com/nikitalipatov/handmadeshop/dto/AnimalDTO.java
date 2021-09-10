@@ -13,5 +13,6 @@ import java.util.List;
 @AllArgsConstructor
 public class AnimalDTO {
     private String animalName;
+    private String imageURL;
     private List<String> categories;
 }

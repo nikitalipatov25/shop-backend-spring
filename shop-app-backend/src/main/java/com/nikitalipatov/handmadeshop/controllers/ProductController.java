@@ -5,6 +5,7 @@ import com.nikitalipatov.handmadeshop.core.repositories.ProductRepository;
 import com.nikitalipatov.handmadeshop.core.services.ProductService;
 import com.nikitalipatov.handmadeshop.dto.ModifyProductDTO;
 import com.nikitalipatov.handmadeshop.dto.ProductFilterDTO;
+import com.nikitalipatov.handmadeshop.dto.productOnSaleDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -70,4 +71,9 @@ public class ProductController {
                 .map(e -> ResponseEntity.noContent().build())
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+//    @GetMapping("/sale/{id}")
+//    public ResponseEntity<Set<productOnSaleDTO>> getProductsOnSale(@PathVariable(name = "id")UUID id) {
+//        return productService.getProductsOnSale(id);
+//    }
 }

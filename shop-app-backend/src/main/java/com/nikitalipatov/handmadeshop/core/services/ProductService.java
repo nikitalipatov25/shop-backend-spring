@@ -6,18 +6,17 @@ import com.nikitalipatov.handmadeshop.core.models.Product;
 import com.nikitalipatov.handmadeshop.dto.ModifyProductDTO;
 import com.nikitalipatov.handmadeshop.dto.ProductFilterDTO;
 import com.nikitalipatov.handmadeshop.dto.SaleDTO;
+import com.nikitalipatov.handmadeshop.dto.productOnSaleDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static com.nikitalipatov.handmadeshop.specifications.ProductSpecifications.*;
 import static org.springframework.data.jpa.domain.Specification.where;
@@ -150,4 +149,8 @@ public class ProductService {
             products.get(i).setSale(null);
         }
     }
+
+//    public ResponseEntity<Set<productOnSaleDTO>> getProductsOnSale(UUID id) {
+//
+//    }
 }

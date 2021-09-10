@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -32,15 +33,20 @@ public class CategoryController {
         return ResponseEntity.ok(result);
     }
 
+    @GetMapping("/get/{id}")
+    public ResponseEntity<Optional<Category>> getCategory(@PathVariable(name = "id")UUID id) {
+        return ResponseEntity.ok(categoryService.getCategory(id));
+    }
+
     @PostMapping("/add")
     public ResponseEntity<Category> addNewCategory(@RequestBody CategoryDTO categoryDTO) {
-        var result = categoryService.addNewCategory(categoryDTO);
+        Category result = categoryService.addNewCategory(categoryDTO);
         categoryService.addNewCategoryToAnimals(categoryDTO);
         return ResponseEntity.ok(result);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteCategory(@PathVariable(name = "id")Long id) {
+    public ResponseEntity<?> deleteCategory(@PathVariable(name = "id") UUID id) {
         Optional<Boolean> result = categoryService.deleteCategory(id);
         return result
                 .map(e -> ResponseEntity.noContent().build())
@@ -48,7 +54,7 @@ public class CategoryController {
     }
 
     @PutMapping("/modify/{id}")
-    public ResponseEntity<Category> editCategory(@PathVariable(name = "id")Long id, @RequestBody CategoryDTO categoryDTO) {
+    public ResponseEntity<Category> editCategory(@PathVariable(name = "id")UUID id, @RequestBody CategoryDTO categoryDTO) {
         Optional<Category> result = categoryService.editCategory(id, categoryDTO);
         return result
                 .map(e -> ResponseEntity.ok(e))

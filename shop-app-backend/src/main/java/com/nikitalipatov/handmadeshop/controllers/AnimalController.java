@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -30,9 +31,9 @@ public class AnimalController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/get/{name}")
-    public ResponseEntity<Optional<Animal>> getAnimal(@PathVariable(name = "name") String name) {
-        Optional<Animal> result = animalService.getAnimal(name);
+    @GetMapping("/get/{id}")
+    public ResponseEntity<Optional<Animal>> getAnimal(@PathVariable(name = "id")UUID id) {
+        Optional<Animal> result = animalService.getAnimal(id);
         return ResponseEntity.ok(result);
     }
 
@@ -42,7 +43,7 @@ public class AnimalController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteAnimal(@PathVariable(name = "id")Long id) {
+    public ResponseEntity<?> deleteAnimal(@PathVariable(name = "id")UUID id) {
         Optional<Boolean> result = animalService.deleteAnimal(id);
         return result
                 .map(e -> ResponseEntity.noContent().build())
@@ -50,7 +51,7 @@ public class AnimalController {
     }
 
     @PutMapping("/modify/{id}")
-    public ResponseEntity<Animal> editAnimal(@PathVariable(name = "id")Long id, @RequestBody AnimalDTO animalDTO) {
+    public ResponseEntity<Animal> editAnimal(@PathVariable(name = "id")UUID id, @RequestBody AnimalDTO animalDTO) {
         Optional<Animal> result = animalService.editAnimal(id, animalDTO);
         return result
                 .map(e -> ResponseEntity.ok(e))

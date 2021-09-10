@@ -18,21 +18,29 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final AnimalRepository animalRepository;
     private final ProductRepository productRepository;
+    private final FileService fileService;
 
     @Autowired
-    public CategoryService(CategoryRepository categoryRepository, AnimalRepository animalRepository, ProductRepository productRepository) {
+    public CategoryService(CategoryRepository categoryRepository, AnimalRepository animalRepository, ProductRepository productRepository, FileService fileService) {
         this.categoryRepository = categoryRepository;
         this.animalRepository = animalRepository;
         this.productRepository = productRepository;
+        this.fileService = fileService;
     }
 
     public Set<Category> getCategoriesSet() {
         return new HashSet<>(categoryRepository.findAll());
     }
 
+    public Optional<Category> getCategory(UUID id) {
+        return categoryRepository.findById(id);
+    }
+
     public Category addNewCategory(CategoryDTO categoryDTO) {
         Category newCategory = new Category();
+        newCategory.setId(UUID.randomUUID());
         newCategory.setName(categoryDTO.getCategoryName());
+        newCategory.setImageURL(fileService.getFileByName(categoryDTO.getImageURL()).getId());
         Set<Category> categories = new HashSet<>();
         categories.add(newCategory);
         return categoryRepository.save(newCategory);
@@ -45,7 +53,7 @@ public class CategoryService {
         }
     }
 
-    public Optional<Boolean> deleteCategory(Long id) {
+    public Optional<Boolean> deleteCategory(UUID id) {
         Optional<Category> result = categoryRepository.findById(id);
         return result.
                 map(e -> {
@@ -64,7 +72,7 @@ public class CategoryService {
                 });
     }
 
-    public Optional<Category> editCategory(Long id, CategoryDTO categoryDTO) {
+    public Optional<Category> editCategory(UUID id, CategoryDTO categoryDTO) {
         Optional<Category> result = categoryRepository.findById(id);
         if (!result.get().getName().equals(categoryDTO.getCategoryName())) {
             List<Product> products = productRepository.findAllByCategoryIn(Collections.singletonList(result.get().getName()));
@@ -76,6 +84,7 @@ public class CategoryService {
         return result
                 .map(e -> {
                     e.setName(categoryDTO.getCategoryName());
+                    e.setImageURL(fileService.getFileByName(categoryDTO.getImageURL()).getId());
                     return categoryRepository.save(e);
                 });
     }
