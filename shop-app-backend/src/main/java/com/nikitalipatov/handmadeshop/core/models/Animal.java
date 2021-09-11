@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -15,8 +16,8 @@ import java.util.Set;
 public class Animal {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private UUID id;
+    private String imageURL;
     private String name;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "animals_categories",

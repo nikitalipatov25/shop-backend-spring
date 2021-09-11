@@ -83,4 +83,8 @@ public class NewOrderService {
                   return newOrderRepository.save(e);
                 });
     }
+
+    public Optional<NewOrder> getOrder(UUID id) {
+        return newOrderRepository.findByOrderId(id);
+    }
 }

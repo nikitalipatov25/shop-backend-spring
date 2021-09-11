@@ -3,19 +3,20 @@ package com.nikitalipatov.handmadeshop.core.services;
 import com.nikitalipatov.handmadeshop.core.models.Sale;
 import com.nikitalipatov.handmadeshop.core.repositories.ProductRepository;
 import com.nikitalipatov.handmadeshop.core.models.Product;
+import com.nikitalipatov.handmadeshop.dto.ModifyProductDTO;
 import com.nikitalipatov.handmadeshop.dto.ProductFilterDTO;
 import com.nikitalipatov.handmadeshop.dto.SaleDTO;
+import com.nikitalipatov.handmadeshop.dto.productOnSaleDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static com.nikitalipatov.handmadeshop.specifications.ProductSpecifications.*;
 import static org.springframework.data.jpa.domain.Specification.where;
@@ -74,19 +75,20 @@ public class ProductService {
         return productRepository.save(newEntity);
     }
 
-    public Optional<Product> editCatalog(UUID uuid, Product product) {
+    public Optional<Product> editCatalog(UUID uuid, ModifyProductDTO modifyProductDTO) {
         Optional<Product> result = productRepository.findById(uuid);
         return result
                 .map(entity -> {
-                    entity.setAmount(product.getAmount());
-                    if (product.getImage() != null) {
-                        var file = fileService.getFileByName(product.getImage());
+                    entity.setAmount(modifyProductDTO.getAmount());
+                    if (modifyProductDTO.getImage() != null) {
+                        var file = fileService.getFileByName(modifyProductDTO.getImage());
                         entity.setImage(file.getId());
                     }
-                    entity.setPrice(product.getPrice());
-                    entity.setName(product.getName());
-                    entity.setDescription(product.getDescription());
-                    entity.setComments(product.getComments());
+                    entity.setPrice(modifyProductDTO.getPrice());
+                    entity.setName(modifyProductDTO.getName());
+                    entity.setDescription(modifyProductDTO.getDescription());
+                    entity.setAnimal(modifyProductDTO.getAnimal());
+                    entity.setCategory(modifyProductDTO.getCategory());
                     return productRepository.save(entity);
                 });
 
@@ -147,4 +149,8 @@ public class ProductService {
             products.get(i).setSale(null);
         }
     }
+
+//    public ResponseEntity<Set<productOnSaleDTO>> getProductsOnSale(UUID id) {
+//
+//    }
 }
