@@ -15,4 +15,6 @@ public interface NewCartRepository extends JpaRepository<NewCart, UUID> {
     Optional<NewCart> findByProductIdAndUserId(UUID productId, Long userId);
     List<NewCart> findAllByUserIdAndProductIdIn(Long userId, List<UUID> products);
     Optional<NewCart> deleteByProductIdAndUserId(UUID productId, Long userId);
+//    Optional<NewCart> deleteByProductId(UUID uuid);
+    Optional<NewCart> deleteAllByUserId(Long userId);
 }
