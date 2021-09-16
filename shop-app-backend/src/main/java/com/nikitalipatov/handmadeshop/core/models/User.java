@@ -32,23 +32,27 @@ public class User {
 	@NotBlank
 	@Size(max = 120)
 	private String password;
-	private String fullName;
+	private String surname;
+	private String name;
+	private String secondName;
 	@NotBlank
 	@Size(max = 50)
 	@Email
 	private String email;
 	private String phoneNumber;
 	private String address;
-	private String profileImage;
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(	name = "user_roles", 
 				joinColumns = @JoinColumn(name = "user_id"), 
 				inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles = new HashSet<>();
 
-	public User(String username, String email, String password) {
+	public User(String username, String email, String password, String surname, String name, String secondName) {
 		this.username = username;
 		this.email = email;
 		this.password = password;
+		this.surname = surname;
+		this.name = name;
+		this.secondName = secondName;
 	}
 }

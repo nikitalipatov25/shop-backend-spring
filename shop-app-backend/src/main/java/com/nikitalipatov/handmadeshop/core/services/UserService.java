@@ -2,6 +2,7 @@ package com.nikitalipatov.handmadeshop.core.services;
 
 import com.nikitalipatov.handmadeshop.core.models.User;
 import com.nikitalipatov.handmadeshop.core.repositories.UserRepository;
+import com.nikitalipatov.handmadeshop.dto.UserDTO;
 import com.nikitalipatov.handmadeshop.helpers.AuthHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,5 +23,18 @@ public class UserService {
     public Optional<User> findUser(HttpServletRequest request) {
         String username = AuthHelper.getUsernameFromToken(request);
         return userRepository.findByUsername(username);
+    }
+
+    public Optional<User> modifyUser(HttpServletRequest request, UserDTO userDTO) {
+        Optional<User> result = userRepository.findByUsername(AuthHelper.getUsernameFromToken(request));
+        return result
+                .map(e -> {
+                    e.setName(userDTO.getName());
+                    e.setSurname(userDTO.getSurname());
+                    e.setSecondName(userDTO.getSecondName());
+                    e.setAddress(userDTO.getAddress());
+                    e.setPhoneNumber(userDTO.getPhoneNumber());
+                    return userRepository.save(e);
+                });
     }
 }
