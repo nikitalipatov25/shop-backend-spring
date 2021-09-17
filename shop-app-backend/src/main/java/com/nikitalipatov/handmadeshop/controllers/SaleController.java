@@ -59,6 +59,7 @@ public class SaleController {
     @PutMapping("/modify")
     public ResponseEntity<Sale> modifySale(@RequestBody SaleDTO saleDTO) {
         Optional<Sale> result = saleService.modifySale(saleDTO);
+        saleService.addSaleToProduct(result.get(), saleDTO);
         return result
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());

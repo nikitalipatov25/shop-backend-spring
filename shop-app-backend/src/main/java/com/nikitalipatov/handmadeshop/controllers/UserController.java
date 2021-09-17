@@ -5,6 +5,7 @@ import com.nikitalipatov.handmadeshop.core.services.UserService;
 import com.nikitalipatov.handmadeshop.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +34,30 @@ public class UserController {
     @PutMapping("/modify")
     public ResponseEntity<User> modifyUser(HttpServletRequest request, @RequestBody UserDTO userDTO) {
         Optional<User> result = userService.modifyUser(request, userDTO);
+        return result
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Optional<User>> getUserById(@PathVariable(name = "id")Long id) {
+        Optional<User> user = userService.findUserById(id);
+        return ResponseEntity.ok(user);
+    }
+
+    @GetMapping("/promote/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<User> promoteToAdmin(@PathVariable(name = "id")Long id) {
+        Optional<User> result = userService.promoteToAdmin(id);
+        return result
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/demote/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<User> demoteToUser(@PathVariable(name = "id")Long id) {
+        Optional<User> result = userService.demoteToUser(id);
         return result
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());

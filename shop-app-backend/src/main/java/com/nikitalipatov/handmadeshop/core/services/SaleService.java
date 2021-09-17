@@ -85,6 +85,7 @@ public class SaleService {
 
     public Optional<Sale> modifySale(SaleDTO saleDTO) {
         Optional<Sale> result = saleRepository.findById(saleDTO.getId());
+        productService.disableSaleManually(result.get());
         return result
                 .map(e -> {
                     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
