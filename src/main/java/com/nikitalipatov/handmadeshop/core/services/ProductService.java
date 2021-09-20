@@ -5,15 +5,12 @@ import com.nikitalipatov.handmadeshop.core.repositories.ProductRepository;
 import com.nikitalipatov.handmadeshop.core.models.Product;
 import com.nikitalipatov.handmadeshop.dto.ModifyProductDTO;
 import com.nikitalipatov.handmadeshop.dto.ProductFilterDTO;
-import com.nikitalipatov.handmadeshop.dto.SaleDTO;
-import com.nikitalipatov.handmadeshop.dto.productOnSaleDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -103,16 +100,6 @@ public class ProductService {
                 });
     }
 
-    public Optional<Product> modifyKolInCatalog(UUID productID, int productKolInCart) {
-        Optional<Product> result = productRepository.findById(productID);
-        int nowInCatalog = result.get().getAmount();
-        return result
-                .map(modifyingEntity -> {
-                    modifyingEntity.setAmount(nowInCatalog - productKolInCart);
-                    return productRepository.save(modifyingEntity);
-                });
-    }
-
     public void setSaleForAnimals(List<String> animals, Sale newSale) {
         var result = productRepository.findAllByAnimalIn(animals);
         for (int i = 0; i < result.size(); i++) {
@@ -149,8 +136,4 @@ public class ProductService {
             products.get(i).setSale(null);
         }
     }
-
-//    public ResponseEntity<Set<productOnSaleDTO>> getProductsOnSale(UUID id) {
-//
-//    }
 }
