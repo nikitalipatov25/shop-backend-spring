@@ -66,6 +66,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.authorizeRequests()
 				.antMatchers("/api/products/**").permitAll()
 
+
 				.antMatchers("/api/animal/**").permitAll()
 				.antMatchers("/api/category/**").permitAll()
 
@@ -76,6 +77,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //				.antMatchers("api/user/promote/**").hasAuthority("3")
 //				.antMatchers("api/user/demote/**").hasAuthority("3")
 
+				.antMatchers("/file/upload").permitAll()
 
 				.antMatchers("/api/auth/**").permitAll()
 				.antMatchers("/upload").permitAll()

@@ -7,6 +7,7 @@ import com.nikitalipatov.handmadeshop.core.repositories.NewOrderRepository;
 import com.nikitalipatov.handmadeshop.core.repositories.OrderStatusRepository;
 import com.nikitalipatov.handmadeshop.dto.OrderDTO;
 import com.nikitalipatov.handmadeshop.dto.OrderStatusDTO;
+import com.nikitalipatov.handmadeshop.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -26,19 +28,24 @@ public class NewOrderService {
     private final NewCartService newCartService;
     private final NewOrderRepository newOrderRepository;
     private final OrderStatusRepository orderStatusRepository;
+    private final ProductService productService;
 
     @Autowired
-    public NewOrderService(UserService userService, NewCartService newCartService, NewOrderRepository newOrderRepository, OrderStatusRepository orderStatusRepository) {
+    public NewOrderService(UserService userService, NewCartService newCartService, NewOrderRepository newOrderRepository, OrderStatusRepository orderStatusRepository, ProductService productService) {
         this.userService = userService;
         this.newCartService = newCartService;
         this.newOrderRepository = newOrderRepository;
         this.orderStatusRepository = orderStatusRepository;
+        this.productService = productService;
     }
 
     public List<OrderStatus> getOrderStatus() {
         return orderStatusRepository.findAll();
     }
 
+//    Этот метод необходимо будет перепроверить, когда появится возможность заказывать
+//            ОПРЕДЕЛЕННЫЕ ТОВАРЫ корзины
+//    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     public NewOrder createOrder(OrderDTO orderDTO, HttpServletRequest request) {
         List<NewCart> userCart = newCartService.findUserCart(orderDTO.getProducts(), request);
         NewOrder newOrder = new NewOrder();
@@ -53,19 +60,24 @@ public class NewOrderService {
         }
         newOrder.setProductsInfo(productsInfo);
         newOrder.setSummary((Double) newCartService.cartSummaryForOrders(orderDTO.getProducts(), request).get(3)); // 3 - price with discount
-        newOrder.setDate(new Date());
+        newOrder.setDate(LocalDateTime.now());
         newOrder.setOrderStatus("Оформлен");
         newOrder.setOrderType(orderDTO.getOrderType());
-        /*
-        Не забыть очистить корзину после оформления заказа
-        и не забыть изменить данные юзера, если отмечен соотв. чекбокс
-         */
         if (orderDTO.isChangeData()) {
-            String extraInformation = "Получатель: " + orderDTO.getFullName() + ". Номер телефона: " + orderDTO.getPhoneNumber();
+            String customerFullName = orderDTO.getSurname() + " " + orderDTO.getName() + " " + orderDTO.getSecondName();
+            String extraInformation = "Получатель: " + customerFullName + ". Номер телефона: " + orderDTO.getPhoneNumber();
             if (orderDTO.getOrderType().equals("Доставка")) {
                 extraInformation = extraInformation + ". Адрес: " + orderDTO.getAddress();
             }
             newOrder.setExtraInformation(extraInformation);
+        }
+        if (orderDTO.isSaveData()) {
+            UserDTO userDTO = new UserDTO(orderDTO.getSurname(), orderDTO.getName(), orderDTO.getSecondName(), orderDTO.getPhoneNumber(), orderDTO.getAddress());
+            userService.modifyUser(request, userDTO);
+        }
+        productService.modifyProductAmount(userCart);
+        for (int i = 0; i < orderDTO.getProducts().size(); i++) {
+            newCartService.deleteProductFromCart(orderDTO.getProducts().get(i), request);
         }
         return newOrderRepository.save(newOrder);
     }

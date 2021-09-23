@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 
@@ -51,8 +53,8 @@ public class SaleService {
         newSale.setDescription(saleDTO.getDescription());
         var image = fileService.getFileByName(saleDTO.getImage());
         newSale.setImage(image.getId());
-        newSale.setDate(formatter.parse(saleDTO.getDate()));
-        newSale.setExpirationDate(formatter.parse(saleDTO.getExpirationDate()));
+        newSale.setDate(LocalDateTime.parse(saleDTO.getDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+        newSale.setExpirationDate(LocalDateTime.parse(saleDTO.getExpirationDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
         newSale.setDiscount(saleDTO.getDiscount());
         return  saleRepository.save(newSale);
     }
@@ -92,12 +94,8 @@ public class SaleService {
                     e.setName(saleDTO.getName());
                     e.setDescription(saleDTO.getDescription());
                     e.setImage(saleDTO.getImage());
-                    try {
-                        e.setDate(formatter.parse(saleDTO.getDate()));
-                        e.setExpirationDate(formatter.parse(saleDTO.getExpirationDate()));
-                    } catch (ParseException parseException) {
-                        parseException.printStackTrace();
-                    }
+                    e.setDate(LocalDateTime.parse(saleDTO.getDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+                    e.setExpirationDate(LocalDateTime.parse(saleDTO.getExpirationDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
                     e.setDiscount(saleDTO.getDiscount());
                     return saleRepository.save(e);
                 });

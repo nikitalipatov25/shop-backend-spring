@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Transactional
@@ -42,7 +43,7 @@ public class CommentService {
         Optional<Product> product = productService.getById(productUUID);
         Comment newComment = new Comment();
         var user = userService.findUser(request);
-        newComment.setDate(formatter.format(date));
+        newComment.setDate(LocalDateTime.now());
         newComment.setRating(comment.getRating());
         newComment.setText(comment.getText());
         HashSet<Comment> set = new HashSet<>();
@@ -84,7 +85,7 @@ public class CommentService {
         var user = userService.findUser(request);
         Answer newAnswer = new Answer();
         newAnswer.setText(answer.getText());
-        newAnswer.setDate(formatter.format(date));
+        newAnswer.setDate(LocalDateTime.now());
         Optional<Comment> comment = commentRepository.findById(commentId);
         Set<Answer> answerList = new HashSet<>();
         answerList.add(newAnswer);

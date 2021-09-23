@@ -21,7 +21,9 @@ public class OrderDTO {
     тлт если заказ заберет другой человек -
     все эти данные хранятся в поле экстра
     */
-    private String fullName;
+    private String surname;
+    private String name;
+    private String secondName;
     private String address;
     private String phoneNumber;
     private boolean changeData;

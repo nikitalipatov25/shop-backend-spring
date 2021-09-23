@@ -1,5 +1,6 @@
 package com.nikitalipatov.handmadeshop.controllers;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.nikitalipatov.handmadeshop.core.models.Product;
 import com.nikitalipatov.handmadeshop.core.repositories.ProductRepository;
 import com.nikitalipatov.handmadeshop.core.services.ProductService;
@@ -35,6 +36,18 @@ public class ProductController {
     public ResponseEntity<Page<Product>> getCatalog(Pageable pageable) {
         Page<Product> catalogEntityList = productService.listAll(pageable);
         return ResponseEntity.ok(catalogEntityList);
+    }
+
+    @GetMapping("/popular")
+    public ResponseEntity<List<Product>> getPopularProducts() {
+        List<Product> popularProducts = productService.getPopularProducts();
+        return ResponseEntity.ok(popularProducts);
+    }
+
+    @GetMapping("/new")
+    public ResponseEntity<List<Product>> getNewProducts() {
+        List<Product> newProducts = productService.getNewProducts();
+        return ResponseEntity.ok(newProducts);
     }
 
     @PostMapping("/filter")

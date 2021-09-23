@@ -22,6 +22,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @Controller
 @CrossOrigin(origins = "*", maxAge = 3600)
 @Transactional
+@RequestMapping(value = "/file")
 public class FileController {
 
     @Autowired

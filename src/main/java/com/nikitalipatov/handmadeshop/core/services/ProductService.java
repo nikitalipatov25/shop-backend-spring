@@ -1,5 +1,6 @@
 package com.nikitalipatov.handmadeshop.core.services;
 
+import com.nikitalipatov.handmadeshop.core.models.NewCart;
 import com.nikitalipatov.handmadeshop.core.models.Sale;
 import com.nikitalipatov.handmadeshop.core.repositories.ProductRepository;
 import com.nikitalipatov.handmadeshop.core.models.Product;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.nikitalipatov.handmadeshop.specifications.ProductSpecifications.*;
@@ -53,6 +55,14 @@ public class ProductService {
         return result;
     }
 
+    public List<Product> getPopularProducts() {
+        return productRepository.findAllByRatingGreaterThanEqualOrderByReviewsDesc(4.0);
+    }
+
+    public List<Product> getNewProducts() {
+        return productRepository.findAllByCreationDateNotNullOrderByCreationDateDesc();
+    }
+
     public Optional<Product> getById(UUID id) {
         return productRepository.findById(id);
     }
@@ -69,6 +79,7 @@ public class ProductService {
         newEntity.setAnimal(product.getAnimal());
         newEntity.setCategory(product.getCategory());
         newEntity.setRating(0.0);
+        newEntity.setCreationDate(LocalDateTime.now());
         return productRepository.save(newEntity);
     }
 
@@ -86,6 +97,7 @@ public class ProductService {
                     entity.setDescription(modifyProductDTO.getDescription());
                     entity.setAnimal(modifyProductDTO.getAnimal());
                     entity.setCategory(modifyProductDTO.getCategory());
+                    entity.setCreationDate(LocalDateTime.now());
                     return productRepository.save(entity);
                 });
 
@@ -134,6 +146,15 @@ public class ProductService {
         List<Product> products = productRepository.findAllBySale(sale);
         for (int i = 0; i < products.size(); i++) {
             products.get(i).setSale(null);
+        }
+    }
+
+    public void modifyProductAmount(List<NewCart> userCart) {
+        for (int i = 0; i < userCart.size(); i++) {
+            Optional<Product> result = productRepository.findById(userCart.get(i).getProductId());
+            int newAmount = result.get().getAmount() - userCart.get(i).getAmount();
+            result.get().setAmount(newAmount);
+            productRepository.save(result.get());
         }
     }
 }
