@@ -102,5 +102,15 @@ public class NewCartService {
     public List<NewCart> findUserCart(List<UUID> products, HttpServletRequest request) {
             return newCartRepository.findAllByUserIdAndProductIdIn(userService.findUser(request).get().getId(), products);
     }
+
+    public void deleteAllUserCart(HttpServletRequest request) {
+        newCartRepository.deleteAllByUserId(userService.findUser(request).get().getId());
+    }
+
+    public void deleteSelectedCartItems(HttpServletRequest request, ArrayList<String> list){
+        for (int i = 0; i < list.size(); i++) {
+            newCartRepository.deleteByProductIdAndUserId(UUID.fromString(list.get(i)), userService.findUser(request).get().getId());
+        }
+    }
 }
 

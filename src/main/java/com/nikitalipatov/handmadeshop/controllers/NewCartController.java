@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -59,5 +60,17 @@ public class NewCartController {
         return result
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/all")
+    public ResponseEntity<?> deleteAll(HttpServletRequest request){
+        newCartService.deleteAllUserCart(request);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/selected")
+    public  ResponseEntity<?> deleteSelectedCartItems(HttpServletRequest request, @RequestBody ArrayList<String> list){
+        newCartService.deleteSelectedCartItems(request, list);
+        return  ResponseEntity.noContent().build();
     }
 }
