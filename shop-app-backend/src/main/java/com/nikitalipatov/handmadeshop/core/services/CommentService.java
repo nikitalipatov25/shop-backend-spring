@@ -22,7 +22,7 @@ public class CommentService {
     private final ProductService productService;
     private final UserService userService;
 
-    SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-YYYY");
+    SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.YYYY");
 
     @Autowired
     public CommentService(CommentRepository commentRepository, AnswerRepository answerRepository, ProductService productService, UserService userService) {

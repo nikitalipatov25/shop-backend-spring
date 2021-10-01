@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -26,6 +27,8 @@ public class NewOrderService {
     private final NewCartService newCartService;
     private final NewOrderRepository newOrderRepository;
     private final OrderStatusRepository orderStatusRepository;
+
+    SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-YYYY");
 
     @Autowired
     public NewOrderService(UserService userService, NewCartService newCartService, NewOrderRepository newOrderRepository, OrderStatusRepository orderStatusRepository) {

@@ -3,6 +3,7 @@ package com.nikitalipatov.handmadeshop.core.models;
 import com.nikitalipatov.handmadeshop.keys.OrderCompositeKey;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -23,6 +24,7 @@ public class NewOrder {
     @CollectionTable(name = "orders_products_info")
     private List<String> productsInfo;
     private double summary;
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     private Date date;
     private String orderType;
     private String orderStatus;
