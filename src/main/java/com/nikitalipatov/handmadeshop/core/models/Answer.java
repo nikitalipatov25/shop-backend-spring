@@ -24,7 +24,8 @@ public class Answer {
     private LocalDateTime date;
     @ManyToOne
     @JoinColumn(name = "comment_id")
-    private Comment comment;
+    private Comments comment;
+    private String userName;
 
     public Answer() {
     }

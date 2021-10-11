@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "comments")
+@Table(name = "newcomments")
 @Getter
 @Setter
 @IdClass(CommentCompositeKey.class)
@@ -27,5 +27,6 @@ public class Comments {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime date;
     private double rating;
+    private String userName;
 
 }

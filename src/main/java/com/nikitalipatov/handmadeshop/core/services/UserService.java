@@ -49,6 +49,10 @@ public class UserService {
         return userRepository.findById(id);
     }
 
+    public Optional<User> findUserByUserName(String userName) {
+        return userRepository.findByUsername(userName);
+    }
+
     public Optional<User> promoteToAdmin(Long id) {
         Optional<User> result = userRepository.findById(id);
         return result

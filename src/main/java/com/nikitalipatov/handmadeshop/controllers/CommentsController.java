@@ -1,10 +1,12 @@
 package com.nikitalipatov.handmadeshop.controllers;
 
+import com.nikitalipatov.handmadeshop.core.models.Answer;
 import com.nikitalipatov.handmadeshop.core.models.Comment;
 import com.nikitalipatov.handmadeshop.core.models.Comments;
 import com.nikitalipatov.handmadeshop.core.services.CommentService;
 import com.nikitalipatov.handmadeshop.core.services.CommentsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +26,7 @@ import java.util.UUID;
 @Transactional
 @RequestMapping(value = "/newcomments")
 public class CommentsController {
-        CommentsService commentsService;
+        private final CommentsService commentsService;
 
         @Autowired
         public CommentsController(CommentsService commentsService) {
@@ -32,7 +34,7 @@ public class CommentsController {
         }
 
         @GetMapping("/{id}")
-        public ResponseEntity<List<Comments>> findAllComment(@PathVariable("id") UUID productId){
+        public ResponseEntity<Page<Comments>> findAllComment(@PathVariable("id") UUID productId){
                 var result = commentsService.findAllComment(productId);
                 return ResponseEntity.ok(result);
         }

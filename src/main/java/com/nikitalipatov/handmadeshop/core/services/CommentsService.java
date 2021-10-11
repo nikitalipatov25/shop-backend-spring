@@ -7,6 +7,9 @@ import com.nikitalipatov.handmadeshop.core.repositories.AnswerRepository;
 import com.nikitalipatov.handmadeshop.core.repositories.CommentRepository;
 import com.nikitalipatov.handmadeshop.core.repositories.CommentsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,13 +34,17 @@ public class CommentsService {
         this.userService = userService;
     }
 
-    public List<Comments> findAllComment(UUID uuid){
-        var result = commentsRepository.findAll();
+    public Page<Comments> findAllComment(UUID productId){
+        Pageable pageable = PageRequest.of(0,4); // ne zabit pomenat
+        var result = commentsRepository.findAllByProductId(productId, pageable);
         return result;
     }
 
     public Comments saveComment(UUID productUUID, Comments comment, HttpServletRequest request){
         var user = userService.findUser(request);
+        if (commentsRepository.existsByProductIdAndUserId(productUUID, user.get().getId())) {
+            delComment(productUUID, request);
+        }
 //        Optional<Product> product = productService.getById(productUUID);
         Comments newComment = new Comments();
         newComment.setProductId(productUUID);
@@ -48,7 +55,7 @@ public class CommentsService {
 //        HashSet<Comment> set = new HashSet<>();
 //        set.add(newComment);
 //        product.get().setComments(set);
-        //newComment.setUserName(user.get().getUsername());
+        newComment.setUserName(user.get().getUsername());
 //        productService.editCatalog(productUUID, product.get());
         return commentsRepository.save(newComment);
     }
@@ -61,6 +68,7 @@ public class CommentsService {
                 .map(entity -> {
                     entity.setText(comment.getText());
                     entity.setRating(comment.getRating());
+                    entity.setDate(LocalDateTime.now());
                     return commentsRepository.save(entity);
                 });
     }
@@ -70,7 +78,7 @@ public class CommentsService {
         Optional<Comments> deletedComment = commentsRepository.findByProductIdAndUserId(productId, user.get().getId());
         return deletedComment
                 .map(entity -> {
-                    commentsRepository.deleteById(id);
+                    commentsRepository.deleteByProductIdAndUserId(productId, user.get().getId());
                     return true;
                 });
     }
