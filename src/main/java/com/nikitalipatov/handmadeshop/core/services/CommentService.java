@@ -39,16 +39,17 @@ public class CommentService {
     }
 
     public Comment saveComment(UUID productUUID, Comment comment, HttpServletRequest request){
+        var user = userService.findUser(request);
         Date date = new Date();
         Optional<Product> product = productService.getById(productUUID);
         Comment newComment = new Comment();
-        var user = userService.findUser(request);
         newComment.setDate(LocalDateTime.now());
         newComment.setRating(comment.getRating());
         newComment.setText(comment.getText());
         HashSet<Comment> set = new HashSet<>();
         set.add(newComment);
         product.get().setComments(set);
+        newComment.setUserName(user.get().getUsername());
 //        productService.editCatalog(productUUID, product.get());
         return commentRepository.save(newComment);
     }
@@ -89,7 +90,7 @@ public class CommentService {
         Optional<Comment> comment = commentRepository.findById(commentId);
         Set<Answer> answerList = new HashSet<>();
         answerList.add(newAnswer);
-        comment.get().setAnswers(answerList);
+        //comment.get().setAnswers(answerList);
         return answerRepository.save(newAnswer);
     }
 //

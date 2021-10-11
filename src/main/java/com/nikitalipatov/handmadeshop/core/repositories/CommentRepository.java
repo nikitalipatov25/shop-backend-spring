@@ -11,4 +11,5 @@ import java.util.UUID;
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
+    boolean existsByUserName(String userName);
 }
