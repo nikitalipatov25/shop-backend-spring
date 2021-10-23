@@ -45,11 +45,10 @@ public class AnswerService {
         Answer newAnswer = new Answer();
         newAnswer.setText(answerDTO.getText());
         newAnswer.setDate(LocalDateTime.now());
-        Optional<Comments> comment = commentsRepository.findByProductIdAndUserId(answerDTO.getProductId(),
-                userService.findUserByUserName(answerDTO.getAnswerToUser()).get().getId());
-        Set<Answer> answerList = new HashSet<>();
-        answerList.add(newAnswer);
-        //comment.get().setAnswers(answerList);
+        newAnswer.setUserName(user.get().getUsername());
+//        Optional<Comments> comment = commentsRepository.findByProductIdAndUserId(answerDTO.getProductId(),
+//                userService.findUserByUserName(answerDTO.getAnswerToUser()).get().getId());
+//        newAnswer.setComments(comment.get());
         return answerRepository.save(newAnswer);
     }
 
@@ -71,5 +70,20 @@ public class AnswerService {
                     entity.setDate(LocalDateTime.now());
                     return answerRepository.save(entity);
                 });
+    }
+
+    public void setAnswerToComment(Answer createAnswer, AnswerDTO answerDTO) {
+        Optional<Comments> comment = commentsRepository.findByProductIdAndUserId(answerDTO.getProductId(),
+               userService.findUserByUserName(answerDTO.getAnswerToUser()).get().getId());
+        if (comment.get().getAnswers().isEmpty()) {
+            Set<Answer> answers = new HashSet<>();
+            answers.add(createAnswer);
+            comment.get().setAnswers(answers);
+        }
+        Set<Answer> answers;
+        answers = comment.get().getAnswers();
+        answers.add(createAnswer);
+        comment.get().setAnswers(answers);
+        int a = 55;
     }
 }

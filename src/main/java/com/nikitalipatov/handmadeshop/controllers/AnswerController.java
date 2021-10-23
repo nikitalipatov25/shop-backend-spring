@@ -3,6 +3,7 @@ package com.nikitalipatov.handmadeshop.controllers;
 import com.nikitalipatov.handmadeshop.core.models.Answer;
 import com.nikitalipatov.handmadeshop.core.models.Comments;
 import com.nikitalipatov.handmadeshop.core.services.AnswerService;
+import com.nikitalipatov.handmadeshop.core.services.CommentsService;
 import com.nikitalipatov.handmadeshop.dto.AnswerDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,10 +26,12 @@ import java.util.UUID;
 public class AnswerController {
 
     private final AnswerService answerService;
+    private final CommentsService commentsService;
 
     @Autowired
-    public AnswerController(AnswerService answerService) {
+    public AnswerController(AnswerService answerService, CommentsService commentsService) {
         this.answerService = answerService;
+        this.commentsService = commentsService;
     }
 
 //    @GetMapping("/answer/{id}")
@@ -37,13 +40,14 @@ public class AnswerController {
 //        return ResponseEntity.ok(result);
 //    }
 
-    @PostMapping("answer")
+    @PostMapping()
     public ResponseEntity<Answer> addAnswer(@RequestBody AnswerDTO answerDTO, HttpServletRequest request){
         Answer createAnswer = answerService.saveAnswer(answerDTO, request);
+        answerService.setAnswerToComment(createAnswer, answerDTO);
         return ResponseEntity.ok(createAnswer);
     }
 
-    @DeleteMapping("answer/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> delAnswer(@PathVariable(name = "id")Long id){
         Optional<Boolean> deleteAnswer = answerService.delAnswer(id);
         return deleteAnswer
@@ -51,7 +55,7 @@ public class AnswerController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PutMapping(value = "answer/{id}")
+    @PutMapping(value = "/{id}")
     public ResponseEntity<Answer> modifyComment(@PathVariable(name = "id") Long id, @RequestBody Comments comment, HttpServletRequest request){
         Optional<Answer> result = answerService.modifyAnswer(id, comment, request);
         return result

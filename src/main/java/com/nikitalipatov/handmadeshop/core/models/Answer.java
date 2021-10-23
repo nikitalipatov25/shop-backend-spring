@@ -1,10 +1,7 @@
 package com.nikitalipatov.handmadeshop.core.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -14,6 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class Answer {
 
     @Id
@@ -22,11 +20,5 @@ public class Answer {
     private String text;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime date;
-    @ManyToOne
-    @JoinColumn(name = "comment_id")
-    private Comments comment;
     private String userName;
-
-    public Answer() {
-    }
 }

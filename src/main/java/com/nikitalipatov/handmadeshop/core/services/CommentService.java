@@ -75,11 +75,11 @@ public class CommentService {
     }
 
     //answers
-    public Optional<Answer> getAnswerByCommentId(Long commentId){
-        var com = commentRepository.findById(commentId);
-        var result = answerRepository.findByComment(com.get());
-        return Optional.ofNullable(result);
-    }
+//    public Optional<Answer> getAnswerByCommentId(Long commentId){
+//        var com = commentRepository.findById(commentId);
+//        var result = answerRepository.findByComments(com.get());
+//        return Optional.ofNullable(result);
+//    }
 
     public Answer saveAnswer(Long commentId, Answer answer, HttpServletRequest request){
         Date date = new Date();
