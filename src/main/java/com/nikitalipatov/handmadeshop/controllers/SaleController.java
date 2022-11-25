@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
@@ -35,11 +36,24 @@ public class SaleController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/get/{name}")
+    public ResponseEntity<Sale> getSale(@PathVariable(name = "name")String name) {
+        Optional<Sale> result = saleService.getSaleByName(name);
+        return result
+                .map(e -> ResponseEntity.ok(e))
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
     @PostMapping("/add")
-    public ResponseEntity<Sale> createSale(@RequestBody SaleDTO saleDTO) {
-        Sale newSale = saleService.createSale(saleDTO);
-        saleService.addSaleToProduct(newSale, saleDTO);
-        return ResponseEntity.ok(newSale);
+    public ResponseEntity<Sale> createSale(@RequestParam(name = "name") String name,
+                                           @RequestParam(name = "image") MultipartFile image,
+                                           @RequestParam(name = "date") String date,
+                                           @RequestParam(name = "expirationDate") String expirationDate,
+                                           @RequestParam(name = "discount") double discount,
+                                           @RequestParam(name = "products") String[] products) {
+       SaleDTO saleDTO = new SaleDTO(name, image, date,expirationDate,discount, products);
+       Sale sale = saleService.createSale(saleDTO);
+       return ResponseEntity.ok(sale);
     }
 
     @GetMapping("/get")
@@ -56,10 +70,17 @@ public class SaleController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/modify")
-    public ResponseEntity<Sale> modifySale(@RequestBody SaleDTO saleDTO) {
-        Optional<Sale> result = saleService.modifySale(saleDTO);
-        saleService.addSaleToProduct(result.get(), saleDTO);
+    @PutMapping("/modify/{id}")
+    public ResponseEntity<Sale> modifySale(@PathVariable(name = "id") UUID id,
+                                           @RequestParam(name = "name") String name,
+                                           @RequestParam(required = false, name = "image") MultipartFile image,
+                                           @RequestParam(name = "date") String date,
+                                           @RequestParam(name = "expirationDate") String expirationDate,
+                                           @RequestParam(name = "discount") double discount,
+                                           @RequestParam(required = false, name = "products") String[] products) {
+        SaleDTO saleDTO = new SaleDTO(name, image, date, expirationDate, discount,products);
+        Optional<Sale> result = saleService.modifySale(id, saleDTO);
+        //saleService.addSaleToProduct(result.get(), saleDTO);
         return result
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());

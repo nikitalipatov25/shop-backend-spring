@@ -2,19 +2,19 @@ package com.nikitalipatov.handmadeshop.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.UUID;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @AllArgsConstructor
-public class ProductDTO {
-    private UUID id;
+public class ProductCreationDTO {
     private String name;
     private String description;
-    private double price;
-    private String image;
     private int amount;
-    private double rating;
+    private MultipartFile image;
+    private double price;
+    private String category;
 }

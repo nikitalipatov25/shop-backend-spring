@@ -10,13 +10,12 @@ import java.util.Arrays;
 @Component
 public class ProductSpecifications {
 
-    public static Specification<Product> equalAnimalName(String animalName) {
-        return ((root, criteriaQuery, criteriaBuilder) -> {
-            if (animalName == null) {
-                return criteriaBuilder.conjunction();
-            }
-            return criteriaBuilder.equal(root.get(Product_.ANIMAL), animalName);
-        });
+    public static Specification<Product> isDeal(boolean isDeal) {
+            return ((root, criteriaQuery, criteriaBuilder) -> {
+                if (!isDeal) {
+                    return criteriaBuilder.conjunction();
+                } else return criteriaBuilder.greaterThan(root.get(Product_.DISCOUNT_PRICE), 0.0);
+            });
     }
 
     public static Specification<Product> inPriceRange(int priceFrom, int priceTo) {

@@ -53,24 +53,15 @@ public class NewOrderService {
         newOrder.setUserId(userService.findUser(request).get().getId());
         List<String> productsInfo = new ArrayList<>();
         for (NewCart newCart : userCart) {
-            String infoAboutProduct = "Артикул: " + newCart.getProductId() +
-                    ", название: " + newCart.getProduct().getName() +
+            String infoAboutProduct = "Товар : " + newCart.getProduct().getName() +
                     ", количество: " + newCart.getAmount();
             productsInfo.add(infoAboutProduct);
         }
         newOrder.setProductsInfo(productsInfo);
         newOrder.setSummary((Double) newCartService.cartSummaryForOrders(orderDTO.getProducts(), request).get(3)); // 3 - price with discount
         newOrder.setDate(LocalDateTime.now());
-        newOrder.setOrderStatus("Оформлен");
+        newOrder.setOrderStatus("В обработке");
         newOrder.setOrderType(orderDTO.getOrderType());
-        if (orderDTO.isChangeData()) {
-            String customerFullName = orderDTO.getSurname() + " " + orderDTO.getName() + " " + orderDTO.getSecondName();
-            String extraInformation = "Получатель: " + customerFullName + ". Номер телефона: " + orderDTO.getPhoneNumber();
-            if (orderDTO.getOrderType().equals("Доставка")) {
-                extraInformation = extraInformation + ". Адрес: " + orderDTO.getAddress();
-            }
-            newOrder.setExtraInformation(extraInformation);
-        }
         if (orderDTO.isSaveData()) {
             UserDTO userDTO = new UserDTO(orderDTO.getSurname(), orderDTO.getName(), orderDTO.getSecondName(), orderDTO.getPhoneNumber(), orderDTO.getAddress());
             userService.modifyUser(request, userDTO);

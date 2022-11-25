@@ -11,4 +11,5 @@ import java.util.UUID;
 public interface SaleRepository extends JpaRepository<Sale, UUID> {
     Optional<Sale> deleteAllByExpirationDateBefore(Date date);
     List<Sale> findAllByExpirationDateBefore(Date date);
+    Optional<Sale> findByName(String name);
 }

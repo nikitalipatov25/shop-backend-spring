@@ -112,5 +112,9 @@ public class NewCartService {
             newCartRepository.deleteByProductIdAndUserId(UUID.fromString(list.get(i)), userService.findUser(request).get().getId());
         }
     }
+
+    public void deleteProductFromUserCart(UUID productId) {
+        newCartRepository.deleteAllByProductId(productId);
+    }
 }
 

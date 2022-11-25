@@ -1,6 +1,9 @@
 package com.nikitalipatov.handmadeshop.core.services;
 
+import com.nikitalipatov.handmadeshop.core.models.FileDB;
+import com.nikitalipatov.handmadeshop.core.models.Product;
 import com.nikitalipatov.handmadeshop.core.models.Sale;
+import com.nikitalipatov.handmadeshop.core.repositories.ProductRepository;
 import com.nikitalipatov.handmadeshop.core.repositories.SaleRepository;
 import com.nikitalipatov.handmadeshop.dto.SaleDTO;
 import lombok.SneakyThrows;
@@ -14,6 +17,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -28,19 +32,23 @@ public class SaleService {
 
     private final SaleRepository saleRepository;
     private final ProductService productService;
-    private final FileService fileService;
+    private final FileStorageService fileStorageService;
+    private final ProductRepository productRepository;
 
     @Autowired
-    public SaleService(SaleRepository saleRepository, ProductService productService, FileService fileService) {
+    public SaleService(SaleRepository saleRepository, ProductService productService, FileStorageService fileStorageService, ProductRepository productRepository) {
         this.saleRepository = saleRepository;
         this.productService = productService;
-        this.fileService = fileService;
+        this.fileStorageService = fileStorageService;
+        this.productRepository = productRepository;
     }
 
     @Scheduled(cron = "0 1 0 * * ?")
     public void deleteByScheduler() {
         List<Sale> sales = saleRepository.findAllByExpirationDateBefore(new Date());
-        productService.disableSales(sales);
+        for(int i = 0; i < sales.size(); i++) {
+            productService.disableSales(sales.get(i).getName());
+        }
         saleRepository.deleteAllByExpirationDateBefore(new Date());
     }
 
@@ -50,24 +58,19 @@ public class SaleService {
         Sale newSale = new Sale();
         newSale.setId(UUID.randomUUID());
         newSale.setName(saleDTO.getName());
-        newSale.setDescription(saleDTO.getDescription());
-        var image = fileService.getFileByName(saleDTO.getImage());
+        FileDB image = fileStorageService.store(saleDTO.getImage());
         newSale.setImage(image.getId());
         newSale.setDate(LocalDateTime.parse(saleDTO.getDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
         newSale.setExpirationDate(LocalDateTime.parse(saleDTO.getExpirationDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
         newSale.setDiscount(saleDTO.getDiscount());
-        return  saleRepository.save(newSale);
-    }
-
-    public void addSaleToProduct(Sale newSale, SaleDTO saleDTO) {
-        switch (saleDTO.getSaleType()) {
-            case "Скидка на тип животных": productService.setSaleForAnimals(saleDTO.getAnimals(), newSale);
-                break;
-            case "Скидка на категории": productService.setSaleForCategories(saleDTO.getCategories(), newSale);
-                break;
-            case "Скидка на продукты": productService.setSaleForProducts(saleDTO.getProducts(), newSale);
-                break;
+        String[] products = saleDTO.getProducts();
+        for (String item : products) {
+            Optional<Product> product = productService.getById(UUID.fromString(item));
+            product.get().setSale(saleDTO.getName());
+            product.get().setDiscountPrice(product.get().getPrice() - product.get().getPrice() / 100 * saleDTO.getDiscount());
+            productRepository.save(product.get());
         }
+        return saleRepository.save(newSale);
     }
 
     public Page<Sale> getSales() {
@@ -79,29 +82,46 @@ public class SaleService {
         Optional<Sale> result = saleRepository.findById(saleId);
         return result
                 .map(e -> {
-                    productService.disableSaleManually(result.get());
+                    productService.disableSaleManually(result.get().getName());
                     saleRepository.deleteById(saleId);
                     return true;
                 });
     }
 
-    public Optional<Sale> modifySale(SaleDTO saleDTO) {
-        Optional<Sale> result = saleRepository.findById(saleDTO.getId());
-        productService.disableSaleManually(result.get());
+    public Optional<Sale> modifySale(UUID id, SaleDTO saleDTO) {
+        Optional<Sale> result = saleRepository.findById(id);
+        productService.disableSaleManually(result.get().getName());
         return result
                 .map(e -> {
                     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
                     e.setName(saleDTO.getName());
-                    e.setDescription(saleDTO.getDescription());
-                    e.setImage(saleDTO.getImage());
                     e.setDate(LocalDateTime.parse(saleDTO.getDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
                     e.setExpirationDate(LocalDateTime.parse(saleDTO.getExpirationDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
                     e.setDiscount(saleDTO.getDiscount());
+                    if(saleDTO.getImage() != null) {
+                        try {
+                            FileDB image = fileStorageService.store(saleDTO.getImage());
+                            e.setImage(image.getId());
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                    String[] products = saleDTO.getProducts();
+                    for (String item : products) {
+                        Optional<Product> product = productService.getById(UUID.fromString(item));
+                        product.get().setSale(saleDTO.getName());
+                        product.get().setDiscountPrice(product.get().getPrice() - product.get().getPrice() / 100 * saleDTO.getDiscount());
+                        productRepository.save(product.get());
+                    }
                     return saleRepository.save(e);
                 });
     }
 
     public Optional<Sale> getSale(UUID id) {
         return saleRepository.findById(id);
+    }
+
+    public Optional<Sale> getSaleByName(String name) {
+        return saleRepository.findByName(name);
     }
 }

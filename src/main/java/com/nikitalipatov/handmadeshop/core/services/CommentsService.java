@@ -1,11 +1,6 @@
 package com.nikitalipatov.handmadeshop.core.services;
 
-import com.nikitalipatov.handmadeshop.core.models.Answer;
-import com.nikitalipatov.handmadeshop.core.models.Comment;
 import com.nikitalipatov.handmadeshop.core.models.Comments;
-import com.nikitalipatov.handmadeshop.core.models.Product;
-import com.nikitalipatov.handmadeshop.core.repositories.AnswerRepository;
-import com.nikitalipatov.handmadeshop.core.repositories.CommentRepository;
 import com.nikitalipatov.handmadeshop.core.repositories.CommentsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

@@ -22,7 +22,6 @@ public class Sale {
     @Id
     private UUID id;
     private String name;
-    private String description;
     private String image;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime date;

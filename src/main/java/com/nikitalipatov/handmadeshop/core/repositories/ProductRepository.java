@@ -14,10 +14,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface ProductRepository extends JpaRepository<Product, UUID>, JpaSpecificationExecutor {
-    List<Product> findAllByAnimalIn(List<String> animals);
-    List<Product> findAllByCategoryIn(List<String> categories);
+    List<Product> findAllByCategory(String category);
+    List<Product> findAllByNameIsLike(String name);
     List<Product> findAllByIdIn(List<UUID> productIds);
-    List<Product> findAllBySale(Sale sale);
-    List<Product> findAllByRatingGreaterThanEqualOrderByReviewsDesc(double rating);
-    List<Product> findAllByCreationDateNotNullOrderByCreationDateDesc();
+    List<Product> findAllBySale(String sale);
+    List<Product> findAllByRatingGreaterThanEqual(double rating);
+    List<Product> findLast4ByRatingGreaterThanEqual(double rating);
 }

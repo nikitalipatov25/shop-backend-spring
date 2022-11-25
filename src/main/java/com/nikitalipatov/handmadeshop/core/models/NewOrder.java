@@ -29,5 +29,4 @@ public class NewOrder {
     private LocalDateTime date;
     private String orderType;
     private String orderStatus;
-    private String extraInformation;
 }

@@ -1,10 +1,13 @@
 package com.nikitalipatov.handmadeshop.core.services;
 
+import com.nikitalipatov.handmadeshop.core.models.FileDB;
 import com.nikitalipatov.handmadeshop.core.models.NewCart;
 import com.nikitalipatov.handmadeshop.core.models.Sale;
+import com.nikitalipatov.handmadeshop.core.repositories.NewCartRepository;
 import com.nikitalipatov.handmadeshop.core.repositories.ProductRepository;
 import com.nikitalipatov.handmadeshop.core.models.Product;
-import com.nikitalipatov.handmadeshop.dto.ModifyProductDTO;
+import com.nikitalipatov.handmadeshop.dto.ProductEditingDTO;
+import com.nikitalipatov.handmadeshop.dto.ProductCreationDTO;
 import com.nikitalipatov.handmadeshop.dto.ProductFilterDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,9 +15,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.io.IOException;
 import java.util.*;
 
 import static com.nikitalipatov.handmadeshop.specifications.ProductSpecifications.*;
@@ -24,24 +28,45 @@ import static org.springframework.data.jpa.domain.Specification.where;
 public class ProductService {
 
     private final ProductRepository productRepository;
-    private final FileService fileService;
-    private final AnimalService animalService;
+    private final NewCartRepository newCartRepository;
+    private final FileStorageService fileStorageService;
     private final CategoryService categoryService;
 
     @Autowired
-    public ProductService(ProductRepository productRepository, FileService fileService, AnimalService animalService, CategoryService categoryService) {
+    public ProductService(ProductRepository productRepository,
+                          NewCartRepository newCartRepository,
+                          CategoryService categoryService,
+                          FileStorageService fileStorageService) {
         this.productRepository = productRepository;
-        this.fileService = fileService;
-        this.animalService = animalService;
+        this.newCartRepository = newCartRepository;
         this.categoryService = categoryService;
+        this.fileStorageService = fileStorageService;
+    }
+
+    public Product save(ProductCreationDTO productCreationDTO) throws IOException {
+        Product newEntity = new Product();
+        newEntity.setId(UUID.randomUUID());
+        newEntity.setDescription(productCreationDTO.getDescription());
+        newEntity.setAmount(productCreationDTO.getAmount());
+        newEntity.setName(productCreationDTO.getName());
+        FileDB image = fileStorageService.store(productCreationDTO.getImage());
+        newEntity.setImage(image.getId());
+        newEntity.setPrice(productCreationDTO.getPrice());
+        newEntity.setRating(0.0);
+        newEntity.setCategory(productCreationDTO.getCategory());
+        newEntity.setSale("Товар не участвует в акции");
+        return productRepository.save(newEntity);
+    }
+
+    public Page<Product> listAll(Pageable pageable) {
+        Page<Product> result = productRepository.findAll(pageable);
+        return result;
     }
 
     public Page<Product> findAllWithFilters(ProductFilterDTO productFilterDTO) {
-        Specification<Product> specification = where(
-                equalAnimalName(productFilterDTO.getAnimal())
-                        .and(inCategories(productFilterDTO.getCategories()))
+        Specification<Product> specification = where(isDeal(productFilterDTO.isSale()).and(inCategories(productFilterDTO.getCategories())))
                         .and(inPriceRange(productFilterDTO.getPriceFrom(), productFilterDTO.getPriceTo()))
-                        .and(likeSearchText(productFilterDTO.getSearchText())));
+                        .and(likeSearchText(productFilterDTO.getSearchText()));
         Pageable pageable = PageRequest.of(
                 productFilterDTO.getPageNumber(),
                 productFilterDTO.getPageSize(),
@@ -50,60 +75,53 @@ public class ProductService {
         return result;
     }
 
-    public Page<Product> listAll(Pageable pageable) {
-        Page<Product> result = productRepository.findAll(pageable);
-        return result;
-    }
 
-    public List<Product> getPopularProducts() {
-        return productRepository.findAllByRatingGreaterThanEqualOrderByReviewsDesc(4.0);
-    }
 
+//    public List<Product> getPopularProducts() {
+//        return productRepository.findAllByRatingGreaterThanEqualOrderByReviewsDesc(4.0);
+//    }
+//
     public List<Product> getNewProducts() {
-        return productRepository.findAllByCreationDateNotNullOrderByCreationDateDesc();
+        List<Product> pr = productRepository.findAll();
+        pr.subList(pr.size() - 4, pr.size());
+        List<Product> products = productRepository.findLast4ByRatingGreaterThanEqual(0.0);
+        for (int i = 0; i < products.size() - 2; i++) {
+            products.remove(i);
+        }
+        return pr.subList(pr.size() - 4, pr.size());
     }
 
     public Optional<Product> getById(UUID id) {
         return productRepository.findById(id);
     }
 
-    public Product save(Product product) {
-        Product newEntity = new Product();
-        newEntity.setId(UUID.randomUUID());
-        newEntity.setDescription(product.getDescription());
-        newEntity.setAmount(product.getAmount());
-        newEntity.setName(product.getName());
-        var image = fileService.getFileByName(product.getImage());
-        newEntity.setImage(image.getId());
-        newEntity.setPrice(product.getPrice());
-        newEntity.setAnimal(product.getAnimal());
-        newEntity.setCategory(product.getCategory());
-        newEntity.setRating(0.0);
-        newEntity.setCreationDate(LocalDateTime.now());
-        return productRepository.save(newEntity);
-    }
 
-    public Optional<Product> editCatalog(UUID uuid, ModifyProductDTO modifyProductDTO) {
+
+    public Optional<Product> editCatalog(UUID uuid, ProductCreationDTO productCreationDTO) {
         Optional<Product> result = productRepository.findById(uuid);
         return result
                 .map(entity -> {
-                    entity.setAmount(modifyProductDTO.getAmount());
-                    if (modifyProductDTO.getImage() != null) {
-                        var file = fileService.getFileByName(modifyProductDTO.getImage());
-                        entity.setImage(file.getId());
+                    entity.setName(productCreationDTO.getName());
+                    entity.setDescription(productCreationDTO.getDescription());
+                    entity.setPrice(productCreationDTO.getPrice());
+                    entity.setAmount(productCreationDTO.getAmount());
+                    entity.setCategory(productCreationDTO.getCategory());
+                    entity.setDiscountPrice(0.0);
+                    if(productCreationDTO.getImage() != null) {
+                        try {
+                            FileDB image = fileStorageService.store(productCreationDTO.getImage());
+                            entity.setImage(image.getId());
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
                     }
-                    entity.setPrice(modifyProductDTO.getPrice());
-                    entity.setName(modifyProductDTO.getName());
-                    entity.setDescription(modifyProductDTO.getDescription());
-                    entity.setAnimal(modifyProductDTO.getAnimal());
-                    entity.setCategory(modifyProductDTO.getCategory());
-                    entity.setCreationDate(LocalDateTime.now());
                     return productRepository.save(entity);
                 });
 
     }
 
     public Optional<Boolean> deleteById(UUID id) {
+        newCartRepository.deleteAllByProductId(id);
         Optional<Product> result = productRepository.findById(id);
         return result
                 .map(catalog -> {
@@ -112,40 +130,19 @@ public class ProductService {
                 });
     }
 
-    public void setSaleForAnimals(List<String> animals, Sale newSale) {
-        var result = productRepository.findAllByAnimalIn(animals);
-        for (int i = 0; i < result.size(); i++) {
-            result.get(i).setSale(newSale);
-        }
-    }
-
-    public void setSaleForCategories(List<String> categories, Sale newSale) {
-        var result = productRepository.findAllByCategoryIn(categories);
-        for (int i = 0; i < result.size(); i++) {
-            result.get(i).setSale(newSale);
-        }
-    }
-
-    public void setSaleForProducts(List<UUID> products, Sale newSale) {
-        var result = productRepository.findAllByIdIn(products);
-        for (int i = 0; i < result.size(); i++) {
-            result.get(i).setSale(newSale);
-        }
-    }
-
-    public void disableSales(List<Sale> sales) {
-        for (int i = 0; i < sales.size(); i++) {
-            List<Product> products = productRepository.findAllBySale(sales.get(i));
-            for (int k = 0; k < products.size(); k++) {
-                products.get(k).setSale(null);
-            }
-        }
-    }
-
-    public void disableSaleManually(Sale sale) {
+    public void disableSales(String sale) {
         List<Product> products = productRepository.findAllBySale(sale);
-        for (int i = 0; i < products.size(); i++) {
-            products.get(i).setSale(null);
+        for (Product product : products) {
+            product.setDiscountPrice(0.0);
+            product.setSale("Товар не участвует в акции");
+        }
+    }
+
+    public void disableSaleManually(String sale) {
+        List<Product> products = productRepository.findAllBySale(sale);
+        for (Product product : products) {
+            product.setSale("Товар не участвует в акции");
+            product.setDiscountPrice(0.0);
         }
     }
 

@@ -12,13 +12,18 @@ import java.util.UUID;
 @Getter
 @Setter
 @AllArgsConstructor
-@Table(name = "categories")
+@Table(name = "category")
 public class Category {
 
     @Id
     private UUID id;
-    private String imageURL;
+    private String image;
     private String name;
+//    @OneToMany
+//    @JoinTable(name = "product_category",
+//            joinColumns = @JoinColumn(name = "category_id"),
+//            inverseJoinColumns = @JoinColumn(name = "product_id"))
+//    private Set<Product> products;
 
     public Category() {
     }

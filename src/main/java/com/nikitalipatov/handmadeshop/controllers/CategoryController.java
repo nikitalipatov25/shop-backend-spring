@@ -1,15 +1,16 @@
 package com.nikitalipatov.handmadeshop.controllers;
 
-import com.nikitalipatov.handmadeshop.core.models.Animal;
 import com.nikitalipatov.handmadeshop.core.models.Category;
 import com.nikitalipatov.handmadeshop.core.services.CategoryService;
-import com.nikitalipatov.handmadeshop.dto.AnimalDTO;
 import com.nikitalipatov.handmadeshop.dto.CategoryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -38,10 +39,11 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.getCategory(id));
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<Category> addNewCategory(@RequestBody CategoryDTO categoryDTO) {
+    @PostMapping(value = "/add")
+    public ResponseEntity<Category> addNewCategory(@RequestParam("name") String name,
+                                                   @RequestParam("image")MultipartFile image) throws IOException {
+        CategoryDTO categoryDTO = new CategoryDTO(name, image);
         Category result = categoryService.addNewCategory(categoryDTO);
-        categoryService.addNewCategoryToAnimals(categoryDTO);
         return ResponseEntity.ok(result);
     }
 
@@ -54,7 +56,10 @@ public class CategoryController {
     }
 
     @PutMapping("/modify/{id}")
-    public ResponseEntity<Category> editCategory(@PathVariable(name = "id")UUID id, @RequestBody CategoryDTO categoryDTO) {
+    public ResponseEntity<Category> editCategory(@PathVariable(name = "id")UUID id,
+                                                 @RequestParam(required = false, name = "name") String name,
+                                                 @RequestParam(required = false, name = "image")MultipartFile image) {
+        CategoryDTO categoryDTO = new CategoryDTO(name, image);
         Optional<Category> result = categoryService.editCategory(id, categoryDTO);
         return result
                 .map(e -> ResponseEntity.ok(e))

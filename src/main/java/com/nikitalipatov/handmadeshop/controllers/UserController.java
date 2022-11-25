@@ -44,22 +44,4 @@ public class UserController {
         Optional<User> user = userService.findUserById(id);
         return ResponseEntity.ok(user);
     }
-
-    @GetMapping("/promote/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<User> promoteToAdmin(@PathVariable(name = "id")Long id) {
-        Optional<User> result = userService.promoteToAdmin(id);
-        return result
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @GetMapping("/demote/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<User> demoteToUser(@PathVariable(name = "id")Long id) {
-        Optional<User> result = userService.demoteToUser(id);
-        return result
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
 }

@@ -4,26 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class SaleDTO {
-    private UUID id;
     private String name;
-    private String description;
-    private String image;
+    private MultipartFile image;
     private String date;
     private String expirationDate;
     private double discount;
-    private String saleType;
-    private List<UUID> products;
-    private List<String> animals;
-    private List<String> categories;
+    private String[] products;
 }

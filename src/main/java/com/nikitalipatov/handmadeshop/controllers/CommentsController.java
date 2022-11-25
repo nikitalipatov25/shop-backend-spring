@@ -1,9 +1,6 @@
 package com.nikitalipatov.handmadeshop.controllers;
 
-import com.nikitalipatov.handmadeshop.core.models.Answer;
-import com.nikitalipatov.handmadeshop.core.models.Comment;
 import com.nikitalipatov.handmadeshop.core.models.Comments;
-import com.nikitalipatov.handmadeshop.core.services.CommentService;
 import com.nikitalipatov.handmadeshop.core.services.CommentsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 

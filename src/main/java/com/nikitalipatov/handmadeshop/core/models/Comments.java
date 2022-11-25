@@ -29,10 +29,4 @@ public class Comments {
     private LocalDateTime date;
     private double rating;
     private String userName;
-    @ManyToMany
-    @JoinTable(name = "comment_answers",
-            joinColumns = {@JoinColumn(name = "prod_id"), @JoinColumn(name = "user_id")},
-            inverseJoinColumns = @JoinColumn(name = "answer_id"))
-    private Set<Answer> answers;
-
 }
