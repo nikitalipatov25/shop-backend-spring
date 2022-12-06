@@ -31,8 +31,6 @@ public class CommentsService {
     }
 
     public List<Comments> findAllComment(UUID productId){
-//        Pageable pageable = PageRequest.of(0,4); // ne zabit pomenat
-//        var result = commentsRepository.findAllByProductId(productId, pageable);
         return commentsRepository.findAllByProductId(productId);
     }
 
@@ -41,23 +39,17 @@ public class CommentsService {
         if (commentsRepository.existsByProductIdAndUserId(productUUID, user.get().getId())) {
             delComment(productUUID, request);
         }
-//        Optional<Product> product = productService.getById(productUUID);
         Comments newComment = new Comments();
         newComment.setProductId(productUUID);
         newComment.setUserId(user.get().getId());
         newComment.setDate(LocalDateTime.now());
         newComment.setRating(comment.getRating());
         newComment.setText(comment.getText());
-//        HashSet<Comment> set = new HashSet<>();
-//        set.add(newComment);
-//        product.get().setComments(set);
         newComment.setUserName(user.get().getUsername());
-//        productService.editCatalog(productUUID, product.get());
         return commentsRepository.save(newComment);
     }
 
     public Optional<Comments> modifyComment(UUID productId ,Comments comment, HttpServletRequest request){
-        //Date date = new Date();
         var user = userService.findUser(request);
         Optional<Comments> result = commentsRepository.findByProductIdAndUserId(productId, user.get().getId());
         return result

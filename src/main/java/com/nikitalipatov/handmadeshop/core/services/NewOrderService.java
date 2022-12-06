@@ -43,9 +43,6 @@ public class NewOrderService {
         return orderStatusRepository.findAll();
     }
 
-//    Этот метод необходимо будет перепроверить, когда появится возможность заказывать
-//            ОПРЕДЕЛЕННЫЕ ТОВАРЫ корзины
-//    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     public NewOrder createOrder(OrderDTO orderDTO, HttpServletRequest request) {
         List<NewCart> userCart = newCartService.findUserCart(orderDTO.getProducts(), request);
         NewOrder newOrder = new NewOrder();
@@ -53,7 +50,7 @@ public class NewOrderService {
         newOrder.setUserId(userService.findUser(request).get().getId());
         List<String> productsInfo = new ArrayList<>();
         for (NewCart newCart : userCart) {
-            String infoAboutProduct = "Товар : " + newCart.getProduct().getName() +
+            String infoAboutProduct =newCart.getProduct().getName() +
                     ", количество: " + newCart.getAmount();
             productsInfo.add(infoAboutProduct);
         }
@@ -73,8 +70,9 @@ public class NewOrderService {
         return newOrderRepository.save(newOrder);
     }
 
+
+
     public List<NewOrder> getOrders(HttpServletRequest request) {
-        //Pageable pageable = PageRequest.of(0,4, Sort.by("date")); // не забыть передавать номера страниц
         return newOrderRepository.findAllByUserId(userService.findUser(request).get().getId());
     }
 
@@ -89,5 +87,29 @@ public class NewOrderService {
 
     public Optional<NewOrder> getOrder(UUID id) {
         return newOrderRepository.findByOrderId(id);
+    }
+
+    public Optional<Boolean> cancelOrder(UUID id, HttpServletRequest request) {
+        Optional<NewOrder> result = newOrderRepository.findByOrderId(id);
+        List<String> productsInfo = result.get().getProductsInfo();
+        for (int i = 0; i < productsInfo.size(); i++) {
+            int amount = Integer.parseInt(productsInfo.get(i).replaceAll("\\D+",""));
+            String[] arr = productsInfo.get(i).split(",");
+            String product = arr[0];
+            productService.addAmountToProduct(product, amount);
+        }
+        return result.map(canceledOrder -> {
+            newOrderRepository.deleteByOrderIdAndUserId(id,
+                    userService.findUser(request).get().getId());
+            return true;
+        });
+    }
+
+    public Optional<NewOrder> confirmReceipt(UUID id) {
+        Optional<NewOrder> result = newOrderRepository.findByOrderId(id);
+        return result.map(entity ->{
+            entity.setOrderStatus("Завершен");
+            return newOrderRepository.save(entity);
+        });
     }
 }

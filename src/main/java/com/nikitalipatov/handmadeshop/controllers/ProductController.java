@@ -4,7 +4,6 @@ import com.nikitalipatov.handmadeshop.core.models.Product;
 import com.nikitalipatov.handmadeshop.core.repositories.ProductRepository;
 import com.nikitalipatov.handmadeshop.core.services.ProductService;
 import com.nikitalipatov.handmadeshop.dto.ProductCreationDTO;
-import com.nikitalipatov.handmadeshop.dto.ProductEditingDTO;
 import com.nikitalipatov.handmadeshop.dto.ProductFilterDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

@@ -39,6 +39,22 @@ public class NewOrderController {
         return ResponseEntity.ok(newOrderService.getOrder(id));
     }
 
+    @DeleteMapping("/cancel/{id}")
+    public ResponseEntity<?> cancelOrder(@PathVariable(name = "id") UUID id, HttpServletRequest request) {
+        Optional<Boolean> result = newOrderService.cancelOrder(id, request);
+        return result
+                .map(e -> ResponseEntity.noContent().build())
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/confirm/{id}")
+    public ResponseEntity<NewOrder> confirmReceipt(@PathVariable(name = "id") UUID id) {
+        Optional<NewOrder> result = newOrderService.confirmReceipt(id);
+        return result
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
     @PostMapping("/add")
     public ResponseEntity<NewOrder> createOrder(@RequestBody OrderDTO orderDTO, HttpServletRequest request) {
         return ResponseEntity.ok(newOrderService.createOrder(orderDTO, request));
