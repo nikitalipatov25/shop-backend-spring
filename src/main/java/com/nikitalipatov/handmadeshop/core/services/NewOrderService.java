@@ -2,17 +2,10 @@ package com.nikitalipatov.handmadeshop.core.services;
 
 import com.nikitalipatov.handmadeshop.core.models.NewCart;
 import com.nikitalipatov.handmadeshop.core.models.NewOrder;
-import com.nikitalipatov.handmadeshop.core.models.OrderStatus;
 import com.nikitalipatov.handmadeshop.core.repositories.NewOrderRepository;
-import com.nikitalipatov.handmadeshop.core.repositories.OrderStatusRepository;
 import com.nikitalipatov.handmadeshop.dto.OrderDTO;
 import com.nikitalipatov.handmadeshop.dto.OrderStatusDTO;
-import com.nikitalipatov.handmadeshop.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,20 +20,14 @@ public class NewOrderService {
     private final UserService userService;
     private final NewCartService newCartService;
     private final NewOrderRepository newOrderRepository;
-    private final OrderStatusRepository orderStatusRepository;
     private final ProductService productService;
 
     @Autowired
-    public NewOrderService(UserService userService, NewCartService newCartService, NewOrderRepository newOrderRepository, OrderStatusRepository orderStatusRepository, ProductService productService) {
+    public NewOrderService(UserService userService, NewCartService newCartService, NewOrderRepository newOrderRepository, ProductService productService) {
         this.userService = userService;
         this.newCartService = newCartService;
         this.newOrderRepository = newOrderRepository;
-        this.orderStatusRepository = orderStatusRepository;
         this.productService = productService;
-    }
-
-    public List<OrderStatus> getOrderStatus() {
-        return orderStatusRepository.findAll();
     }
 
     public NewOrder createOrder(OrderDTO orderDTO, HttpServletRequest request) {
@@ -74,6 +61,10 @@ public class NewOrderService {
 
     public List<NewOrder> getOrders(HttpServletRequest request) {
         return newOrderRepository.findAllByUserId(userService.findUser(request).get().getId());
+    }
+
+    public List<NewOrder> getAllUserOrders() {
+        return newOrderRepository.findAll();
     }
 
     public Optional<NewOrder> modifyOrderStatus(OrderStatusDTO orderStatusDTO) {

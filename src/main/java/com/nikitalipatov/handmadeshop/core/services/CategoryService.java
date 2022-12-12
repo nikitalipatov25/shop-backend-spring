@@ -7,6 +7,7 @@ import com.nikitalipatov.handmadeshop.core.repositories.CategoryRepository;
 import com.nikitalipatov.handmadeshop.core.repositories.ProductRepository;
 import com.nikitalipatov.handmadeshop.dto.CategoryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -28,10 +29,6 @@ public class CategoryService {
 
     public Set<Category> getCategoriesSet() {
         return new HashSet<>(categoryRepository.findAll());
-    }
-
-    public Optional<Category> getCategory(UUID id) {
-        return categoryRepository.findById(id);
     }
 
     public Category addNewCategory(CategoryDTO categoryDTO) throws IOException {

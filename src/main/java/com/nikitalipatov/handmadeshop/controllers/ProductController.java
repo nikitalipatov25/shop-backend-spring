@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,6 +39,7 @@ public class ProductController {
     }
 
     @PostMapping("/add")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Product> addItem(@RequestParam("name") String name,
                                            @RequestParam("description") String description,
                                            @RequestParam("amount") int amount,
@@ -50,6 +52,7 @@ public class ProductController {
     }
 
     @PutMapping(value = "/modify/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Product> editItem(@PathVariable(name = "id") UUID id,
                                             @RequestParam(name = "name") String name,
                                             @RequestParam(name = "description") String description,
@@ -65,6 +68,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> deleteItem(@PathVariable(name = "id") UUID id) {
         Optional<Boolean> result = productService.deleteById(id);
         return result
@@ -99,10 +103,4 @@ public class ProductController {
                 .map(entity -> ResponseEntity.ok(entity))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
-
-
-//    @GetMapping("/sale/{id}")
-//    public ResponseEntity<Set<productOnSaleDTO>> getProductsOnSale(@PathVariable(name = "id")UUID id) {
-//        return productService.getProductsOnSale(id);
-//    }
 }
