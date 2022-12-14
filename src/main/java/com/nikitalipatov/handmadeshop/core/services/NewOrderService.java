@@ -8,10 +8,14 @@ import com.nikitalipatov.handmadeshop.dto.OrderStatusDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.*;
+
+/**
+ * Service class for manipulating <b>orders</b>.
+ * Most useful thing is generating orders for admin and automatically change amount of products in stock
+ */
 
 @Service
 @Transactional
@@ -30,6 +34,10 @@ public class NewOrderService {
         this.productService = productService;
     }
 
+    /**
+     * Method generating <b>order</b>.
+     * Then it cleaning user cart and modify amount of products in catalog
+     */
     public NewOrder createOrder(OrderDTO orderDTO, HttpServletRequest request) {
         List<NewCart> userCart = newCartService.findUserCart(orderDTO.getProducts(), request);
         NewOrder newOrder = new NewOrder();
@@ -76,10 +84,10 @@ public class NewOrderService {
                 });
     }
 
-    public Optional<NewOrder> getOrder(UUID id) {
-        return newOrderRepository.findByOrderId(id);
-    }
 
+    /**
+     * Method canceling <b>order</b> and returning amount of ordered products in catalog
+     */
     public Optional<Boolean> cancelOrder(UUID id, HttpServletRequest request) {
         Optional<NewOrder> result = newOrderRepository.findByOrderId(id);
         List<String> productsInfo = result.get().getProductsInfo();

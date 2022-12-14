@@ -21,7 +21,6 @@ public class CommentsService {
     private final ProductService productService;
     private final UserService userService;
 
-    SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-YYYY");
 
     @Autowired
     public CommentsService(CommentsRepository commentsRepository, ProductService productService, UserService userService) {
